@@ -2,73 +2,95 @@
 <html lang="ta">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Pallanguzhi - பல்லாங்குழி</title>
 <style>
   :root {
-    --board-wood: #3a1d0d;
-    --board-rim: #1f0d04;
+    --wood-rim: #140702;
+    --wood-outer: #2c1206;
+    --wood-mid: #4a210d;
+    --wood-highlight: #703716;
     --gold: #d4af37;
-    --shell-bg: #f9f5eb;
-    --shell-shade: #c2ab87;
+    --seed-dark: #241108;
+    --seed-mid: #431f0e;
+    --seed-light: #6a3418;
+  }
+
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   body {
     margin: 0;
-    min-height: 100vh;
-    background: radial-gradient(circle at center, #1b0e06, #070301);
-    color: #e6c8a5;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, #1c0c05 0%, #070301 100%);
+    color: #ebd3be;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    padding: 16px;
-    box-sizing: border-box;
+    overflow: hidden;
+    padding: 12px;
+  }
+
+  /* Header & Score bar (Compact Landscape Strip) */
+  .top-bar {
+    width: 95vw;
+    max-width: 1100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 6px 16px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid #542710;
+    border-radius: 12px;
+  }
+
+  .title-group {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
   }
 
   h1 {
-    margin: 4px 0;
+    margin: 0;
     color: var(--gold);
+    font-size: 1.5rem;
     letter-spacing: 2px;
-    font-size: 1.8rem;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
   }
 
   .subtitle {
-    font-size: 0.9rem;
-    color: #a88460;
-    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: #b1875c;
   }
 
-  /* Scoreboard */
-  .scoreboard {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 640px;
-    margin-bottom: 16px;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid #5a3116;
-    border-radius: 12px;
-    padding: 10px 18px;
-    box-sizing: border-box;
-  }
-
-  .player-box {
+  .score-card {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     font-size: 0.95rem;
+    padding: 4px 12px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
   }
 
-  .player-box.active {
-    color: #58d68d;
+  .score-card.active {
+    border-color: #58d68d;
+    background: rgba(88, 214, 141, 0.12);
+    color: #72f0a7;
     font-weight: bold;
-    text-shadow: 0 0 8px rgba(88, 214, 141, 0.4);
+    box-shadow: 0 0 10px rgba(88, 214, 141, 0.25);
   }
 
-  .score-badge {
-    background: #110702;
+  .score-val {
+    background: #0f0602;
     border: 1px solid var(--gold);
     color: var(--gold);
     padding: 2px 10px;
@@ -76,33 +98,35 @@
     font-weight: bold;
   }
 
-  /* Wood Board */
-  .board {
-    background: radial-gradient(circle at center, #532912 0%, #301709 80%, var(--board-rim) 100%);
-    border: 8px solid var(--board-rim);
-    box-shadow: 0 16px 36px rgba(0,0,0,0.9), inset 0 2px 4px rgba(255,255,255,0.1);
-    border-radius: 36px;
-    padding: 20px 16px;
+  /* Wide Antique Wooden Board */
+  .board-wrapper {
+    width: 96vw;
+    max-width: 1120px;
+    height: 60vh;
+    min-height: 280px;
+    background: radial-gradient(ellipse at center, var(--wood-highlight) 0%, var(--wood-mid) 50%, var(--wood-outer) 80%, var(--wood-rim) 100%);
+    border: 12px solid var(--wood-rim);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.9), inset 0 2px 6px rgba(255,255,255,0.15);
+    border-radius: 44px;
+    padding: 16px 24px;
     display: grid;
     grid-template-rows: repeat(2, 1fr);
     gap: 16px;
-    width: 100%;
-    max-width: 680px;
-    box-sizing: border-box;
+    position: relative;
   }
 
   .row {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
+    gap: 14px;
   }
 
-  /* Carved Wooden Cups */
+  /* Deep Carved Wooden Cups */
   .pit {
-    aspect-ratio: 1;
-    background: radial-gradient(circle at 70% 70%, #0d0602 10%, #1c0c05 60%, #381909 100%);
+    height: 100%;
+    background: radial-gradient(circle at 75% 75%, #050201 0%, #150904 55%, #2a1106 100%);
     border-radius: 50%;
-    box-shadow: inset 0 6px 12px rgba(0,0,0,0.95), 0 2px 4px rgba(255,255,255,0.06);
+    box-shadow: inset 0 10px 18px rgba(0,0,0,0.95), 0 2px 5px rgba(255,255,255,0.08);
     border: 2px solid transparent;
     display: flex;
     flex-direction: column;
@@ -110,361 +134,405 @@
     justify-content: center;
     position: relative;
     cursor: pointer;
-    transition: transform 0.15s, border-color 0.2s;
+    transition: transform 0.18s, border-color 0.2s;
   }
 
   .pit.playable:hover {
     border-color: var(--gold);
-    transform: scale(1.06);
+    transform: scale(1.04);
   }
 
   .pit.highlight {
     border-color: #58d68d;
-    box-shadow: 0 0 12px #58d68d, inset 0 6px 12px #000;
+    box-shadow: 0 0 16px #58d68d, inset 0 10px 18px #000;
   }
 
-  .count-label {
+  .count-indicator {
     position: absolute;
-    bottom: 4px;
-    font-size: 0.75rem;
-    font-weight: 700;
+    bottom: 6px;
+    font-size: 0.85rem;
+    font-weight: 800;
     color: var(--gold);
+    text-shadow: 0 1px 4px #000;
   }
 
-  /* Realistic Shell Sprites */
-  .cluster {
+  /* Tamarind Seeds (புளியங்கொட்டை) - Asymmetric, Rough & Two-Toned */
+  .seeds-cluster {
     position: relative;
-    width: 60%;
-    height: 60%;
+    width: 68%;
+    height: 68%;
   }
 
-  .shell {
+  .tamarind-seed {
     position: absolute;
-    width: 12px;
-    height: 8px;
-    background: radial-gradient(circle at 35% 30%, #ffffff 0%, var(--shell-bg) 55%, var(--shell-shade) 100%);
-    border-radius: 50% 50% 45% 45%;
-    box-shadow: 1px 2px 3px rgba(0,0,0,0.7);
-    border-bottom: 1px solid #7c6246;
+    width: 15px;
+    height: 12px;
+    background: radial-gradient(ellipse at 40% 30%, #5d2810 0%, var(--seed-mid) 45%, var(--seed-dark) 90%);
+    border-radius: 40% 60% 50% 50% / 50% 45% 55% 50%;
+    box-shadow: 1px 3px 4px rgba(0,0,0,0.85);
+    border: 1px solid #1a0802;
   }
 
-  /* Floating Moving Shell for Animation */
-  #flying-shell {
-    position: fixed;
-    width: 16px;
-    height: 10px;
-    background: radial-gradient(circle at 30% 30%, #fff, #ebdcc3);
-    border-radius: 50%;
-    box-shadow: 0 8px 12px rgba(0,0,0,0.6);
-    pointer-events: none;
-    display: none;
-    z-index: 1000;
-    transition: all 0.18s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* One side slightly rougher / flat */
+  .tamarind-seed::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 6px;
+    height: 5px;
+    background: rgba(184, 115, 77, 0.25);
+    border-radius: 40%;
+    filter: blur(0.5px);
   }
 
-  /* Log message */
-  .status-message {
-    margin-top: 16px;
-    font-size: 0.95rem;
-    min-height: 24px;
-    text-align: center;
-    color: #ecd5b8;
-  }
-
-  .actions {
-    margin-top: 14px;
+  /* Bottom status strip & controls */
+  .bottom-bar {
+    width: 95vw;
+    max-width: 1100px;
     display: flex;
-    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding: 6px 14px;
+  }
+
+  .status-message {
+    font-size: 0.95rem;
+    color: #ebd3be;
+    font-weight: 500;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 10px;
   }
 
   button {
-    background: linear-gradient(180deg, #5c2f13, #361706);
+    background: linear-gradient(180deg, #592911, #311507);
     color: var(--gold);
     border: 1px solid var(--gold);
-    padding: 8px 18px;
+    padding: 7px 18px;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
     font-size: 0.85rem;
+    transition: all 0.2s;
   }
+
   button:hover {
-    background: linear-gradient(180deg, #743d19, #482009);
+    background: linear-gradient(180deg, #743717, #451d09);
+    transform: translateY(-1px);
   }
 </style>
 </head>
 <body>
 
-  <h1>பல்லாங்குழி</h1>
-  <div class="subtitle">Pallanguzhi Traditional Board</div>
-
-  <div class="scoreboard">
-    <div class="player-box" id="p2-box">
+  <div class="top-bar">
+    <div class="title-group">
+      <h1>பல்லாங்குழி</h1>
+      <span class="subtitle">Traditional Tamarind Seed Game</span>
+    </div>
+    <div class="score-card" id="p2-card">
       <span>Player 2 (Top)</span>
-      <span class="score-badge" id="p2-score">0</span>
+      <span class="score-val" id="p2-score">0</span>
     </div>
-    <div class="player-box active" id="p1-box">
+    <div class="score-card active" id="p1-card">
       <span>Player 1 (Bottom)</span>
-      <span class="score-badge" id="p1-score">0</span>
+      <span class="score-val" id="p1-score">0</span>
     </div>
   </div>
 
-  <div class="board">
-    <div class="row" id="row-top"></div>
-    <div class="row" id="row-bottom"></div>
+  <div class="board-wrapper">
+    <!-- Top Row: Pits 13 down to 7 (Left to Right) -->
+    <div class="row" id="top-row"></div>
+    <!-- Bottom Row: Pits 0 up to 6 (Left to Right) -->
+    <div class="row" id="bottom-row"></div>
   </div>
 
-  <div id="flying-shell"></div>
-
-  <div class="status-message" id="message">Player 1: Pick a pit on your side to sow.</div>
-
-  <div class="actions">
-    <button onclick="startGame(false)">2-Player (Pass & Play)</button>
-    <button onclick="startGame(true)">Play vs AI</button>
+  <div class="bottom-bar">
+    <div class="status-message" id="status-msg">Player 1: Tap a pit on your side to sow.</div>
+    <div class="btn-group">
+      <button onclick="resetMatch(false)">Pass & Play</button>
+      <button onclick="resetMatch(true)">Play vs AI</button>
+    </div>
   </div>
 
 <script>
-  const TOTAL_PITS = 14;
-  const SEEDS_PER_PIT = 5;
-  let pits = new Array(TOTAL_PITS).fill(SEEDS_PER_PIT);
-  let turn = 1; // 1: Player 1 (Bottom, pits 0-6), 2: Player 2 (Top, pits 7-13)
-  let scores = { 1: 0, 2: 0 };
-  let vsAi = false;
-  let isMoving = false;
+  const PIT_TOTAL = 14;
+  const SEED_COUNT = 5;
+  let pits = new Array(PIT_TOTAL).fill(SEED_COUNT);
+  let activeTurn = 1; // 1: Bottom (0-6), 2: Top (7-13)
+  let playerScores = { 1: 0, 2: 0 };
+  let isAiMode = false;
+  let isTurnRunning = false;
 
-  // Synthesized Wood / Shell Clatter Sound using Browser Web Audio
+  // Realistic Organic Wooden "Thock" Audio (Natural Seed Drop)
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  const audio = new AudioCtx();
+  const audioContext = new AudioCtx();
 
-  function playDropSound() {
-    if (audio.state === 'suspended') audio.resume();
-    const osc = audio.createOscillator();
-    const gain = audio.createGain();
-    osc.type = 'triangle';
-    // Randomize pitch slightly so every shell drop sounds unique
-    osc.frequency.setValueAtTime(650 + Math.random() * 250, audio.currentTime);
-    gain.gain.setValueAtTime(0.2, audio.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.06);
-    osc.connect(gain);
-    gain.connect(audio.destination);
-    osc.start();
-    osc.stop(audio.currentTime + 0.06);
+  function playOrganicSeedDrop() {
+    if (audioContext.state === 'suspended') audioContext.resume();
+    const t = audioContext.currentTime;
+
+    // Layer 1: Low body resonance (wooden hollow pitch)
+    const bodyOsc = audioContext.createOscillator();
+    const bodyGain = audioContext.createGain();
+    bodyOsc.type = 'sine';
+    const pitchJitter = 160 + (Math.random() * 40 - 20);
+    bodyOsc.frequency.setValueAtTime(pitchJitter, t);
+    bodyOsc.frequency.exponentialRampToValueAtTime(80, t + 0.12);
+
+    bodyGain.gain.setValueAtTime(0.35, t);
+    bodyGain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    bodyOsc.connect(bodyGain);
+    bodyGain.connect(audioContext.destination);
+
+    bodyOsc.start(t);
+    bodyOsc.stop(t + 0.12);
+
+    // Layer 2: High friction click (seed landing on hard wood)
+    const clickOsc = audioContext.createOscillator();
+    const clickGain = audioContext.createGain();
+    clickOsc.type = 'triangle';
+    clickOsc.frequency.setValueAtTime(850 + Math.random() * 300, t);
+    clickGain.gain.setValueAtTime(0.18, t);
+    clickGain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    clickOsc.connect(clickGain);
+    clickGain.connect(audioContext.destination);
+
+    clickOsc.start(t);
+    clickOsc.stop(t + 0.04);
   }
 
   function playCaptureSound() {
-    if (audio.state === 'suspended') audio.resume();
-    const osc = audio.createOscillator();
-    const gain = audio.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(440, audio.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(880, audio.currentTime + 0.18);
-    gain.gain.setValueAtTime(0.3, audio.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.2);
+    if (audioContext.state === 'suspended') audioContext.resume();
+    const t = audioContext.currentTime;
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(320, t);
+    osc.frequency.exponentialRampToValueAtTime(640, t + 0.3);
+    gain.gain.setValueAtTime(0.25, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
     osc.connect(gain);
-    gain.connect(audio.destination);
-    osc.start();
-    osc.stop(audio.currentTime + 0.2);
+    gain.connect(audioContext.destination);
+    osc.start(t);
+    osc.stop(t + 0.35);
   }
 
-  function initDOM() {
-    const topRow = document.getElementById('row-top');
-    const btmRow = document.getElementById('row-bottom');
+  function initBoard() {
+    const topRow = document.getElementById('top-row');
+    const bottomRow = document.getElementById('bottom-row');
     topRow.innerHTML = '';
-    btmRow.innerHTML = '';
+    bottomRow.innerHTML = '';
 
-    // Top row: pits 13 down to 7 (clockwise circuit)
     for (let i = 13; i >= 7; i--) {
-      topRow.appendChild(createPit(i));
+      topRow.appendChild(createPitElement(i));
     }
-    // Bottom row: pits 0 up to 6
     for (let i = 0; i <= 6; i++) {
-      btmRow.appendChild(createPit(i));
+      bottomRow.appendChild(createPitElement(i));
     }
-    render();
+    refreshBoardView();
   }
 
-  function createPit(idx) {
+  function createPitElement(idx) {
     const el = document.createElement('div');
     el.className = 'pit';
     el.id = `pit-${idx}`;
-    el.onclick = () => onPitClick(idx);
+    el.onclick = () => onPitSelect(idx);
     return el;
   }
 
-  function render() {
-    for (let i = 0; i < TOTAL_PITS; i++) {
+  function refreshBoardView() {
+    for (let i = 0; i < PIT_TOTAL; i++) {
       const pitEl = document.getElementById(`pit-${i}`);
       pitEl.innerHTML = '';
 
-      const count = pits[i];
-      const countLabel = document.createElement('span');
-      countLabel.className = 'count-label';
-      countLabel.innerText = count;
-      pitEl.appendChild(countLabel);
+      const seedNum = pits[i];
 
+      // Number badge
+      const badge = document.createElement('span');
+      badge.className = 'count-indicator';
+      badge.innerText = seedNum;
+      pitEl.appendChild(badge);
+
+      // Tamarind Seed Sprites Cluster
       const cluster = document.createElement('div');
-      cluster.className = 'cluster';
-      const visible = Math.min(count, 12);
-      for (let s = 0; s < visible; s++) {
-        const shell = document.createElement('div');
-        shell.className = 'shell';
-        const angle = (s / visible) * Math.PI * 2;
-        const dist = Math.min(14, visible * 1.5);
-        shell.style.left = `${50 + Math.cos(angle) * dist - 6}%`;
-        shell.style.top = `${50 + Math.sin(angle) * dist - 4}%`;
-        shell.style.transform = `rotate(${s * 53}deg)`;
-        cluster.appendChild(shell);
+      cluster.className = 'seeds-cluster';
+
+      const visibleSeeds = Math.min(seedNum, 14);
+      for (let s = 0; s < visibleSeeds; s++) {
+        const seed = document.createElement('div');
+        seed.className = 'tamarind-seed';
+        
+        // Random organic jitter in cups
+        const angle = (s / visibleSeeds) * Math.PI * 2;
+        const radius = Math.min(18, visibleSeeds * 1.8);
+        const offsetX = Math.cos(angle) * radius;
+        const offsetY = Math.sin(angle) * radius;
+        const rot = (s * 47 + i * 13) % 360;
+
+        seed.style.left = `calc(50% + ${offsetX}px - 7px)`;
+        seed.style.top = `calc(50% + ${offsetY}px - 6px)`;
+        seed.style.transform = `rotate(${rot}deg)`;
+        cluster.appendChild(seed);
       }
       pitEl.appendChild(cluster);
 
-      // Playable highlights
+      // Playable selection borders
       pitEl.classList.remove('playable');
-      if (!isMoving) {
-        if (turn === 1 && i >= 0 && i <= 6 && count > 0) pitEl.classList.add('playable');
-        if (turn === 2 && !vsAi && i >= 7 && i <= 13 && count > 0) pitEl.classList.add('playable');
+      if (!isTurnRunning) {
+        if (activeTurn === 1 && i >= 0 && i <= 6 && seedNum > 0) {
+          pitEl.classList.add('playable');
+        } else if (activeTurn === 2 && !isAiMode && i >= 7 && i <= 13 && seedNum > 0) {
+          pitEl.classList.add('playable');
+        }
       }
     }
 
-    document.getElementById('p1-score').innerText = scores[1];
-    document.getElementById('p2-score').innerText = scores[2];
-    document.getElementById('p1-box').classList.toggle('active', turn === 1);
-    document.getElementById('p2-box').classList.toggle('active', turn === 2);
+    document.getElementById('p1-score').innerText = playerScores[1];
+    document.getElementById('p2-score').innerText = playerScores[2];
+    document.getElementById('p1-card').classList.toggle('active', activeTurn === 1);
+    document.getElementById('p2-card').classList.toggle('active', activeTurn === 2);
   }
 
-  async function onPitClick(index) {
-    if (isMoving) return;
-    if (turn === 1 && (index < 0 || index > 6)) return;
-    if (turn === 2 && (index < 7 || index > 13)) return;
-    if (pits[index] === 0) return;
+  async function onPitSelect(pitIdx) {
+    if (isTurnRunning) return;
+    if (activeTurn === 1 && (pitIdx < 0 || pitIdx > 6)) return;
+    if (activeTurn === 2 && (pitIdx < 7 || pitIdx > 13)) return;
+    if (pits[pitIdx] === 0) return;
 
-    await executeSowing(index);
+    await executeSowingMotion(pitIdx);
   }
 
-  async function executeSowing(startIdx) {
-    isMoving = true;
+  async function executeSowingMotion(startIdx) {
+    isTurnRunning = true;
     let hand = pits[startIdx];
     pits[startIdx] = 0;
-    render();
-    playDropSound();
+    refreshBoardView();
+    playOrganicSeedDrop();
 
     let curr = startIdx;
 
     while (true) {
-      // Sow hand one-by-one counter-clockwise
+      // Sow counter-clockwise (slower, deliberate timing)
       while (hand > 0) {
-        curr = (curr + 1) % TOTAL_PITS;
+        curr = (curr + 1) % PIT_TOTAL;
         pits[curr]++;
         hand--;
 
-        playDropSound();
-        flashPit(curr);
-        render();
-        await wait(180);
+        playOrganicSeedDrop();
+        highlightPitEffect(curr);
+        refreshBoardView();
+        
+        // Slower movement delay: 320ms per drop
+        await delay(320);
 
-        // Pasu Rule: Exactly 4 seeds accumulated in any pit during sowing
+        // Pasu Rule (4 seeds accumulated)
         if (pits[curr] === 4) {
           const owner = curr <= 6 ? 1 : 2;
-          scores[owner] += 4;
+          playerScores[owner] += 4;
           pits[curr] = 0;
           playCaptureSound();
-          document.getElementById('message').innerText = `Pasu! 4 seeds captured by Player ${owner}!`;
-          render();
-          await wait(220);
+          document.getElementById('status-msg').innerText = `Pasu! 4 seeds captured by Player ${owner}!`;
+          refreshBoardView();
+          await delay(450);
         }
       }
 
-      // Check next pit
-      const next = (curr + 1) % TOTAL_PITS;
-      if (pits[next] > 0) {
-        // Continuous sowing
-        hand = pits[next];
-        pits[next] = 0;
-        curr = next;
-        playDropSound();
-        render();
-        await wait(200);
+      // Check following pit
+      const nextIdx = (curr + 1) % PIT_TOTAL;
+      if (pits[nextIdx] > 0) {
+        // Continue sowing
+        hand = pits[nextIdx];
+        pits[nextIdx] = 0;
+        curr = nextIdx;
+        playOrganicSeedDrop();
+        refreshBoardView();
+        await delay(380);
       } else {
-        // Next pit is empty -> Capture from the pit immediately following!
-        const captureIdx = (next + 1) % TOTAL_PITS;
+        // Next pit is empty -> Capture from adjacent cup!
+        const captureIdx = (nextIdx + 1) % PIT_TOTAL;
         if (pits[captureIdx] > 0) {
           const won = pits[captureIdx];
-          scores[turn] += won;
+          playerScores[activeTurn] += won;
           pits[captureIdx] = 0;
           playCaptureSound();
-          document.getElementById('message').innerText = `Player ${turn} captured ${won} seeds!`;
+          document.getElementById('status-msg').innerText = `Player ${activeTurn} captured ${won} seeds!`;
         } else {
-          document.getElementById('message').innerText = `Empty pit. Turn ended.`;
+          document.getElementById('status-msg').innerText = `Turn ended. Empty cup.`;
         }
-        render();
+        refreshBoardView();
         break;
       }
     }
 
-    turn = turn === 1 ? 2 : 1;
-    isMoving = false;
-    render();
+    activeTurn = activeTurn === 1 ? 2 : 1;
+    isTurnRunning = false;
+    refreshBoardView();
 
-    if (checkEnd()) return;
+    if (verifyGameOver()) return;
 
-    if (turn === 2 && vsAi) {
-      document.getElementById('message').innerText = "AI thinking...";
-      await wait(600);
-      runAi();
+    if (activeTurn === 2 && isAiMode) {
+      document.getElementById('status-msg').innerText = "AI thinking...";
+      await delay(800);
+      runAiDecision();
     }
   }
 
-  function runAi() {
-    const valid = [];
+  function runAiDecision() {
+    const validPits = [];
     for (let i = 7; i <= 13; i++) {
-      if (pits[i] > 0) valid.push(i);
+      if (pits[i] > 0) validPits.push(i);
     }
-    if (!valid.length) return;
-    // Pick pit with the most seeds
-    valid.sort((a, b) => pits[b] - pits[a]);
-    executeSowing(valid[0]);
+    if (!validPits.length) return;
+    validPits.sort((a, b) => pits[b] - pits[a]);
+    executeSowingMotion(validPits[0]);
   }
 
-  function checkEnd() {
+  function verifyGameOver() {
     const p1Empty = pits.slice(0, 7).every(v => v === 0);
     const p2Empty = pits.slice(7, 14).every(v => v === 0);
 
     if (p1Empty || p2Empty) {
-      for (let i = 0; i < 7; i++) { scores[1] += pits[i]; pits[i] = 0; }
-      for (let i = 7; i < 14; i++) { scores[2] += pits[i]; pits[i] = 0; }
-      render();
+      for (let i = 0; i < 7; i++) { playerScores[1] += pits[i]; pits[i] = 0; }
+      for (let i = 7; i < 14; i++) { playerScores[2] += pits[i]; pits[i] = 0; }
+      refreshBoardView();
 
-      let res = "Draw!";
-      if (scores[1] > scores[2]) res = "Player 1 Wins!";
-      else if (scores[2] > scores[1]) res = "Player 2 Wins!";
+      let victor = "Game Tied!";
+      if (playerScores[1] > playerScores[2]) victor = "Player 1 Wins!";
+      else if (playerScores[2] > playerScores[1]) victor = "Player 2 Wins!";
 
-      document.getElementById('message').innerText = `Game Over! ${res}`;
+      document.getElementById('status-msg').innerText = `Game Over! ${victor}`;
       return true;
     }
     return false;
   }
 
-  function flashPit(idx) {
+  function highlightPitEffect(idx) {
     const el = document.getElementById(`pit-${idx}`);
     if (el) {
       el.classList.add('highlight');
-      setTimeout(() => el.classList.remove('highlight'), 180);
+      setTimeout(() => el.classList.remove('highlight'), 280);
     }
   }
 
-  function startGame(aiMode) {
-    pits = new Array(TOTAL_PITS).fill(SEEDS_PER_PIT);
-    scores = { 1: 0, 2: 0 };
-    turn = 1;
-    vsAi = aiMode;
-    isMoving = false;
-    document.getElementById('message').innerText = `Game started (${aiMode ? 'vs AI' : '2-Player'}). Player 1 turn.`;
-    render();
+  function resetMatch(ai) {
+    pits = new Array(PIT_TOTAL).fill(SEED_COUNT);
+    playerScores = { 1: 0, 2: 0 };
+    activeTurn = 1;
+    isAiMode = ai;
+    isTurnRunning = false;
+    document.getElementById('status-msg').innerText = `New Game (${ai ? 'vs AI' : 'Pass & Play'}). Player 1 turn.`;
+    refreshBoardView();
   }
 
-  function wait(ms) {
+  function delay(ms) {
     return new Promise(r => setTimeout(r, ms));
   }
 
-  initDOM();
+  initBoard();
 </script>
 </body>
 </html>
