@@ -1,21 +1,20 @@
-```html
 <!DOCTYPE html>
 <html lang="ta">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Pallanguzhi - பல்லாங்குழி</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Pallanguzhi - பாரம்பரிய பல்லாங்குழி</title>
 <style>
   :root {
     --gold: #dfb15b;
-    --gold-bright: #ffe285;
-    --wood-rim: #140502;
-    --wood-main: #391807;
-    --wood-highlight: #692f11;
-    --seed-rind: #1d0a03;
-    --seed-body: #441c07;
-    --seed-facet: #ba7d4c;
-    --emerald: #4eed99;
+    --gold-bright: #ffe48e;
+    --wood-varnish: #c67d34;
+    --wood-light: #df984e;
+    --wood-mid: #a85f22;
+    --wood-dark: #6e3711;
+    --wood-deep: #431f08;
+    --brass: #e3bc5f;
+    --emerald: #39e58c;
   }
 
   * {
@@ -30,153 +29,171 @@
   html, body {
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     overflow: hidden;
-    background: radial-gradient(circle at center, #1b0903 0%, #060201 100%);
-    color: #ebd3be;
+    background: radial-gradient(circle at center, #26170d 0%, #0d0602 100%);
+    color: #f7e6d2;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
-  /* Pre-game Welcome & Setup Overlay */
+  /* Setup Modal */
   #setup-modal {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle at center, rgba(32, 13, 5, 0.96) 0%, rgba(6, 2, 1, 0.98) 100%);
+    background: rgba(13, 6, 2, 0.94);
     z-index: 2000;
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(8px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    padding: 12px;
   }
 
   #setup-modal.hidden {
     opacity: 0;
-    transform: scale(1.08);
+    transform: scale(1.05);
     pointer-events: none;
   }
 
   .setup-card {
-    background: radial-gradient(circle at top, #361708 0%, #170702 100%);
-    border: 2px solid var(--gold);
-    box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(223, 177, 91, 0.15);
-    border-radius: 24px;
-    padding: 24px 32px;
-    max-width: 480px;
-    width: 90%;
+    background: radial-gradient(circle at top, #a65f24 0%, #542509 100%);
+    border: 3px solid var(--gold);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 2px 4px rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 18px 24px;
+    max-width: 440px;
+    width: 92%;
     text-align: center;
+    color: #fff2e0;
   }
 
   .setup-card h1 {
-    font-size: 1.8rem;
+    font-size: 1.55rem;
     color: var(--gold-bright);
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     margin-bottom: 2px;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    text-shadow: 0 2px 6px rgba(0,0,0,0.8);
   }
 
   .setup-card .sub {
-    font-size: 0.85rem;
-    color: #b8865a;
-    margin-bottom: 20px;
+    font-size: 0.8rem;
+    color: #fed9a5;
+    margin-bottom: 14px;
   }
 
   .mode-selector {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 12px;
   }
 
   .mode-btn {
-    background: rgba(10, 4, 1, 0.6);
-    border: 1px solid #5a280e;
-    color: #ebd3be;
-    padding: 10px 8px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    background: rgba(26, 11, 4, 0.65);
+    border: 1px solid #7a3e15;
+    color: #fbebd9;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.25s;
   }
 
   .mode-btn.active {
-    border-color: var(--gold);
-    background: linear-gradient(180deg, #612d11, #361606);
-    color: var(--gold-bright);
-    box-shadow: 0 0 14px rgba(223, 177, 91, 0.3);
+    border-color: var(--gold-bright);
+    background: linear-gradient(180deg, #bb7433, #72370e);
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 228, 142, 0.4);
+  }
+
+  .seed-picker {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .seed-opt-btn {
+    background: rgba(20, 8, 3, 0.6);
+    border: 1px solid #723a15;
+    color: #f7e1cb;
+    padding: 5px 12px;
+    border-radius: 14px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .seed-opt-btn.active {
+    border-color: var(--gold-bright);
+    background: #874516;
+    color: #fff;
   }
 
   .names-entry {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 22px;
+    gap: 8px;
+    margin-bottom: 16px;
     text-align: left;
   }
 
   .input-group label {
-    font-size: 0.75rem;
-    color: var(--gold);
+    font-size: 0.7rem;
+    color: var(--gold-bright);
     font-weight: 700;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
     display: block;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
   }
 
   .input-group input {
     width: 100%;
-    padding: 8px 14px;
-    background: #0d0401;
-    border: 1px solid #4d230d;
+    padding: 7px 12px;
+    background: #200c03;
+    border: 1px solid #753b16;
     border-radius: 8px;
-    color: #ebd3be;
-    font-size: 0.9rem;
+    color: #ffffff;
+    font-size: 0.85rem;
     outline: none;
     box-sizing: border-box;
-    transition: border-color 0.2s;
-  }
-
-  .input-group input:focus {
-    border-color: var(--gold);
   }
 
   .start-btn {
     width: 100%;
-    padding: 12px;
-    background: linear-gradient(180deg, #dfb15b 0%, #9e7323 100%);
-    color: #170701;
+    padding: 10px;
+    background: linear-gradient(180deg, #ffe285 0%, #c6892a 100%);
+    color: #261102;
     border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 800;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 900;
     letter-spacing: 1.5px;
     cursor: pointer;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
-    transition: transform 0.15s, filter 0.2s;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.6);
   }
 
-  .start-btn:hover {
-    filter: brightness(1.1);
-    transform: translateY(-2px);
-  }
-
-  /* Main Game Viewport */
+  /* Main Viewport Container */
   #game-frame {
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 14px;
+    padding: 4px 10px;
     box-sizing: border-box;
     opacity: 0;
-    transform: scale(0.92);
-    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(0.96);
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
   }
 
   #game-frame.cinematic-open {
@@ -184,132 +201,258 @@
     transform: scale(1);
   }
 
-  /* Sleek Minimalist Top Strip */
+  /* Compact Minimalist Header */
   .top-strip {
     width: 100%;
-    max-width: 1040px;
-    height: 38px;
+    max-width: 1020px;
+    height: 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 6px;
+    padding: 0 4px;
+    flex-shrink: 0;
   }
 
   .brand {
-    font-size: 1.15rem;
-    color: var(--gold);
-    letter-spacing: 2px;
+    font-size: 1.05rem;
+    color: var(--gold-bright);
+    letter-spacing: 1.5px;
     font-weight: 800;
     text-shadow: 0 2px 6px rgba(0,0,0,0.9);
   }
 
   .players-scoreboard {
     display: flex;
-    gap: 12px;
+    gap: 8px;
   }
 
   .player-pod {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 3px 12px;
-    border-radius: 16px;
-    font-size: 0.8rem;
-    background: rgba(18, 7, 2, 0.8);
-    border: 1px solid #4a210d;
+    gap: 6px;
+    padding: 2px 10px;
+    border-radius: 14px;
+    font-size: 0.75rem;
+    background: rgba(36, 16, 6, 0.85);
+    border: 1px solid #753b16;
     transition: all 0.3s;
+    max-width: 160px;
+  }
+
+  .player-pod span:first-child {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .player-pod.active {
     border-color: var(--emerald);
-    background: rgba(78, 237, 153, 0.14);
-    color: #7affbe;
-    font-weight: 700;
-    box-shadow: 0 0 12px rgba(78, 237, 153, 0.35);
+    background: rgba(57, 229, 140, 0.2);
+    color: #6efab3;
+    font-weight: 800;
+    box-shadow: 0 0 10px rgba(57, 229, 140, 0.35);
   }
 
   .score-badge {
-    background: #0d0401;
+    background: #170701;
     border: 1px solid var(--gold);
     color: var(--gold-bright);
-    padding: 1px 7px;
-    border-radius: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
     font-weight: 800;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
   }
 
-  /* Sharp Large Wooden Board */
-  .board-wrapper {
+  /* Full Master Board Area with Outer Mother Cups */
+  .play-arena {
     width: 100%;
-    max-width: 1060px;
-    height: 77vh;
-    min-height: 250px;
-    background: radial-gradient(ellipse at center, var(--wood-highlight) 0%, var(--wood-main) 60%, var(--wood-rim) 100%);
-    border: 8px solid #140502;
-    box-shadow: 0 18px 45px rgba(0,0,0,0.95), inset 0 2px 6px rgba(255,255,255,0.12);
-    border-radius: 34px;
-    padding: 10px 18px;
+    max-width: 1020px;
+    height: 72vh;
+    height: 72dvh;
+    min-height: 220px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    position: relative;
+    flex-shrink: 1;
+  }
+
+  /* Outer Thaaikuli (தாய்க்குழி) - Standing Store Cups */
+  .outer-mother-cup {
+    width: 58px;
+    height: 94%;
+    background: linear-gradient(135deg, #a65e23 0%, #7d3f11 50%, #522407 100%);
+    border: 4px solid #421a05;
+    border-radius: 28px;
+    box-shadow: 
+      0 12px 28px rgba(0,0,0,0.9),
+      inset 0 2px 5px rgba(255,230,180,0.3),
+      inset 0 -2px 6px rgba(20,5,1,0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 4px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .outer-mother-cup.active-owner {
+    border-color: var(--emerald);
+    box-shadow: 0 0 14px rgba(57, 229, 140, 0.35), inset 0 2px 5px rgba(255,230,180,0.3);
+  }
+
+  .mother-tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--gold-bright);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.1;
+    text-shadow: 0 1px 3px #000;
+  }
+
+  .mother-cavity {
+    width: 44px;
+    height: 72%;
+    border-radius: 22px;
+    background: radial-gradient(circle at 65% 70%, #150602 0%, #301305 60%, #55270c 100%);
+    border: 2px solid #361504;
+    box-shadow: 
+      inset 0 8px 16px rgba(0,0,0,0.95), 
+      inset 0 -2px 4px rgba(255,210,140,0.2),
+      0 2px 4px rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mother-seed-pile {
+    position: absolute;
+    inset: 4px;
+  }
+
+  /* Authentic Teak Hinged Folding Board */
+  .folding-board {
+    flex: 1;
+    height: 100%;
+    /* Rich honey-varnish polished teak wood tone */
+    background: linear-gradient(135deg, #be742e 0%, #9e551c 35%, #bf7733 70%, #854011 100%);
+    border: 8px solid #502509;
+    box-shadow: 
+      0 18px 45px rgba(0,0,0,0.95), 
+      inset 0 3px 6px rgba(255,230,180,0.4),
+      inset 0 -3px 8px rgba(40,15,4,0.6);
+    border-radius: 20px;
+    padding: 6px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     position: relative;
     box-sizing: border-box;
   }
 
-  /* Center Brass Inlay Hinge */
-  .board-wrapper::before {
-    content: '';
-    position: absolute;
-    left: 70px;
-    right: 70px;
-    top: 50%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(223, 177, 91, 0.35), transparent);
-    pointer-events: none;
-    transform: translateY(-50%);
-  }
-
-  /* Side Mother Store Cups (தாய்க்குழி) */
-  .mother-cup {
-    width: 52px;
-    height: 86%;
-    background: radial-gradient(circle at 65% 65%, #050201 0%, #150703 55%, #2a1106 100%);
-    border-radius: 26px;
-    border: 2px solid #281005;
-    box-shadow: inset 0 10px 22px rgba(0,0,0,0.95), 0 2px 4px rgba(255,255,255,0.06);
+  /* Two Distinct Folding Halves (Planks) */
+  .folding-plank {
+    height: 48%;
+    border-radius: 14px;
+    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    position: relative;
-    padding: 8px 2px;
+    transition: all 0.3s ease;
+    padding: 2px 4px;
   }
 
-  .mother-cup-label {
-    position: absolute;
-    top: 6px;
-    font-size: 0.62rem;
-    color: var(--gold);
-    font-weight: 700;
+  /* Explicit Territory Ownership Banners */
+  .plank-owner-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 8px;
+    height: 14px;
+    margin-bottom: 2px;
+  }
+
+  .owner-name {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--gold-bright);
+    letter-spacing: 1px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.9);
   }
 
-  /* 14-Pit Grid */
-  .pits-grid {
-    flex: 1;
-    height: 100%;
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    gap: 10px;
+  .owner-indicator {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #e5bd8e;
   }
 
-  .grid-row {
+  /* Active Turn Plank Illumination */
+  .folding-plank.active-side {
+    background: rgba(57, 229, 140, 0.08);
+    box-shadow: 0 0 16px rgba(57, 229, 140, 0.25);
+    border: 1px solid rgba(57, 229, 140, 0.35);
+  }
+
+  .folding-plank.active-side .owner-name {
+    color: #72f5b4;
+    text-shadow: 0 0 8px rgba(57, 229, 140, 0.6);
+  }
+
+  .folding-plank.active-side .owner-indicator {
+    color: #72f5b4;
+    font-weight: 800;
+  }
+
+  /* Brass Hinged Center Dividing Seam */
+  .board-center-seam {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 50%;
+    height: 4px;
+    background: #351403;
+    transform: translateY(-50%);
+    box-shadow: 0 2px 3px rgba(255,255,255,0.18), inset 0 1px 2px #150601;
+    pointer-events: none;
+    z-index: 10;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .brass-hinge {
+    width: 32px;
+    height: 9px;
+    background: linear-gradient(180deg, #f7d885, #a37926 70%, #634710 100%);
+    border: 1px solid #4a3407;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.7);
+    position: relative;
+  }
+
+  .brass-hinge::before, .brass-hinge::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #3b2806;
+    border-radius: 50%;
+    top: 2px;
+  }
+  .brass-hinge::before { left: 4px; }
+  .brass-hinge::after { right: 4px; }
+
+  /* 7 Cups Row */
+  .pits-row {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
+    gap: 6px;
+    height: calc(100% - 16px);
     align-items: center;
+    z-index: 5;
   }
 
   .pit-slot {
@@ -319,114 +462,174 @@
     height: 100%;
   }
 
+  /* Deep Gouged Hemispherical Wooden Cups (Polished Teak Bowl) */
   .pit {
     width: 100%;
-    max-width: 96px;
+    max-width: 82px;
     aspect-ratio: 1 / 1;
     border-radius: 50%;
-    background: radial-gradient(circle at 65% 70%, #050201 0%, #160904 50%, #2f1307 90%, #461f0c 100%);
-    border: 2px solid #230d04;
-    box-shadow: inset 0 8px 18px rgba(0,0,0,0.95), 0 2px 5px rgba(255,255,255,0.06);
+    /* Realistic spherical carved hollow with warm wood reflections */
+    background: radial-gradient(circle at 68% 70%, #210d04 0%, #3d1b09 45%, #6a3413 85%, #8f4b1d 100%);
+    border: 2px solid #57270a;
+    box-shadow: 
+      inset 0 10px 18px rgba(10,3,1,0.98), 
+      inset 0 -2px 5px rgba(255,210,140,0.25),
+      0 2px 4px rgba(255,255,255,0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
     cursor: pointer;
-    transition: transform 0.15s, border-color 0.2s;
+    transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .pit.playable {
+    border-color: rgba(223, 177, 91, 0.4);
   }
 
   .pit.playable:hover {
-    border-color: var(--gold);
-    transform: scale(1.05);
+    border-color: var(--gold-bright);
+    box-shadow: 0 0 12px rgba(255, 228, 142, 0.6), inset 0 10px 18px #000;
+    transform: scale(1.06);
   }
 
   .pit.active-sow {
     border-color: var(--emerald) !important;
-    box-shadow: 0 0 18px var(--emerald), inset 0 8px 18px #000 !important;
+    box-shadow: 0 0 18px var(--emerald), inset 0 10px 18px #000 !important;
+  }
+
+  .pit.pickup-pulse {
+    border-color: var(--gold-bright) !important;
+    box-shadow: 0 0 18px var(--gold-bright), inset 0 10px 18px #000 !important;
   }
 
   .pit-count {
     position: absolute;
-    bottom: 3px;
-    font-size: 0.8rem;
+    bottom: 2px;
+    font-size: 0.72rem;
     font-weight: 800;
     color: var(--gold-bright);
     text-shadow: 0 1px 3px #000;
+    pointer-events: none;
   }
 
-  /* Tamarind Seeds (புளியங்கொட்டை) Cluster */
+  /* Tamarind Seeds (புளியங்கொட்டை) - Realistic Dark Shell with Polished Gloss */
   .seed-pit-cluster {
     position: relative;
-    width: 65%;
-    height: 65%;
+    width: 68%;
+    height: 68%;
+    pointer-events: none;
   }
 
   .tamarind-seed {
     position: absolute;
-    width: 15px;
+    width: 14px;
     height: 12px;
-    background: radial-gradient(ellipse at 40% 35%, #6a2f11 0%, var(--seed-body) 50%, var(--seed-rind) 95%);
     border-radius: 40% 55% 45% 55% / 55% 45% 55% 45%;
-    border: 1px solid #140702;
-    box-shadow: 1px 2px 4px rgba(0,0,0,0.85);
+    border: 1px solid #140602;
+    box-shadow: 1px 3px 4px rgba(0,0,0,0.9);
   }
 
-  .tamarind-seed::after {
+  /* Natural Roasted Tamarind Palette */
+  .seed-natural {
+    background: radial-gradient(ellipse at 35% 30%, #5e2a0f 0%, #301306 50%, #150602 95%);
+  }
+  .seed-natural::after {
     content: '';
     position: absolute;
     top: 2px;
     left: 2px;
     width: 6px;
     height: 5px;
-    background: rgba(197, 138, 93, 0.35);
+    background: rgba(186, 125, 76, 0.45);
     border-radius: 45%;
   }
 
-  /* Minimalist Footer Bar */
+  /* Colorful Heritage Beads Palette */
+  .seed-colored-0 { background: radial-gradient(ellipse at 35% 30%, #d42211, #800d04 60%, #3b0501); }
+  .seed-colored-1 { background: radial-gradient(ellipse at 35% 30%, #e8951e, #965306 60%, #402001); }
+  .seed-colored-2 { background: radial-gradient(ellipse at 35% 30%, #20b067, #0e6338 60%, #042e18); }
+  .seed-colored-3 { background: radial-gradient(ellipse at 35% 30%, #2488e0, #104e87 60%, #03213d); }
+  .seed-colored-4 { background: radial-gradient(ellipse at 35% 30%, #9c3de3, #571685 60%, #27063d); }
+
+  /* Hand Count Badge & Real-Time Flying Seeds */
+  #hand-counter {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1500;
+    background: linear-gradient(180deg, #ffe084, #bb7e20);
+    color: #170701;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 900;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.85), 0 0 10px rgba(255, 224, 132, 0.5);
+    display: none;
+    transform: translate(-50%, -150%);
+    transition: left 0.32s cubic-bezier(0.22, 1, 0.36, 1), top 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .flying-projectile {
+    position: fixed;
+    width: 15px;
+    height: 13px;
+    border-radius: 40% 55% 45% 55% / 55% 45% 55% 45%;
+    border: 1px solid #140602;
+    box-shadow: 0 10px 18px rgba(0,0,0,0.75), 0 0 8px rgba(255, 224, 132, 0.3);
+    pointer-events: none;
+    z-index: 1600;
+    transform: translate(-50%, -50%) scale(1.4);
+    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Minimalist Footer Strip */
   .bottom-strip {
     width: 100%;
-    max-width: 1040px;
-    height: 34px;
+    max-width: 1020px;
+    height: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 6px;
+    padding: 0 4px;
+    flex-shrink: 0;
   }
 
   .status-message {
-    font-size: 0.82rem;
-    color: #edd2bd;
-    font-weight: 500;
+    font-size: 0.78rem;
+    color: #fed9a5;
+    font-weight: 600;
     text-shadow: 0 1px 3px #000;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 65%;
   }
 
   .actions {
     display: flex;
     gap: 6px;
+    flex-shrink: 0;
   }
 
   .action-btn {
-    background: rgba(20, 8, 3, 0.7);
-    color: var(--gold);
-    border: 1px solid rgba(223, 177, 91, 0.35);
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 0.75rem;
+    background: rgba(38, 16, 6, 0.85);
+    color: var(--gold-bright);
+    border: 1px solid #753b16;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.72rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .action-btn:hover {
-    background: linear-gradient(180deg, #622a0e 0%, #361606 100%);
-    border-color: var(--gold);
+    background: #854011;
+    border-color: var(--gold-bright);
   }
 
-  /* How to Play Modal */
+  /* Rules Modal */
   .modal-overlay {
     position: fixed;
     inset: 0;
@@ -435,7 +638,7 @@
     justify-content: center;
     align-items: center;
     z-index: 2500;
-    padding: 16px;
+    padding: 12px;
   }
 
   .modal-overlay.open {
@@ -443,48 +646,49 @@
   }
 
   .modal-card {
-    background: radial-gradient(circle at center, #2e1408 0%, #140702 100%);
-    border: 2px solid var(--gold);
+    background: radial-gradient(circle at center, #703713 0%, #301305 100%);
+    border: 2px solid var(--gold-bright);
     box-shadow: 0 15px 40px rgba(0,0,0,0.95);
     border-radius: 16px;
-    padding: 18px 22px;
-    max-width: 520px;
+    padding: 16px 20px;
+    max-width: 480px;
     width: 95%;
     max-height: 85vh;
     overflow-y: auto;
-    color: #ebd3be;
-    line-height: 1.5;
+    color: #fff1e0;
+    line-height: 1.45;
   }
 
   .modal-card h2 {
     color: var(--gold-bright);
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #4a210d;
-    padding-bottom: 5px;
+    font-size: 1.15rem;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #9e551c;
+    padding-bottom: 4px;
   }
 
   .rule-step {
-    margin-bottom: 10px;
-    font-size: 0.85rem;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
   }
 
   .rule-step strong {
-    color: var(--emerald);
+    color: #6efab3;
     display: block;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .modal-close {
     width: 100%;
     margin-top: 8px;
-    padding: 8px;
-    background: var(--gold);
-    color: #170701;
+    padding: 7px;
+    background: linear-gradient(180deg, #ffe285, #c6892a);
+    color: #240f02;
     border: none;
     font-weight: 800;
     border-radius: 8px;
     cursor: pointer;
+    font-size: 0.85rem;
   }
 </style>
 </head>
@@ -493,12 +697,19 @@
 <!-- Setup & Customization Modal -->
 <div id="setup-modal">
   <div class="setup-card">
-    <h1>பல்லாங்குழி</h1>
-    <div class="sub">Traditional Heritage Sowing Game</div>
+    <h1>பாரம்பரிய பல்லாங்குழி</h1>
+    <div class="sub">Authentic Teak Wood Sowing Game</div>
 
     <div class="mode-selector">
       <button class="mode-btn active" id="btn-mode-ai" onclick="selectMode(true)">👤 Player vs AI</button>
-      <button class="mode-btn" id="btn-mode-2p" onclick="selectMode(false)">👥 2 Players (Pass & Play)</button>
+      <button class="mode-btn" id="btn-mode-2p" onclick="selectMode(false)">👥 2 Players</button>
+    </div>
+
+    <!-- Seed Appearance Selection -->
+    <div style="font-size:0.7rem; color:var(--gold-bright); font-weight:700; text-transform:uppercase; margin-bottom:4px;">Seed Style</div>
+    <div class="seed-picker">
+      <button class="seed-opt-btn active" id="btn-seed-natural" onclick="setSeedStyle('natural')">🌰 Tamarind (புளி)</button>
+      <button class="seed-opt-btn" id="btn-seed-colored" onclick="setSeedStyle('colored')">🎨 Colorful Beads</button>
     </div>
 
     <div class="names-entry">
@@ -518,7 +729,7 @@
 
 <!-- Main Game Frame -->
 <div id="game-frame">
-  <!-- Minimalist Header Strip -->
+  <!-- Minimalist Top Bar -->
   <div class="top-strip">
     <div class="brand">பல்லாங்குழி</div>
     <div class="players-scoreboard">
@@ -533,63 +744,90 @@
     </div>
   </div>
 
-  <!-- Board Wrapper -->
-  <div class="board-wrapper">
-    <!-- P2 Mother Cup (Left) -->
-    <div class="mother-cup" id="mc-2">
-      <span class="mother-cup-label" id="mc-label-2">P2</span>
-      <div class="seed-pit-cluster" id="mc-cluster-2"></div>
+  <!-- Full Board Arena: Outer Store Pits + Hinged Folding Board -->
+  <div class="play-arena">
+    <!-- Left Thaaikuli (Outer Store for Player 2 / Top side) -->
+    <div class="outer-mother-cup" id="mc-2">
+      <div class="mother-tag" id="mc-label-2">P2<br>STORE</div>
+      <div class="mother-cavity">
+        <div class="mother-seed-pile" id="mc-cluster-2"></div>
+      </div>
     </div>
 
-    <!-- Center 14-Pit Grid -->
-    <div class="pits-grid">
-      <!-- Top Row: Pits 13 down to 7 (Player 2) -->
-      <div class="grid-row" id="row-top"></div>
-      <!-- Bottom Row: Pits 0 up to 6 (Player 1) -->
-      <div class="grid-row" id="row-bottom"></div>
+    <!-- Center Foldable Teak Board (2 Distinct Wooden Planks) -->
+    <div class="folding-board">
+      <!-- Top Plank: Player 2 Territory (Pits 13 down to 7) -->
+      <div class="folding-plank" id="plank-top">
+        <div class="plank-owner-bar">
+          <span class="owner-name" id="plank-owner-2">PLAYER 2 (TOP SIDE)</span>
+          <span class="owner-indicator" id="plank-ind-2"></span>
+        </div>
+        <div class="pits-row" id="row-top"></div>
+      </div>
+
+      <!-- Center Brass Hinged Seam -->
+      <div class="board-center-seam">
+        <div class="brass-hinge"></div>
+        <div class="brass-hinge"></div>
+        <div class="brass-hinge"></div>
+      </div>
+
+      <!-- Bottom Plank: Player 1 Territory (Pits 0 up to 6) -->
+      <div class="folding-plank active-side" id="plank-bottom">
+        <div class="pits-row" id="row-bottom"></div>
+        <div class="plank-owner-bar" style="margin-top:2px; margin-bottom:0;">
+          <span class="owner-name" id="plank-owner-1">PLAYER 1 (BOTTOM SIDE)</span>
+          <span class="owner-indicator" id="plank-ind-1">YOUR TURN • விளையாடுங்கள்</span>
+        </div>
+      </div>
     </div>
 
-    <!-- P1 Mother Cup (Right) -->
-    <div class="mother-cup" id="mc-1">
-      <span class="mother-cup-label" id="mc-label-1">P1</span>
-      <div class="seed-pit-cluster" id="mc-cluster-1"></div>
+    <!-- Right Thaaikuli (Outer Store for Player 1 / Bottom side) -->
+    <div class="outer-mother-cup active-owner" id="mc-1">
+      <div class="mother-tag" id="mc-label-1">P1<br>STORE</div>
+      <div class="mother-cavity">
+        <div class="mother-seed-pile" id="mc-cluster-1"></div>
+      </div>
     </div>
   </div>
 
-  <!-- Minimalist Footer Strip -->
+  <!-- Minimalist Bottom Strip -->
   <div class="bottom-strip">
     <div class="status-message" id="status-text">Ready.</div>
     <div class="actions">
       <button class="action-btn" onclick="openHelp()">📖 Rules</button>
-      <button class="action-btn" onclick="showSetupScreen()">⚙️ Match Setup</button>
+      <button class="action-btn" onclick="showSetupScreen()">⚙️ Match</button>
       <button class="action-btn" onclick="toggleFullScreen()">⛶ Fit</button>
     </div>
   </div>
+
+  <!-- Visible Sowing Flight Counter -->
+  <div id="hand-counter"></div>
 </div>
 
-<!-- Help Modal -->
+<!-- Rules Modal -->
 <div class="modal-overlay" id="help-modal">
   <div class="modal-card">
     <h2>📖 How to Play Pallanguzhi (விளக்கம்)</h2>
     <div class="rule-step">
-      <strong>1. Board & Seeds:</strong>
-      14 cups (Bottom 7 belong to Player 1, Top 7 belong to Player 2). Each cup holds 5 tamarind seeds (புளியங்கொட்டை). The side mother cups store your captured seeds.
+      <strong>1. Board & Territory:</strong>
+      The bottom plank of 7 cups belongs to <b>Player 1</b>; the top plank of 7 cups belongs to <b>Player 2</b>. The two standing outer side cups are the <b>Thaaikuli (தாய்க்குழி)</b> stores to bank captured seeds.
     </div>
     <div class="rule-step">
       <strong>2. Sowing (விதைத்தல்):</strong>
-      On your turn, tap any cup on your side that has seeds. You pick them up and drop one seed counter-clockwise into each subsequent cup.
+      On your turn, tap any cup on your glowing wooden plank that has seeds. You scoop them up and sow one seed counter-clockwise into each subsequent cup.
     </div>
     <div class="rule-step">
       <strong>3. Continuous Sowing (தொடர் சுழற்சி):</strong>
-      When your hand empties, check the very next cup. If it contains seeds, you scoop them all up and continue sowing!
+      When your hand empties, check the very next cup. If it contains seeds, scoop them all up and continue sowing!
     </div>
     <div class="rule-step">
       <strong>4. Empty Pit Capture (துடைத்தல்):</strong>
-      If your hand empties and the next cup is EMPTY, your turn ends, and you CAPTURE all seeds from the cup immediately following it into your store!
+      If your hand empties and the next cup is EMPTY, your turn ends, and you CAPTURE all seeds from the cup immediately following it into your outer Thaaikuli!
     </div>
     <div class="rule-step">
       <strong>5. Pasu (பசு - 4 Seeds Bonus):</strong>
-      Whenever any cup accumulates exactly 4 seeds during sowing, the owner of that side immediately captures those 4 seeds!
+      Whenever any cup accumulates exactly 4 seeds during sowing, the owner of that plank immediately captures those 4 seeds!
     </div>
     <button class="modal-close" onclick="closeHelp()">Back to Game</button>
   </div>
@@ -601,12 +839,13 @@
 
   let pits = new Array(TOTAL_PITS).fill(SEEDS_PER_PIT);
   let motherBank = { 1: 0, 2: 0 };
-  let currentTurn = 1; // 1: Player 1 (0..6), 2: Player 2 (7..13)
+  let currentTurn = 1; // 1: Bottom (0..6), 2: Top (7..13)
   let isAiMode = true;
   let isBusy = false;
+  let seedStyle = 'natural'; // 'natural' or 'colored'
   let playerNames = { 1: "Player 1", 2: "Azhagi (AI)" };
 
-  // Advanced Acoustic Multi-Layered Natural Seed Sound
+  // Realistic Acoustic Clatter Web Audio API
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   let audioContext = null;
 
@@ -615,52 +854,50 @@
     if (audioContext.state === 'suspended') audioContext.resume();
   }
 
-  // Realistic Acoustic Tamarind Seed Impact
   function playNaturalSeedDrop() {
     ensureAudio();
     const t = audioContext.currentTime;
 
-    // Layer 1: Dry friction clatter (Filtered Noise Burst)
-    const bufferSize = audioContext.sampleRate * 0.035;
+    // Layer 1: Bandpass white noise friction click
+    const bufferSize = audioContext.sampleRate * 0.032;
     const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
     const output = noiseBuffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
-      output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.25));
+      output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.22));
     }
     const whiteNoise = audioContext.createBufferSource();
     whiteNoise.buffer = noiseBuffer;
 
     const noiseFilter = audioContext.createBiquadFilter();
     noiseFilter.type = 'bandpass';
-    noiseFilter.frequency.setValueAtTime(1400 + Math.random() * 400, t);
-    noiseFilter.Q.setValueAtTime(3.5, t);
+    noiseFilter.frequency.setValueAtTime(1550 + Math.random() * 350, t);
+    noiseFilter.Q.setValueAtTime(3.8, t);
 
     const noiseGain = audioContext.createGain();
-    noiseGain.gain.setValueAtTime(0.4, t);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.035);
+    noiseGain.gain.setValueAtTime(0.42, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.032);
 
     whiteNoise.connect(noiseFilter);
     noiseFilter.connect(noiseGain);
     noiseGain.connect(audioContext.destination);
     whiteNoise.start(t);
 
-    // Layer 2: Hollow carved wood pit body resonance
+    // Layer 2: Deep polished teak bowl resonance
     const woodOsc = audioContext.createOscillator();
     const woodGain = audioContext.createGain();
     woodOsc.type = 'triangle';
-    const pitPitch = 210 + Math.random() * 45;
+    const pitPitch = 230 + Math.random() * 40;
     woodOsc.frequency.setValueAtTime(pitPitch, t);
-    woodOsc.frequency.exponentialRampToValueAtTime(75, t + 0.09);
+    woodOsc.frequency.exponentialRampToValueAtTime(85, t + 0.08);
 
     woodGain.gain.setValueAtTime(0.35, t);
-    woodGain.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+    woodGain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
 
     woodOsc.connect(woodGain);
     woodGain.connect(audioContext.destination);
     woodOsc.start(t);
-    woodOsc.stop(t + 0.09);
+    woodOsc.stop(t + 0.08);
 
-    // Optional Micro vibration on supported phones
     if (navigator.vibrate) navigator.vibrate(20);
   }
 
@@ -670,8 +907,8 @@
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
     osc.type = 'triangle';
-    osc.frequency.setValueAtTime(300, t);
-    osc.frequency.exponentialRampToValueAtTime(680, t + 0.28);
+    osc.frequency.setValueAtTime(320, t);
+    osc.frequency.exponentialRampToValueAtTime(720, t + 0.28);
     gain.gain.setValueAtTime(0.3, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
     osc.connect(gain);
@@ -682,7 +919,6 @@
     if (navigator.vibrate) navigator.vibrate([35, 45, 60]);
   }
 
-  // Pre-game Setup Controls
   function selectMode(vsAi) {
     isAiMode = vsAi;
     document.getElementById('btn-mode-ai').classList.toggle('active', vsAi);
@@ -696,13 +932,31 @@
     }
   }
 
+  function setSeedStyle(style) {
+    seedStyle = style;
+    document.getElementById('btn-seed-natural').classList.toggle('active', style === 'natural');
+    document.getElementById('btn-seed-colored').classList.toggle('active', style === 'colored');
+    renderBoard();
+  }
+
   function showSetupScreen() {
     document.getElementById('setup-modal').classList.remove('hidden');
     document.getElementById('game-frame').classList.remove('cinematic-open');
   }
 
+  function enterFullScreen() {
+    const docEl = document.documentElement;
+    if (docEl.requestFullscreen) {
+      docEl.requestFullscreen().catch(() => {});
+    } else if (docEl.webkitRequestFullscreen) {
+      docEl.webkitRequestFullscreen();
+    }
+  }
+
   function launchGameCinematic() {
     ensureAudio();
+    enterFullScreen();
+
     const p1Input = document.getElementById('p1-name-input').value.trim();
     const p2Input = document.getElementById('p2-name-input').value.trim();
     playerNames[1] = p1Input || "Player 1";
@@ -710,10 +964,11 @@
 
     document.getElementById('p1-label-display').innerText = playerNames[1];
     document.getElementById('p2-label-display').innerText = playerNames[2];
-    document.getElementById('mc-label-1').innerText = playerNames[1].slice(0, 3).toUpperCase();
-    document.getElementById('mc-label-2').innerText = playerNames[2].slice(0, 3).toUpperCase();
+    document.getElementById('plank-owner-1').innerText = `${playerNames[1].toUpperCase()} (BOTTOM SIDE)`;
+    document.getElementById('plank-owner-2').innerText = `${playerNames[2].toUpperCase()} (TOP SIDE)`;
+    document.getElementById('mc-label-1').innerText = `${playerNames[1].slice(0, 4).toUpperCase()}\nSTORE`;
+    document.getElementById('mc-label-2').innerText = `${playerNames[2].slice(0, 4).toUpperCase()}\nSTORE`;
 
-    // Hide setup modal and unfold board with cinematic transition
     document.getElementById('setup-modal').classList.add('hidden');
     setTimeout(() => {
       document.getElementById('game-frame').classList.add('cinematic-open');
@@ -736,11 +991,9 @@
     topRow.innerHTML = '';
     btmRow.innerHTML = '';
 
-    // P2 pits: 13 down to 7 (Left to Right)
     for (let i = 13; i >= 7; i--) {
       topRow.appendChild(createPitElement(i));
     }
-    // P1 pits: 0 up to 6 (Left to Right)
     for (let i = 0; i <= 6; i++) {
       btmRow.appendChild(createPitElement(i));
     }
@@ -758,6 +1011,65 @@
     return slot;
   }
 
+  function getElementCenter(el) {
+    const rect = el.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2
+    };
+  }
+
+  // Smooth quadratic Bezier projectile animation
+  function animateSeedFly(startX, startY, targetX, targetY, duration = 300) {
+    return new Promise(resolve => {
+      const seedEl = document.createElement('div');
+      seedEl.className = 'flying-projectile ' + (seedStyle === 'natural' ? 'seed-natural' : `seed-colored-${Math.floor(Math.random()*5)}`);
+      seedEl.style.left = `${startX}px`;
+      seedEl.style.top = `${startY}px`;
+      document.body.appendChild(seedEl);
+
+      void seedEl.offsetWidth;
+
+      const midX = (startX + targetX) / 2;
+      const midY = Math.min(startY, targetY) - 40; // Arc height
+
+      const startTime = performance.now();
+
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const inv = 1 - progress;
+
+        const currentX = inv * inv * startX + 2 * inv * progress * midX + progress * progress * targetX;
+        const currentY = inv * inv * startY + 2 * inv * progress * midY + progress * progress * targetY;
+
+        seedEl.style.left = `${currentX}px`;
+        seedEl.style.top = `${currentY}px`;
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          seedEl.remove();
+          resolve();
+        }
+      }
+
+      requestAnimationFrame(step);
+    });
+  }
+
+  function updateHandBadge(x, y, count) {
+    const badge = document.getElementById('hand-counter');
+    if (count > 0) {
+      badge.style.display = 'block';
+      badge.style.left = `${x}px`;
+      badge.style.top = `${y}px`;
+      badge.innerText = `✋ ${count}`;
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
   function renderBoard() {
     for (let i = 0; i < TOTAL_PITS; i++) {
       const pitEl = document.getElementById(`pit-${i}`);
@@ -765,22 +1077,23 @@
 
       const count = pits[i];
 
-      // Number badge
       const badge = document.createElement('span');
       badge.className = 'pit-count';
       badge.innerText = count;
       pitEl.appendChild(badge);
 
-      // Tamarind Seeds Natural Cluster
       const cluster = document.createElement('div');
       cluster.className = 'seed-pit-cluster';
 
       const showSeeds = Math.min(count, 16);
       for (let s = 0; s < showSeeds; s++) {
         const seed = document.createElement('div');
-        seed.className = 'tamarind-seed';
-        const angle = s * 2.39996; // Golden spiral distribution
-        const radius = Math.min(14, 3 + Math.sqrt(s) * 3);
+        const colorClass = seedStyle === 'natural' ? 'seed-natural' : `seed-colored-${(s + i) % 5}`;
+        seed.className = `tamarind-seed ${colorClass}`;
+
+        // Organic golden-ratio placement
+        const angle = s * 2.39996;
+        const radius = Math.min(13, 2.5 + Math.sqrt(s) * 2.8);
         const x = Math.cos(angle) * radius;
         const y = Math.sin(angle) * radius * 0.8;
         const rot = (s * 53 + i * 17) % 360;
@@ -792,7 +1105,6 @@
       }
       pitEl.appendChild(cluster);
 
-      // Playable highlights
       pitEl.classList.remove('playable');
       if (!isBusy) {
         if (currentTurn === 1 && i >= 0 && i <= 6 && count > 0) pitEl.classList.add('playable');
@@ -800,16 +1112,17 @@
       }
     }
 
-    // Render Mother Cups
+    // Outer Thaaikuli (தாய்க்குழி) Seeds Display
     [1, 2].forEach(p => {
       const mc = document.getElementById(`mc-cluster-${p}`);
       mc.innerHTML = '';
       const total = motherBank[p];
-      const showCount = Math.min(total, 24);
+      const showCount = Math.min(total, 18);
       for (let s = 0; s < showCount; s++) {
         const seed = document.createElement('div');
-        seed.className = 'tamarind-seed';
-        const yOff = (s - showCount / 2) * 4.5;
+        const colorClass = seedStyle === 'natural' ? 'seed-natural' : `seed-colored-${s % 5}`;
+        seed.className = `tamarind-seed ${colorClass}`;
+        const yOff = (s - showCount / 2) * 5.2;
         const rot = (s * 41) % 360;
         seed.style.left = `calc(50% - 7px)`;
         seed.style.top = `calc(50% + ${yOff}px - 6px)`;
@@ -818,10 +1131,20 @@
       }
     });
 
+    // Territory Indicators & Active Glow on Folding Planks
+    const isP1 = (currentTurn === 1);
+    document.getElementById('plank-bottom').classList.toggle('active-side', isP1);
+    document.getElementById('plank-top').classList.toggle('active-side', !isP1);
+    document.getElementById('mc-1').classList.toggle('active-owner', isP1);
+    document.getElementById('mc-2').classList.toggle('active-owner', !isP1);
+
+    document.getElementById('plank-ind-1').innerText = isP1 ? "YOUR TURN • விளையாடுங்கள்" : "";
+    document.getElementById('plank-ind-2').innerText = !isP1 ? (isAiMode ? "AI THINKING • சிந்திக்கிறது..." : "YOUR TURN • விளையாடுங்கள்") : "";
+
     document.getElementById('p1-score').innerText = motherBank[1];
     document.getElementById('p2-score').innerText = motherBank[2];
-    document.getElementById('p1-pod').classList.toggle('active', currentTurn === 1);
-    document.getElementById('p2-pod').classList.toggle('active', currentTurn === 2);
+    document.getElementById('p1-pod').classList.toggle('active', isP1);
+    document.getElementById('p2-pod').classList.toggle('active', !isP1);
   }
 
   async function onPitClick(index) {
@@ -837,64 +1160,110 @@
     isBusy = true;
     let hand = pits[startPit];
     pits[startPit] = 0;
+
+    const startPitEl = document.getElementById(`pit-${startPit}`);
+    startPitEl.classList.add('pickup-pulse');
+    setTimeout(() => startPitEl.classList.remove('pickup-pulse'), 300);
+
+    let fromPos = getElementCenter(startPitEl);
+    updateHandBadge(fromPos.x, fromPos.y, hand);
     renderBoard();
     playNaturalSeedDrop();
 
     let curr = startPit;
 
     while (true) {
-      // Sow counter-clockwise with deliberate, relaxed timing
       while (hand > 0) {
-        curr = (curr + 1) % TOTAL_PITS;
+        const nextIdx = (curr + 1) % TOTAL_PITS;
+        const targetPitEl = document.getElementById(`pit-${nextIdx}`);
+        const toPos = getElementCenter(targetPitEl);
+
+        // Projectile flight into target cup
+        await animateSeedFly(fromPos.x, fromPos.y, toPos.x, toPos.y, 270);
+
+        curr = nextIdx;
         pits[curr]++;
         hand--;
 
+        fromPos = toPos;
+        updateHandBadge(fromPos.x, fromPos.y, hand);
         playNaturalSeedDrop();
         highlightPit(curr);
         renderBoard();
-        await sleep(520);
+        await sleep(190);
 
-        // Pasu Rule: Exactly 4 seeds accumulated during sowing
+        // Pasu Rule (4 seeds accumulated)
         if (pits[curr] === 4) {
           const owner = curr <= 6 ? 1 : 2;
-          motherBank[owner] += 4;
+          const ownerMotherEl = document.getElementById(`mc-${owner}`);
+          const motherPos = getElementCenter(ownerMotherEl);
+          const pitPos = getElementCenter(document.getElementById(`pit-${curr}`));
+
           pits[curr] = 0;
+          renderBoard();
+          for (let s = 0; s < 4; s++) {
+            animateSeedFly(pitPos.x, pitPos.y, motherPos.x, motherPos.y, 340);
+            await sleep(50);
+          }
+          motherBank[owner] += 4;
           playCaptureSound();
           document.getElementById('status-text').innerText = `Pasu! 4 seeds captured by ${playerNames[owner]}!`;
           renderBoard();
-          await sleep(600);
+          await sleep(380);
         }
       }
 
-      // Check next pit
+      // Check next pit after hand empties
       const nextPit = (curr + 1) % TOTAL_PITS;
       if (pits[nextPit] > 0) {
-        // Scoop up next pit
+        const nextEl = document.getElementById(`pit-${nextPit}`);
+        fromPos = getElementCenter(nextEl);
+
+        nextEl.classList.add('pickup-pulse');
+        setTimeout(() => nextEl.classList.remove('pickup-pulse'), 300);
+
         hand = pits[nextPit];
         pits[nextPit] = 0;
         curr = nextPit;
+
+        updateHandBadge(fromPos.x, fromPos.y, hand);
         playNaturalSeedDrop();
         renderBoard();
-        document.getElementById('status-text').innerText = `Scooping next cup...`;
-        await sleep(550);
+        document.getElementById('status-text').innerText = `Scooping next cup (${hand} seeds)...`;
+        await sleep(440);
       } else {
-        // Next pit is empty -> Capture from adjacent cup!
+        // Empty pit reached -> Capture from adjacent pit into outer Thaaikuli
+        updateHandBadge(0, 0, 0);
         const capturePit = (nextPit + 1) % TOTAL_PITS;
         if (pits[capturePit] > 0) {
           const won = pits[capturePit];
-          motherBank[currentTurn] += won;
+          const capEl = document.getElementById(`pit-${capturePit}`);
+          const capPos = getElementCenter(capEl);
+          const motherEl = document.getElementById(`mc-${currentTurn}`);
+          const motherPos = getElementCenter(motherEl);
+
           pits[capturePit] = 0;
+          renderBoard();
+
+          const flyCount = Math.min(won, 6);
+          for (let f = 0; f < flyCount; f++) {
+            animateSeedFly(capPos.x, capPos.y, motherPos.x, motherPos.y, 380);
+            await sleep(45);
+          }
+
+          motherBank[currentTurn] += won;
           playCaptureSound();
           document.getElementById('status-text').innerText = `${playerNames[currentTurn]} captured ${won} seeds!`;
         } else {
           document.getElementById('status-text').innerText = `Empty cup. Turn ended.`;
         }
         renderBoard();
-        await sleep(500);
+        await sleep(450);
         break;
       }
     }
 
+    updateHandBadge(0, 0, 0);
     currentTurn = currentTurn === 1 ? 2 : 1;
     isBusy = false;
     renderBoard();
@@ -903,7 +1272,7 @@
 
     if (currentTurn === 2 && isAiMode) {
       document.getElementById('status-text').innerText = `${playerNames[2]} is thinking...`;
-      await sleep(900);
+      await sleep(800);
       runAi();
     } else {
       document.getElementById('status-text').innerText = `${playerNames[currentTurn]}'s turn.`;
@@ -943,13 +1312,13 @@
     const el = document.getElementById(`pit-${index}`);
     if (el) {
       el.classList.add('active-sow');
-      setTimeout(() => el.classList.remove('active-sow'), 420);
+      setTimeout(() => el.classList.remove('active-sow'), 360);
     }
   }
 
   function toggleFullScreen() {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
+      enterFullScreen();
     } else {
       if (document.exitFullscreen) document.exitFullscreen();
     }
@@ -963,4 +1332,3 @@
 </script>
 </body>
 </html>
-```
