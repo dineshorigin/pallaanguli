@@ -6,13 +6,16 @@
 <title>Pallanguzhi - பாரம்பரிய பல்லாங்குழி</title>
 <style>
   :root {
-    --gold: #dfb15b;
-    --gold-bright: #fff2a8;
-    --gold-plate: #f3cf65;
-    --gold-dark: #8a6514;
-    --gold-deep: #4e3805;
-    --emerald: #39e58c;
-    --ruby: #d92438;
+    --wood-base: #3b1c0b;
+    --wood-light: #6e3a17;
+    --wood-dark: #200d04;
+    --wood-deep: #120602;
+    --brass-bright: #e7bf67;
+    --brass-shadow: #7a581e;
+    --emerald: #10b981;
+    --emerald-glow: rgba(16, 185, 129, 0.35);
+    --sapphire: #3b82f6;
+    --card-bg: rgba(18, 14, 11, 0.94);
   }
 
   * {
@@ -29,155 +32,179 @@
     height: 100vh;
     height: 100dvh;
     overflow: hidden;
-    background: radial-gradient(circle at center, #1f1406 0%, #080401 100%);
-    color: #fff4d9;
+    background: radial-gradient(circle at center, #1c1109 0%, #080402 100%);
+    color: #f3e5d8;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
-  /* Setup Modal */
+  /* Minimalist Setup Screen */
   #setup-modal {
     position: fixed;
     inset: 0;
-    background: rgba(10, 5, 1, 0.96);
+    background: rgba(8, 4, 2, 0.92);
     z-index: 2000;
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(8px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    padding: 12px;
+    backdrop-filter: blur(12px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 16px;
   }
 
   #setup-modal.hidden {
     opacity: 0;
-    transform: scale(1.05);
+    transform: scale(0.94);
     pointer-events: none;
   }
 
   .setup-card {
-    background: radial-gradient(circle at top, #a1781c 0%, #443007 60%, #1e1302 100%);
-    border: 3px solid var(--gold-bright);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.95), inset 0 2px 8px rgba(255,255,255,0.4), 0 0 25px rgba(223, 177, 91, 0.4);
-    border-radius: 20px;
-    padding: 18px 24px;
-    max-width: 440px;
-    width: 92%;
+    background: var(--card-bg);
+    border: 1px solid rgba(231, 191, 103, 0.25);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.95), 0 0 40px rgba(0,0,0,0.8);
+    border-radius: 24px;
+    padding: 24px 28px;
+    max-width: 420px;
+    width: 94%;
     text-align: center;
-    color: #fff7e6;
+    color: #f5ebe1;
   }
 
   .setup-card h1 {
-    font-size: 1.55rem;
-    color: var(--gold-bright);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #f5eedf;
     letter-spacing: 2px;
-    margin-bottom: 2px;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 15px rgba(255, 242, 168, 0.5);
+    margin-bottom: 3px;
   }
 
   .setup-card .sub {
     font-size: 0.8rem;
-    color: #f7dfa3;
-    margin-bottom: 14px;
+    color: #b5987d;
+    margin-bottom: 20px;
   }
 
+  /* Vibrant Clean Mode Pills */
   .mode-selector {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 12px;
+    margin-bottom: 16px;
   }
 
   .mode-btn {
-    background: rgba(30, 19, 3, 0.75);
-    border: 1px solid #946e1c;
-    color: #fbebd9;
-    padding: 8px;
-    border-radius: 10px;
-    font-size: 0.82rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    color: #d1bbae;
+    padding: 10px 8px;
+    border-radius: 14px;
+    font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.25s;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .mode-btn.active {
-    border-color: var(--gold-bright);
-    background: linear-gradient(180deg, #d8a735, #775109);
-    color: #ffffff;
-    box-shadow: 0 0 14px rgba(255, 242, 168, 0.5);
+  .mode-btn:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .mode-btn.active.mode-ai {
+    border-color: var(--sapphire);
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.22), rgba(59, 130, 246, 0.08));
+    color: #93c5fd;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.35);
+  }
+
+  .mode-btn.active.mode-2p {
+    border-color: var(--emerald);
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.22), rgba(16, 185, 129, 0.08));
+    color: #6ee7b7;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
   }
 
   .seed-picker {
     display: flex;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 14px;
+    gap: 10px;
+    margin-bottom: 18px;
   }
 
   .seed-opt-btn {
-    background: rgba(30, 19, 3, 0.7);
-    border: 1px solid #8f6a19;
-    color: #f7e1cb;
-    padding: 5px 12px;
-    border-radius: 14px;
-    font-size: 0.72rem;
-    font-weight: 700;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #c9b4a4;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.74rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .seed-opt-btn.active {
-    border-color: var(--gold-bright);
-    background: #a3791e;
+    border-color: var(--brass-bright);
+    background: rgba(231, 191, 103, 0.15);
     color: #fff;
-    box-shadow: 0 0 10px rgba(255, 242, 168, 0.35);
+    box-shadow: 0 0 14px rgba(231, 191, 103, 0.25);
   }
 
   .names-entry {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 10px;
+    margin-bottom: 22px;
     text-align: left;
   }
 
   .input-group label {
     font-size: 0.7rem;
-    color: var(--gold-bright);
+    color: #a38974;
     font-weight: 700;
-    margin-bottom: 2px;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
     display: block;
     text-transform: uppercase;
   }
 
   .input-group input {
     width: 100%;
-    padding: 7px 12px;
-    background: #190e02;
-    border: 1px solid #966f1c;
-    border-radius: 8px;
+    padding: 9px 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
     color: #ffffff;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     outline: none;
     box-sizing: border-box;
+    transition: border-color 0.2s;
+  }
+
+  .input-group input:focus {
+    border-color: var(--brass-bright);
   }
 
   .start-btn {
     width: 100%;
-    padding: 10px;
-    background: linear-gradient(180deg, #fff2a8 0%, #e0ab31 50%, #946912 100%);
-    color: #231502;
-    border: 1px solid #ffe994;
-    border-radius: 10px;
+    padding: 12px;
+    background: linear-gradient(180deg, #f0c978 0%, #c49537 60%, #996e1d 100%);
+    color: #1a0e04;
+    border: none;
+    border-radius: 12px;
     font-size: 0.95rem;
-    font-weight: 900;
+    font-weight: 800;
     letter-spacing: 1.5px;
     cursor: pointer;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.8), 0 0 15px rgba(255, 242, 168, 0.4);
-    transition: transform 0.15s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 18px rgba(240, 201, 120, 0.3);
+    transition: transform 0.15s ease, filter 0.2s ease;
   }
+
+  .start-btn:hover {
+    filter: brightness(1.08);
+  }
+
   .start-btn:active {
     transform: scale(0.98);
   }
@@ -191,21 +218,12 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: 4px 10px;
+    padding: 4px 12px;
     box-sizing: border-box;
-    opacity: 0;
-    transform: scale(0.96);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-    position: relative;
-    perspective: 1400px;
+    perspective: 1800px;
   }
 
-  #game-frame.cinematic-open {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  /* Compact Minimalist Header */
+  /* Ultra-Minimalist Top Strip */
   .top-strip {
     width: 100%;
     max-width: 1020px;
@@ -219,10 +237,9 @@
 
   .brand {
     font-size: 1.05rem;
-    color: var(--gold-bright);
-    letter-spacing: 1.5px;
+    color: var(--brass-bright);
+    letter-spacing: 2px;
     font-weight: 800;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 10px rgba(255, 242, 168, 0.4);
   }
 
   .players-scoreboard {
@@ -235,12 +252,13 @@
     align-items: center;
     gap: 6px;
     padding: 2px 10px;
-    border-radius: 14px;
+    border-radius: 12px;
     font-size: 0.75rem;
-    background: rgba(30, 19, 4, 0.9);
-    border: 1px solid #946f1e;
+    background: rgba(22, 13, 7, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     transition: all 0.3s;
     max-width: 160px;
+    color: #bfa593;
   }
 
   .player-pod span:first-child {
@@ -251,18 +269,18 @@
 
   .player-pod.active {
     border-color: var(--emerald);
-    background: rgba(57, 229, 140, 0.2);
-    color: #6efab3;
+    background: rgba(16, 185, 129, 0.14);
+    color: #6ee7b7;
     font-weight: 800;
-    box-shadow: 0 0 12px rgba(57, 229, 140, 0.4);
+    box-shadow: 0 0 14px var(--emerald-glow);
   }
 
   .score-badge {
-    background: #140b01;
-    border: 1px solid var(--gold-bright);
-    color: var(--gold-bright);
+    background: #0d0603;
+    border: 1px solid rgba(231, 191, 103, 0.4);
+    color: var(--brass-bright);
     padding: 1px 6px;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 800;
     font-size: 0.75rem;
   }
@@ -276,25 +294,23 @@
     min-height: 220px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     position: relative;
     flex-shrink: 1;
-    perspective: 1200px;
+    perspective: 1800px;
   }
 
-  /* Outer Thaaikuli (தாய்க்குழி) - Solid Gold Carved Standing Vessels */
+  /* Hand-Crafted Solid Rosewood Mother Cup Storage (தாய்க்குழி) */
   .outer-mother-cup {
     width: 62px;
-    height: 95%;
-    /* 24K Gold-Plated Metallic Sheen */
-    background: linear-gradient(135deg, #fff0a3 0%, #e5b948 25%, #af8422 60%, #684a0c 100%);
-    border: 3px solid #ffe990;
-    border-radius: 30px;
+    height: 94%;
+    background: radial-gradient(ellipse at 40% 30%, #582b13 0%, var(--wood-base) 65%, var(--wood-dark) 100%);
+    border: 4px solid var(--wood-deep);
+    border-radius: 28px;
     box-shadow: 
-      0 14px 30px rgba(0,0,0,0.9),
-      inset 0 3px 6px rgba(255,255,255,0.7),
-      inset 0 -4px 8px rgba(60,40,4,0.9),
-      0 0 15px rgba(243, 207, 101, 0.3);
+      0 16px 36px rgba(0,0,0,0.92),
+      inset 0 2px 4px rgba(255,255,255,0.18),
+      inset 0 -3px 6px rgba(0,0,0,0.7);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -302,39 +318,39 @@
     padding: 8px 4px;
     position: relative;
     flex-shrink: 0;
+    transition: all 0.3s;
   }
 
   .outer-mother-cup.active-owner {
-    border-color: var(--emerald);
-    box-shadow: 0 0 18px rgba(57, 229, 140, 0.6), inset 0 3px 6px rgba(255,255,255,0.7);
+    border-color: rgba(16, 185, 129, 0.5);
+    box-shadow: 0 0 20px var(--emerald-glow), 0 16px 36px rgba(0,0,0,0.9);
   }
 
   .mother-tag {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 900;
-    color: #2b1c03;
-    letter-spacing: 0.5px;
+    color: #e5c386;
+    letter-spacing: 0.6px;
     text-transform: uppercase;
     text-align: center;
-    line-height: 1.1;
-    text-shadow: 0 1px 1px rgba(255,245,185,0.7);
+    line-height: 1.15;
+    text-shadow: 0 1px 2px #000;
   }
 
   .mother-cavity {
     width: 48px;
     height: 74%;
-    border-radius: 24px;
-    background: radial-gradient(circle at 65% 75%, #1f1404 0%, #3d2806 50%, #77520e 90%, #aa7e1e 100%);
-    border: 2px solid #5b3e09;
+    border-radius: 22px;
+    background: radial-gradient(circle at 65% 75%, #080301 0%, #170904 45%, #2a1207 90%, #3e1b0b 100%);
+    border: 2px solid #160802;
     box-shadow: 
-      inset 0 12px 20px rgba(0,0,0,0.98), 
-      inset 0 -3px 6px rgba(255,240,170,0.4),
-      0 2px 4px rgba(255,255,255,0.2);
+      inset 0 12px 22px rgba(0,0,0,0.98), 
+      inset 0 -2px 4px rgba(255,255,255,0.06),
+      0 2px 4px rgba(0,0,0,0.6);
     position: relative;
     overflow: hidden;
   }
 
-  /* Natural Gravity-Settled Seed Mound in Thaaikuli */
   .mother-seed-pile {
     position: absolute;
     inset: 0;
@@ -343,22 +359,18 @@
     pointer-events: none;
   }
 
-  /* Royal 24K Gold Plated Hinged Folding Board */
-  .folding-board {
+  /* Handcrafted Antique Wooden Board (Folds Totally & Vertically) */
+  .casket-wrapper {
     flex: 1;
     height: 100%;
-    /* Mirror-finished Gold Plate with Ornate Rim */
-    background: 
-      linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 35%, rgba(0,0,0,0.3) 100%),
-      linear-gradient(135deg, #ffe58f 0%, #dfb14e 25%, #a67c1c 55%, #f6d46a 80%, #7a540b 100%);
-    border: 6px solid #ffec9e;
-    box-shadow: 
-      0 20px 50px rgba(0,0,0,0.95), 
-      inset 0 4px 8px rgba(255,255,255,0.8),
-      inset 0 -4px 10px rgba(60,40,4,0.9),
-      0 0 25px rgba(243, 207, 101, 0.35);
-    border-radius: 22px;
-    padding: 6px 12px;
+    position: relative;
+    perspective: 2000px;
+    transform-style: preserve-3d;
+  }
+
+  .folding-board {
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -367,104 +379,96 @@
     transform-style: preserve-3d;
   }
 
-  /* Filigree gold border engraving overlay */
-  .folding-board::before {
-    content: '';
-    position: absolute;
-    inset: 3px;
-    border: 1px dashed rgba(255, 245, 180, 0.6);
-    border-radius: 16px;
-    pointer-events: none;
-  }
-
-  /* Two Distinct Folding Halves (Planks) with 3D Vertical Unfolding */
+  /* Two Distinct Solid Teak Halves (Top & Bottom Planks) */
   .folding-plank {
     height: 48%;
-    border-radius: 14px;
-    position: relative;
+    background: radial-gradient(ellipse at 50% 40%, var(--wood-light) 0%, var(--wood-base) 55%, var(--wood-dark) 90%, var(--wood-deep) 100%);
+    border: 6px solid var(--wood-deep);
+    box-shadow: 
+      0 18px 45px rgba(0,0,0,0.95), 
+      inset 0 2px 4px rgba(255,255,255,0.16),
+      inset 0 -2px 6px rgba(0,0,0,0.8);
+    border-radius: 20px;
+    padding: 4px 10px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    transition: all 0.35s ease;
-    padding: 2px 4px;
+    justify-content: space-between;
+    position: relative;
+    box-sizing: border-box;
     transform-style: preserve-3d;
+    backface-visibility: hidden;
+    transition: box-shadow 0.4s ease, border-color 0.4s ease;
   }
 
-  /* Vertical Unfolding Animations at Match Launch */
+  /* Cinematic Vertical Unfolding (Slow & Smooth) */
   #plank-top {
     transform-origin: bottom center;
-    transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), background 0.35s ease, box-shadow 0.35s ease;
+    transition: transform 2.2s cubic-bezier(0.18, 1, 0.22, 1), opacity 1.8s ease, filter 1.8s ease;
   }
 
   #plank-bottom {
     transform-origin: top center;
-    transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), background 0.35s ease, box-shadow 0.35s ease;
+    transition: transform 2.2s cubic-bezier(0.18, 1, 0.22, 1);
   }
 
-  /* Closed State (Top folds completely onto bottom before opening) */
+  /* Tightly Closed Box State Before Match Starts */
   .board-folded #plank-top {
-    transform: rotateX(-178deg) translateY(-2px);
-    opacity: 0.9;
-    filter: brightness(0.65);
+    transform: rotateX(-180deg) translateY(-2px);
+    opacity: 0.15;
+    filter: brightness(0.4) blur(1px);
     pointer-events: none;
   }
 
   .board-folded #plank-bottom {
-    transform: rotateX(12deg);
+    transform: rotateX(20deg) scale(0.94);
   }
 
-  /* Explicit Territory Ownership Banners */
   .plank-owner-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 8px;
+    padding: 0 6px;
     height: 14px;
     margin-bottom: 2px;
   }
 
   .owner-name {
     font-size: 0.65rem;
-    font-weight: 900;
-    color: #2b1a03;
+    font-weight: 800;
+    color: #e5c386;
     letter-spacing: 1px;
     text-transform: uppercase;
-    text-shadow: 0 1px 1px rgba(255, 248, 200, 0.8);
+    text-shadow: 0 1px 2px #000;
   }
 
   .owner-indicator {
     font-size: 0.62rem;
     font-weight: 800;
-    color: #4b3105;
+    color: #9c7b5b;
   }
 
   /* Active Turn Plank Illumination */
   .folding-plank.active-side {
-    background: rgba(57, 229, 140, 0.15);
-    box-shadow: 0 0 18px rgba(57, 229, 140, 0.35);
-    border: 1px solid rgba(57, 229, 140, 0.5);
-  }
-
-  .folding-plank.active-side .owner-name {
-    color: #0b4927;
-    text-shadow: 0 0 8px rgba(57, 229, 140, 0.8), 0 1px 2px #fff;
+    border-color: rgba(16, 185, 129, 0.45);
+    box-shadow: 0 0 20px var(--emerald-glow), 0 18px 45px rgba(0,0,0,0.95);
   }
 
   .folding-plank.active-side .owner-indicator {
-    color: #084323;
-    font-weight: 900;
+    color: var(--emerald);
+    font-weight: 800;
+    text-shadow: 0 0 10px var(--emerald-glow);
   }
 
-  /* Heavy Polished Gold Hinged Center Seam */
+  /* Antique Brass Center Hinges */
   .board-center-seam {
     position: absolute;
-    left: 8px;
-    right: 8px;
+    left: 10px;
+    right: 10px;
     top: 50%;
-    height: 5px;
-    background: #473007;
+    height: 4px;
+    background: #0f0502;
     transform: translateY(-50%);
-    box-shadow: 0 2px 4px rgba(255,255,255,0.4), inset 0 1px 2px #190e01;
+    box-shadow: 0 2px 4px rgba(255,255,255,0.06);
     pointer-events: none;
     z-index: 10;
     display: flex;
@@ -473,21 +477,21 @@
   }
 
   .brass-hinge {
-    width: 36px;
-    height: 11px;
-    background: linear-gradient(180deg, #fff2a8, #d8a42e 60%, #684807 100%);
-    border: 1px solid #ffe990;
+    width: 38px;
+    height: 10px;
+    background: linear-gradient(180deg, #f0c978 0%, var(--brass-bright) 40%, var(--brass-shadow) 100%);
+    border: 1px solid #ffe194;
     border-radius: 2px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.8), 0 0 6px rgba(255,242,168,0.5);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.9);
     position: relative;
   }
 
   .brass-hinge::before, .brass-hinge::after {
     content: '';
     position: absolute;
-    width: 3.5px;
-    height: 3.5px;
-    background: #3a2503;
+    width: 3px;
+    height: 3px;
+    background: #2b1704;
     border-radius: 50%;
     top: 3px;
   }
@@ -511,20 +515,18 @@
     height: 100%;
   }
 
-  /* Deep Spherical Carved Cups in Polished Gold */
+  /* Deeply Carved Wooden Concave Pits */
   .pit {
     width: 100%;
     max-width: 82px;
     aspect-ratio: 1 / 1;
     border-radius: 50%;
-    /* Rich brushed gold concave cavity */
-    background: radial-gradient(circle at 68% 70%, #1c1102 0%, #3a2606 40%, #7e5611 80%, #bd8f2d 95%, #ffd978 100%);
-    border: 2px solid #ffe88e;
+    background: radial-gradient(circle at 68% 70%, #060201 0%, #130703 40%, #261006 80%, #3e1b0c 100%);
+    border: 2px solid #1a0b04;
     box-shadow: 
-      inset 0 10px 20px rgba(0,0,0,0.98), 
-      inset 0 -2px 6px rgba(255,242,168,0.5),
-      0 3px 6px rgba(0,0,0,0.5),
-      0 0 6px rgba(243, 207, 101, 0.2);
+      inset 0 10px 22px rgba(0,0,0,0.98), 
+      inset 0 -2px 4px rgba(255,255,255,0.06),
+      0 3px 6px rgba(0,0,0,0.6);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -535,36 +537,36 @@
   }
 
   .pit.playable {
-    border-color: rgba(255, 242, 168, 0.7);
+    border-color: rgba(231, 191, 103, 0.4);
   }
 
   .pit.playable:hover {
-    border-color: #ffffff;
-    box-shadow: 0 0 16px rgba(255, 255, 255, 0.8), inset 0 10px 20px #000;
+    border-color: var(--brass-bright);
+    box-shadow: 0 0 16px rgba(231, 191, 103, 0.5), inset 0 10px 22px #000;
     transform: scale(1.06);
   }
 
   .pit.active-sow {
     border-color: var(--emerald) !important;
-    box-shadow: 0 0 20px var(--emerald), inset 0 10px 20px #000 !important;
+    box-shadow: 0 0 20px var(--emerald), inset 0 10px 22px #000 !important;
   }
 
   .pit.pickup-pulse {
     border-color: #ffffff !important;
-    box-shadow: 0 0 22px #ffffff, inset 0 10px 20px #000 !important;
+    box-shadow: 0 0 22px #ffffff, inset 0 10px 22px #000 !important;
   }
 
   .pit-count {
     position: absolute;
     bottom: 2px;
     font-size: 0.72rem;
-    font-weight: 900;
-    color: var(--gold-bright);
-    text-shadow: 0 1px 3px #000, 0 0 6px rgba(0,0,0,0.9);
+    font-weight: 800;
+    color: #ebd4a7;
+    text-shadow: 0 1px 3px #000;
     pointer-events: none;
   }
 
-  /* Tamarind Seeds (புளியங்கொட்டை) */
+  /* Natural Tamarind Seeds (புளியங்கொட்டை) */
   .seed-pit-cluster {
     position: relative;
     width: 68%;
@@ -581,7 +583,6 @@
     box-shadow: 1px 3px 4px rgba(0,0,0,0.9);
   }
 
-  /* Natural Roasted Tamarind Palette */
   .seed-natural {
     background: radial-gradient(ellipse at 35% 30%, #5e2a0f 0%, #301306 50%, #150602 95%);
   }
@@ -596,25 +597,24 @@
     border-radius: 45%;
   }
 
-  /* Colorful Heritage Beads Palette */
-  .seed-colored-0 { background: radial-gradient(ellipse at 35% 30%, #d42211, #800d04 60%, #3b0501); }
-  .seed-colored-1 { background: radial-gradient(ellipse at 35% 30%, #e8951e, #965306 60%, #402001); }
-  .seed-colored-2 { background: radial-gradient(ellipse at 35% 30%, #20b067, #0e6338 60%, #042e18); }
-  .seed-colored-3 { background: radial-gradient(ellipse at 35% 30%, #2488e0, #104e87 60%, #03213d); }
-  .seed-colored-4 { background: radial-gradient(ellipse at 35% 30%, #9c3de3, #571685 60%, #27063d); }
+  .seed-colored-0 { background: radial-gradient(ellipse at 35% 30%, #dc2626, #7f1d1d 70%, #450a0a); }
+  .seed-colored-1 { background: radial-gradient(ellipse at 35% 30%, #f59e0b, #b45309 70%, #78350f); }
+  .seed-colored-2 { background: radial-gradient(ellipse at 35% 30%, #10b981, #047857 70%, #064e3b); }
+  .seed-colored-3 { background: radial-gradient(ellipse at 35% 30%, #3b82f6, #1d4ed8 70%, #1e3a8a); }
+  .seed-colored-4 { background: radial-gradient(ellipse at 35% 30%, #a855f7, #6b21a8 70%, #3b0764); }
 
-  /* Hand Count Badge & Real-Time Flying Seeds */
+  /* Visible Sowing Hand Counter */
   #hand-counter {
     position: fixed;
     pointer-events: none;
     z-index: 1500;
-    background: linear-gradient(180deg, #fff2a8, #d49e29);
+    background: linear-gradient(180deg, #f0c978, #c49537);
     color: #170701;
     padding: 3px 8px;
     border-radius: 12px;
     font-size: 0.72rem;
     font-weight: 900;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.85), 0 0 12px rgba(255, 242, 168, 0.6);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.85);
     display: none;
     transform: translate(-50%, -150%);
     transition: left 0.32s cubic-bezier(0.22, 1, 0.36, 1), top 0.32s cubic-bezier(0.22, 1, 0.36, 1);
@@ -626,14 +626,14 @@
     height: 13px;
     border-radius: 40% 55% 45% 55% / 55% 45% 55% 45%;
     border: 1px solid #140602;
-    box-shadow: 0 10px 18px rgba(0,0,0,0.75), 0 0 10px rgba(255, 242, 168, 0.5);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.85);
     pointer-events: none;
     z-index: 1600;
     transform: translate(-50%, -50%) scale(1.4);
     transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  /* Minimalist Footer Strip */
+  /* Minimalist Footer */
   .bottom-strip {
     width: 100%;
     max-width: 1020px;
@@ -647,9 +647,8 @@
 
   .status-message {
     font-size: 0.78rem;
-    color: var(--gold-bright);
-    font-weight: 700;
-    text-shadow: 0 1px 3px #000;
+    color: #e6c8a7;
+    font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -663,24 +662,23 @@
   }
 
   .action-btn {
-    background: rgba(30, 19, 4, 0.9);
-    color: var(--gold-bright);
-    border: 1px solid #946f1e;
-    padding: 3px 8px;
-    border-radius: 6px;
+    background: rgba(22, 13, 7, 0.85);
+    color: #d1b8a5;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 3px 9px;
+    border-radius: 8px;
     font-size: 0.72rem;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .action-btn:hover {
-    background: #a67c1c;
-    border-color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
     color: #ffffff;
   }
 
-  /* Rules Modal */
+  /* Help Modal */
   .modal-overlay {
     position: fixed;
     inset: 0;
@@ -689,7 +687,8 @@
     justify-content: center;
     align-items: center;
     z-index: 2500;
-    padding: 12px;
+    padding: 16px;
+    backdrop-filter: blur(8px);
   }
 
   .modal-overlay.open {
@@ -697,48 +696,47 @@
   }
 
   .modal-card {
-    background: radial-gradient(circle at center, #876214 0%, #2f2004 100%);
-    border: 2px solid var(--gold-bright);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.95), 0 0 25px rgba(255, 242, 168, 0.4);
-    border-radius: 16px;
-    padding: 16px 20px;
+    background: #170d06;
+    border: 1px solid rgba(231, 191, 103, 0.35);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.95);
+    border-radius: 20px;
+    padding: 20px 24px;
     max-width: 480px;
     width: 95%;
     max-height: 85vh;
     overflow-y: auto;
-    color: #fff8eb;
-    line-height: 1.45;
+    color: #f1dfcf;
+    line-height: 1.5;
   }
 
   .modal-card h2 {
-    color: var(--gold-bright);
-    font-size: 1.15rem;
-    margin-bottom: 8px;
-    border-bottom: 1px solid #b38520;
-    padding-bottom: 4px;
-    text-shadow: 0 0 10px rgba(255, 242, 168, 0.5);
+    color: var(--brass-bright);
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(231, 191, 103, 0.2);
+    padding-bottom: 6px;
   }
 
   .rule-step {
-    margin-bottom: 8px;
-    font-size: 0.8rem;
+    margin-bottom: 10px;
+    font-size: 0.82rem;
   }
 
   .rule-step strong {
-    color: #6efab3;
+    color: #6ee7b7;
     display: block;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
   }
 
   .modal-close {
     width: 100%;
-    margin-top: 8px;
-    padding: 7px;
-    background: linear-gradient(180deg, #fff2a8, #c6892a);
-    color: #240f02;
+    margin-top: 10px;
+    padding: 9px;
+    background: var(--brass-bright);
+    color: #170802;
     border: none;
     font-weight: 800;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 0.85rem;
   }
@@ -749,28 +747,26 @@
 <!-- Setup & Customization Modal -->
 <div id="setup-modal">
   <div class="setup-card">
-    <h1>பாரம்பரிய பல்லாங்குழி</h1>
-    <div class="sub">Royal 24K Gold Plated Sowing Heritage</div>
+    <h1>பல்லாங்குழி</h1>
+    <div class="sub">Traditional Tamil Heritage Board</div>
 
     <div class="mode-selector">
-      <button class="mode-btn active" id="btn-mode-ai" onclick="selectMode(true)">👤 Player vs AI</button>
-      <button class="mode-btn" id="btn-mode-2p" onclick="selectMode(false)">👥 2 Players</button>
+      <button class="mode-btn active mode-ai" id="btn-mode-ai" onclick="selectMode(true)">👤 vs Computer</button>
+      <button class="mode-btn mode-2p" id="btn-mode-2p" onclick="selectMode(false)">👥 2 Players</button>
     </div>
 
-    <!-- Seed Appearance Selection -->
-    <div style="font-size:0.7rem; color:var(--gold-bright); font-weight:700; text-transform:uppercase; margin-bottom:4px;">Seed Style</div>
     <div class="seed-picker">
       <button class="seed-opt-btn active" id="btn-seed-natural" onclick="setSeedStyle('natural')">🌰 Tamarind (புளி)</button>
-      <button class="seed-opt-btn" id="btn-seed-colored" onclick="setSeedStyle('colored')">🎨 Colorful Beads</button>
+      <button class="seed-opt-btn" id="btn-seed-colored" onclick="setSeedStyle('colored')">🎨 Beads (மணிகள்)</button>
     </div>
 
     <div class="names-entry">
       <div class="input-group">
-        <label for="p1-name-input">Player 1 (Bottom Row)</label>
+        <label for="p1-name-input">Player 1 (Bottom)</label>
         <input type="text" id="p1-name-input" value="Player 1" maxlength="15" autocomplete="off">
       </div>
       <div class="input-group">
-        <label for="p2-name-input">Player 2 (Top Row)</label>
+        <label for="p2-name-input">Player 2 (Top)</label>
         <input type="text" id="p2-name-input" value="Azhagi (AI)" maxlength="15" autocomplete="off">
       </div>
     </div>
@@ -796,9 +792,9 @@
     </div>
   </div>
 
-  <!-- Full Board Arena: Outer Store Pits + Hinged Gold Board -->
+  <!-- Full Board Arena -->
   <div class="play-arena">
-    <!-- Left Thaaikuli (Outer Store for Player 2 / Top side) -->
+    <!-- Left Thaaikuli (Player 2 Store) -->
     <div class="outer-mother-cup" id="mc-2">
       <div class="mother-tag" id="mc-label-2">P2<br>STORE</div>
       <div class="mother-cavity">
@@ -806,35 +802,37 @@
       </div>
     </div>
 
-    <!-- Center Foldable Gold Board (Vertical Unfolding on Start) -->
-    <div class="folding-board board-folded" id="main-gold-board">
-      <!-- Top Plank: Player 2 Territory (Pits 13 down to 7) -->
-      <div class="folding-plank" id="plank-top">
-        <div class="plank-owner-bar">
-          <span class="owner-name" id="plank-owner-2">PLAYER 2 (TOP SIDE)</span>
-          <span class="owner-indicator" id="plank-ind-2"></span>
+    <!-- Center Foldable Wooden Casket -->
+    <div class="casket-wrapper">
+      <div class="folding-board board-folded" id="main-gold-board">
+        <!-- Top Plank: Player 2 (Pits 13 down to 7) -->
+        <div class="folding-plank" id="plank-top">
+          <div class="plank-owner-bar">
+            <span class="owner-name" id="plank-owner-2">PLAYER 2 (TOP)</span>
+            <span class="owner-indicator" id="plank-ind-2"></span>
+          </div>
+          <div class="pits-row" id="row-top"></div>
         </div>
-        <div class="pits-row" id="row-top"></div>
-      </div>
 
-      <!-- Center Brass Hinged Seam -->
-      <div class="board-center-seam">
-        <div class="brass-hinge"></div>
-        <div class="brass-hinge"></div>
-        <div class="brass-hinge"></div>
-      </div>
+        <!-- Center Brass Hinges -->
+        <div class="board-center-seam">
+          <div class="brass-hinge"></div>
+          <div class="brass-hinge"></div>
+          <div class="brass-hinge"></div>
+        </div>
 
-      <!-- Bottom Plank: Player 1 Territory (Pits 0 up to 6) -->
-      <div class="folding-plank active-side" id="plank-bottom">
-        <div class="pits-row" id="row-bottom"></div>
-        <div class="plank-owner-bar" style="margin-top:2px; margin-bottom:0;">
-          <span class="owner-name" id="plank-owner-1">PLAYER 1 (BOTTOM SIDE)</span>
-          <span class="owner-indicator" id="plank-ind-1">YOUR TURN • விளையாடுங்கள்</span>
+        <!-- Bottom Plank: Player 1 (Pits 0 up to 6) -->
+        <div class="folding-plank active-side" id="plank-bottom">
+          <div class="pits-row" id="row-bottom"></div>
+          <div class="plank-owner-bar" style="margin-top:2px; margin-bottom:0;">
+            <span class="owner-name" id="plank-owner-1">PLAYER 1 (BOTTOM)</span>
+            <span class="owner-indicator" id="plank-ind-1">YOUR TURN • விளையாடுங்கள்</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Right Thaaikuli (Outer Store for Player 1 / Bottom side) -->
+    <!-- Right Thaaikuli (Player 1 Store) -->
     <div class="outer-mother-cup active-owner" id="mc-1">
       <div class="mother-tag" id="mc-label-1">P1<br>STORE</div>
       <div class="mother-cavity">
@@ -853,7 +851,6 @@
     </div>
   </div>
 
-  <!-- Visible Sowing Flight Counter -->
   <div id="hand-counter"></div>
 </div>
 
@@ -863,11 +860,11 @@
     <h2>📖 How to Play Pallanguzhi (விளக்கம்)</h2>
     <div class="rule-step">
       <strong>1. Board & Territory:</strong>
-      The bottom gold plank of 7 cups belongs to <b>Player 1</b>; the top plank of 7 cups belongs to <b>Player 2</b>. The two standing outer gold vessels are the <b>Thaaikuli (தாய்க்குழி)</b> stores where captured seeds naturally accumulate.
+      Player 1 owns the bottom 7 cups; Player 2 owns the top 7 cups. The two outer cups are the <b>Thaaikuli (தாய்க்குழி)</b> stores where captured seeds settle.
     </div>
     <div class="rule-step">
       <strong>2. Sowing (விதைத்தல்):</strong>
-      On your turn, tap any cup on your glowing gold plank that has seeds. You scoop them up and sow one seed counter-clockwise into each subsequent cup.
+      On your turn, tap any cup on your side with seeds. Scoop them up and sow one seed counter-clockwise into each subsequent cup.
     </div>
     <div class="rule-step">
       <strong>3. Continuous Sowing (தொடர் சுழற்சி):</strong>
@@ -875,11 +872,11 @@
     </div>
     <div class="rule-step">
       <strong>4. Empty Pit Capture (துடைத்தல்):</strong>
-      If your hand empties and the next cup is EMPTY, your turn ends, and you CAPTURE all seeds from the cup immediately following it into your outer Thaaikuli!
+      If your hand empties and the next cup is EMPTY, your turn ends, and you CAPTURE all seeds from the cup immediately following it into your store!
     </div>
     <div class="rule-step">
       <strong>5. Pasu (பசு - 4 Seeds Bonus):</strong>
-      Whenever any cup accumulates exactly 4 seeds during sowing, the owner of that plank immediately captures those 4 seeds!
+      Whenever any cup accumulates exactly 4 seeds during sowing, the owner of that side immediately captures those 4 seeds!
     </div>
     <button class="modal-close" onclick="closeHelp()">Back to Game</button>
   </div>
@@ -891,13 +888,12 @@
 
   let pits = new Array(TOTAL_PITS).fill(SEEDS_PER_PIT);
   let motherBank = { 1: 0, 2: 0 };
-  let currentTurn = 1; // 1: Bottom (0..6), 2: Top (7..13)
+  let currentTurn = 1;
   let isAiMode = true;
   let isBusy = false;
-  let seedStyle = 'natural'; // 'natural' or 'colored'
+  let seedStyle = 'natural';
   let playerNames = { 1: "Player 1", 2: "Azhagi (AI)" };
 
-  // Realistic Acoustic Clatter Web Audio API
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   let audioContext = null;
 
@@ -910,7 +906,6 @@
     ensureAudio();
     const t = audioContext.currentTime;
 
-    // Layer 1: Bandpass white noise friction click
     const bufferSize = audioContext.sampleRate * 0.032;
     const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
     const output = noiseBuffer.getChannelData(0);
@@ -922,8 +917,8 @@
 
     const noiseFilter = audioContext.createBiquadFilter();
     noiseFilter.type = 'bandpass';
-    noiseFilter.frequency.setValueAtTime(1550 + Math.random() * 350, t);
-    noiseFilter.Q.setValueAtTime(3.8, t);
+    noiseFilter.frequency.setValueAtTime(1400 + Math.random() * 300, t);
+    noiseFilter.Q.setValueAtTime(3.6, t);
 
     const noiseGain = audioContext.createGain();
     noiseGain.gain.setValueAtTime(0.42, t);
@@ -934,16 +929,14 @@
     noiseGain.connect(audioContext.destination);
     whiteNoise.start(t);
 
-    // Layer 2: Resonant gold-plated cup hollow strike
     const woodOsc = audioContext.createOscillator();
     const woodGain = audioContext.createGain();
     woodOsc.type = 'triangle';
-    const pitPitch = 260 + Math.random() * 45;
-    woodOsc.frequency.setValueAtTime(pitPitch, t);
-    woodOsc.frequency.exponentialRampToValueAtTime(95, t + 0.08);
+    woodOsc.frequency.setValueAtTime(240 + Math.random() * 35, t);
+    woodOsc.frequency.exponentialRampToValueAtTime(90, t + 0.08);
 
     woodGain.gain.setValueAtTime(0.35, t);
-    woodGain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+    woodGain.exponentialRampToValueAtTime(0.001, t + 0.08);
 
     woodOsc.connect(woodGain);
     woodGain.connect(audioContext.destination);
@@ -959,8 +952,8 @@
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
     osc.type = 'triangle';
-    osc.frequency.setValueAtTime(360, t);
-    osc.frequency.exponentialRampToValueAtTime(780, t + 0.28);
+    osc.frequency.setValueAtTime(340, t);
+    osc.frequency.exponentialRampToValueAtTime(740, t + 0.28);
     gain.gain.setValueAtTime(0.32, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
     osc.connect(gain);
@@ -971,21 +964,21 @@
     if (navigator.vibrate) navigator.vibrate([35, 45, 60]);
   }
 
-  // Play metallic gold hinge creak on opening
+  /* Rich Wooden Casket Creak Sound on Slow Opening */
   function playHingeSound() {
     ensureAudio();
     const t = audioContext.currentTime;
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
     osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(140, t);
-    osc.frequency.exponentialRampToValueAtTime(290, t + 0.5);
-    gain.gain.setValueAtTime(0.12, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+    osc.frequency.setValueAtTime(110, t);
+    osc.frequency.exponentialRampToValueAtTime(240, t + 1.2);
+    gain.gain.setValueAtTime(0.15, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 1.3);
     osc.connect(gain);
     gain.connect(audioContext.destination);
     osc.start(t);
-    osc.stop(t + 0.55);
+    osc.stop(t + 1.3);
   }
 
   function selectMode(vsAi) {
@@ -1010,7 +1003,6 @@
 
   function showSetupScreen() {
     document.getElementById('setup-modal').classList.remove('hidden');
-    document.getElementById('game-frame').classList.remove('cinematic-open');
     document.getElementById('main-gold-board').classList.add('board-folded');
   }
 
@@ -1023,10 +1015,7 @@
     }
   }
 
-  // Automatic fullscreen on page load + fallback on user interaction
-  window.addEventListener('load', () => {
-    enterFullScreen();
-  });
+  window.addEventListener('load', () => enterFullScreen());
   ['touchstart', 'mousedown', 'keydown'].forEach(evt => {
     window.addEventListener(evt, function autoFsOnTouch() {
       if (!document.fullscreenElement) enterFullScreen();
@@ -1045,24 +1034,20 @@
 
     document.getElementById('p1-label-display').innerText = playerNames[1];
     document.getElementById('p2-label-display').innerText = playerNames[2];
-    document.getElementById('plank-owner-1').innerText = `${playerNames[1].toUpperCase()} (BOTTOM SIDE)`;
-    document.getElementById('plank-owner-2').innerText = `${playerNames[2].toUpperCase()} (TOP SIDE)`;
+    document.getElementById('plank-owner-1').innerText = `${playerNames[1].toUpperCase()} (BOTTOM)`;
+    document.getElementById('plank-owner-2').innerText = `${playerNames[2].toUpperCase()} (TOP)`;
     document.getElementById('mc-label-1').innerText = `${playerNames[1].slice(0, 4).toUpperCase()}\nSTORE`;
     document.getElementById('mc-label-2').innerText = `${playerNames[2].slice(0, 4).toUpperCase()}\nSTORE`;
 
     document.getElementById('setup-modal').classList.add('hidden');
 
+    // Slow, Cinematic Vertical Board Opening
     setTimeout(() => {
-      document.getElementById('game-frame').classList.add('cinematic-open');
-
-      // Cinematic Vertical Unfolding of the Hinged Gold Board
-      setTimeout(() => {
-        playHingeSound();
-        const goldBoard = document.getElementById('main-gold-board');
-        goldBoard.classList.remove('board-folded');
-        startNewGame();
-      }, 350);
-    }, 200);
+      playHingeSound();
+      const goldBoard = document.getElementById('main-gold-board');
+      goldBoard.classList.remove('board-folded');
+      startNewGame();
+    }, 400);
   }
 
   function startNewGame() {
@@ -1108,7 +1093,6 @@
     };
   }
 
-  // Smooth quadratic Bezier projectile animation
   function animateSeedFly(startX, startY, targetX, targetY, duration = 300) {
     return new Promise(resolve => {
       const seedEl = document.createElement('div');
@@ -1120,7 +1104,7 @@
       void seedEl.offsetWidth;
 
       const midX = (startX + targetX) / 2;
-      const midY = Math.min(startY, targetY) - 40; // Arc height
+      const midY = Math.min(startY, targetY) - 40;
 
       const startTime = performance.now();
 
@@ -1180,7 +1164,6 @@
         const colorClass = seedStyle === 'natural' ? 'seed-natural' : `seed-colored-${(s + i) % 5}`;
         seed.className = `tamarind-seed ${colorClass}`;
 
-        // Organic golden-ratio placement inside cups
         const angle = s * 2.39996;
         const radius = Math.min(13, 2.5 + Math.sqrt(s) * 2.8);
         const x = Math.cos(angle) * radius;
@@ -1201,28 +1184,23 @@
       }
     }
 
-    // Natural Ordered Gravity-Settled Piling in Outer Thaaikuli (தாய்க்குழி)
     [1, 2].forEach(p => {
       const mc = document.getElementById(`mc-cluster-${p}`);
       mc.innerHTML = '';
       const total = motherBank[p];
       const maxDisplay = Math.min(total, 28);
 
-      // Stack seeds naturally from bottom upward in staggered, self-nesting tiers
       for (let s = 0; s < maxDisplay; s++) {
         const seed = document.createElement('div');
         const colorClass = seedStyle === 'natural' ? 'seed-natural' : `seed-colored-${s % 5}`;
         seed.className = `tamarind-seed ${colorClass}`;
 
-        // Tier / Row calculation (bottom to top)
         const row = Math.floor(s / 3);
-        const col = s % 3; // 3 columns inside the cavity
+        const col = s % 3;
 
-        // Natural lateral offset based on column and row alternation
         const xOffset = (col - 1) * 11 + ((row % 2 === 1) ? 2 : -2);
-        // Stacking upward from bottom rim
         const bottomDistance = 8 + (row * 9);
-        const rot = ((s * 47) % 60) - 30; // realistic resting angle
+        const rot = ((s * 47) % 60) - 30;
 
         seed.style.left = `calc(50% + ${xOffset}px - 7px)`;
         seed.style.bottom = `${bottomDistance}px`;
@@ -1233,7 +1211,6 @@
       }
     });
 
-    // Territory Indicators & Active Glow on Gold Planks
     const isP1 = (currentTurn === 1);
     document.getElementById('plank-bottom').classList.toggle('active-side', isP1);
     document.getElementById('plank-top').classList.toggle('active-side', !isP1);
@@ -1280,7 +1257,6 @@
         const targetPitEl = document.getElementById(`pit-${nextIdx}`);
         const toPos = getElementCenter(targetPitEl);
 
-        // Projectile flight into target cup
         await animateSeedFly(fromPos.x, fromPos.y, toPos.x, toPos.y, 270);
 
         curr = nextIdx;
@@ -1294,7 +1270,6 @@
         renderBoard();
         await sleep(190);
 
-        // Pasu Rule (4 seeds accumulated)
         if (pits[curr] === 4) {
           const owner = curr <= 6 ? 1 : 2;
           const ownerMotherEl = document.getElementById(`mc-${owner}`);
@@ -1315,7 +1290,6 @@
         }
       }
 
-      // Check next pit after hand empties
       const nextPit = (curr + 1) % TOTAL_PITS;
       if (pits[nextPit] > 0) {
         const nextEl = document.getElementById(`pit-${nextPit}`);
@@ -1334,7 +1308,6 @@
         document.getElementById('status-text').innerText = `Scooping next cup (${hand} seeds)...`;
         await sleep(440);
       } else {
-        // Empty pit reached -> Capture from adjacent pit into outer Thaaikuli
         updateHandBadge(0, 0, 0);
         const capturePit = (nextPit + 1) % TOTAL_PITS;
         if (pits[capturePit] > 0) {
