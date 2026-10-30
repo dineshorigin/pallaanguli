@@ -40,16 +40,51 @@
     align-items: center;
   }
 
+  /* Cloud / Mist Transition Canvas */
+  #mist-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2200;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    background: radial-gradient(circle at 50% 50%, rgba(212, 175, 105, 0.28) 0%, rgba(14, 8, 4, 0.88) 70%, rgba(5, 2, 1, 0.98) 100%);
+    backdrop-filter: blur(14px);
+  }
+
+  #mist-overlay.active {
+    opacity: 1;
+  }
+
+  .cloud-puff {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(35px);
+    opacity: 0;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(235, 206, 158, 0.45) 0%, rgba(160, 114, 70, 0.2) 65%, transparent 80%);
+    transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease;
+  }
+
+  .cloud-puff.puff-1 { width: 440px; height: 320px; top: 15%; left: 5%; }
+  .cloud-puff.puff-2 { width: 500px; height: 380px; bottom: 10%; right: 5%; }
+  .cloud-puff.puff-3 { width: 400px; height: 280px; top: 35%; right: 25%; }
+
+  #mist-overlay.active .cloud-puff {
+    opacity: 0.85;
+    transform: scale(1.3) translateY(-20px);
+  }
+
   /* Minimalist Setup Screen */
   #setup-modal {
     position: fixed;
     inset: 0;
-    background: rgba(8, 4, 2, 0.92);
+    background: rgba(8, 4, 2, 0.94);
     z-index: 2000;
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(14px);
     transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     padding: 16px;
   }
@@ -86,7 +121,6 @@
     margin-bottom: 20px;
   }
 
-  /* Vibrant Clean Mode Pills */
   .mode-selector {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -220,10 +254,10 @@
     align-items: center;
     padding: 4px 12px;
     box-sizing: border-box;
-    perspective: 1800px;
+    perspective: 2000px;
   }
 
-  /* Ultra-Minimalist Top Strip */
+  /* Minimalist Top Strip */
   .top-strip {
     width: 100%;
     max-width: 1020px;
@@ -297,7 +331,7 @@
     gap: 12px;
     position: relative;
     flex-shrink: 1;
-    perspective: 1800px;
+    perspective: 2000px;
   }
 
   /* Hand-Crafted Solid Rosewood Mother Cup Storage (தாய்க்குழி) */
@@ -359,7 +393,7 @@
     pointer-events: none;
   }
 
-  /* Handcrafted Antique Wooden Board (Folds Totally & Vertically) */
+  /* Casket Wrapper */
   .casket-wrapper {
     flex: 1;
     height: 100%;
@@ -379,8 +413,119 @@
     transform-style: preserve-3d;
   }
 
-  /* Two Distinct Solid Teak Halves (Top & Bottom Planks) */
-  .folding-plank {
+  /* Top Folding Lid with True 3D Dual-Sided Construction */
+  #plank-top {
+    height: 48%;
+    position: relative;
+    transform-origin: bottom center;
+    transform-style: preserve-3d;
+    transition: transform 2.4s cubic-bezier(0.18, 1, 0.22, 1);
+  }
+
+  /* Inside Face of Top Plank (Carved Hollows) */
+  .plank-face-inside {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, var(--wood-light) 0%, var(--wood-base) 55%, var(--wood-dark) 90%, var(--wood-deep) 100%);
+    border: 6px solid var(--wood-deep);
+    border-radius: 20px;
+    padding: 4px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    box-shadow: 
+      0 18px 45px rgba(0,0,0,0.95), 
+      inset 0 2px 4px rgba(255,255,255,0.16),
+      inset 0 -2px 6px rgba(0,0,0,0.8);
+    transform: rotateX(0deg);
+  }
+
+  /* Outside Face of Top Plank (Antique Wood Casket Lid) */
+  .plank-face-outside {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, #4a240e 0%, #291105 70%, #150702 100%);
+    border: 7px solid #140602;
+    border-radius: 20px;
+    box-shadow: 
+      0 26px 50px rgba(0,0,0,0.98),
+      inset 0 2px 6px rgba(255,255,255,0.22),
+      inset 0 -3px 8px rgba(0,0,0,0.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: rotateX(180deg);
+  }
+
+  .casket-lid-carving {
+    width: 86%;
+    height: 72%;
+    border: 2px dashed rgba(231, 191, 103, 0.35);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.22);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.85);
+  }
+
+  .casket-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--brass-bright);
+    letter-spacing: 4px;
+    text-shadow: 0 2px 6px #000;
+  }
+
+  .casket-sub {
+    font-size: 0.68rem;
+    color: #a8886b;
+    letter-spacing: 2px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  .brass-corner {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border: 3px solid var(--brass-bright);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.9);
+  }
+  .corner-tl { top: 8px; left: 8px; border-right: none; border-bottom: none; border-radius: 4px 0 0 0; }
+  .corner-tr { top: 8px; right: 8px; border-left: none; border-bottom: none; border-radius: 0 4px 0 0; }
+  .corner-bl { bottom: 8px; left: 8px; border-right: none; border-top: none; border-radius: 0 0 0 4px; }
+  .corner-br { bottom: 8px; right: 8px; border-left: none; border-top: none; border-radius: 0 0 4px 0; }
+
+  .brass-lock-clasp {
+    position: absolute;
+    bottom: -6px;
+    width: 32px;
+    height: 18px;
+    background: linear-gradient(180deg, #f0c978 0%, var(--brass-bright) 45%, var(--brass-shadow) 100%);
+    border: 1px solid #ffe194;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .brass-lock-clasp::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #2b1704;
+    border-radius: 50%;
+  }
+
+  /* Bottom Plank (Always Facing Up) */
+  #plank-bottom {
     height: 48%;
     background: radial-gradient(ellipse at 50% 40%, var(--wood-light) 0%, var(--wood-base) 55%, var(--wood-dark) 90%, var(--wood-deep) 100%);
     border: 6px solid var(--wood-deep);
@@ -395,32 +540,30 @@
     justify-content: space-between;
     position: relative;
     box-sizing: border-box;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-    transition: box-shadow 0.4s ease, border-color 0.4s ease;
-  }
-
-  /* Cinematic Vertical Unfolding (Slow & Smooth) */
-  #plank-top {
-    transform-origin: bottom center;
-    transition: transform 2.2s cubic-bezier(0.18, 1, 0.22, 1), opacity 1.8s ease, filter 1.8s ease;
-  }
-
-  #plank-bottom {
     transform-origin: top center;
-    transition: transform 2.2s cubic-bezier(0.18, 1, 0.22, 1);
+    transition: transform 2.4s cubic-bezier(0.18, 1, 0.22, 1), box-shadow 0.4s ease, border-color 0.4s ease;
   }
 
-  /* Tightly Closed Box State Before Match Starts */
+  /* Initially Fully Closed State */
   .board-folded #plank-top {
-    transform: rotateX(-180deg) translateY(-2px);
-    opacity: 0.15;
-    filter: brightness(0.4) blur(1px);
-    pointer-events: none;
+    transform: rotateX(-180deg);
   }
 
   .board-folded #plank-bottom {
-    transform: rotateX(20deg) scale(0.94);
+    transform: scale(0.96);
+  }
+
+  /* In closed state, bottom plank pits are also masked under the folded top */
+  .board-folded #row-bottom,
+  .board-folded #plank-bottom .plank-owner-bar {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .folding-board:not(.board-folded) #row-bottom,
+  .folding-board:not(.board-folded) #plank-bottom .plank-owner-bar {
+    opacity: 1;
+    transition: opacity 1.2s ease 1s;
   }
 
   .plank-owner-bar {
@@ -447,7 +590,6 @@
     color: #9c7b5b;
   }
 
-  /* Active Turn Plank Illumination */
   .folding-plank.active-side {
     border-color: rgba(16, 185, 129, 0.45);
     box-shadow: 0 0 20px var(--emerald-glow), 0 18px 45px rgba(0,0,0,0.95);
@@ -470,7 +612,7 @@
     transform: translateY(-50%);
     box-shadow: 0 2px 4px rgba(255,255,255,0.06);
     pointer-events: none;
-    z-index: 10;
+    z-index: 20;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -515,7 +657,6 @@
     height: 100%;
   }
 
-  /* Deeply Carved Wooden Concave Pits */
   .pit {
     width: 100%;
     max-width: 82px;
@@ -744,6 +885,13 @@
 </head>
 <body>
 
+<!-- Cloud / Temple Mist Transition Layer -->
+<div id="mist-overlay">
+  <div class="cloud-puff puff-1"></div>
+  <div class="cloud-puff puff-2"></div>
+  <div class="cloud-puff puff-3"></div>
+</div>
+
 <!-- Setup & Customization Modal -->
 <div id="setup-modal">
   <div class="setup-card">
@@ -805,13 +953,29 @@
     <!-- Center Foldable Wooden Casket -->
     <div class="casket-wrapper">
       <div class="folding-board board-folded" id="main-gold-board">
-        <!-- Top Plank: Player 2 (Pits 13 down to 7) -->
-        <div class="folding-plank" id="plank-top">
-          <div class="plank-owner-bar">
-            <span class="owner-name" id="plank-owner-2">PLAYER 2 (TOP)</span>
-            <span class="owner-indicator" id="plank-ind-2"></span>
+        <!-- Top Plank: Physical 3D Dual-Sided Lid (Pits 13 down to 7 inside, Handcrafted wood lid outside) -->
+        <div id="plank-top">
+          <!-- Inside Face (Revealed on Unfold) -->
+          <div class="plank-face-inside">
+            <div class="plank-owner-bar">
+              <span class="owner-name" id="plank-owner-2">PLAYER 2 (TOP)</span>
+              <span class="owner-indicator" id="plank-ind-2"></span>
+            </div>
+            <div class="pits-row" id="row-top"></div>
           </div>
-          <div class="pits-row" id="row-top"></div>
+
+          <!-- Outside Face (Visible when Folded Closed) -->
+          <div class="plank-face-outside">
+            <div class="brass-corner corner-tl"></div>
+            <div class="brass-corner corner-tr"></div>
+            <div class="brass-corner corner-bl"></div>
+            <div class="brass-corner corner-br"></div>
+            <div class="casket-lid-carving">
+              <div class="casket-title">பல்லாங்குழி</div>
+              <div class="casket-sub">Heritage Rosewood Board</div>
+            </div>
+            <div class="brass-lock-clasp"></div>
+          </div>
         </div>
 
         <!-- Center Brass Hinges -->
@@ -964,21 +1128,34 @@
     if (navigator.vibrate) navigator.vibrate([35, 45, 60]);
   }
 
-  /* Rich Wooden Casket Creak Sound on Slow Opening */
   function playHingeSound() {
     ensureAudio();
     const t = audioContext.currentTime;
+
+    // Latch click
+    const click = audioContext.createOscillator();
+    const clickGain = audioContext.createGain();
+    click.type = 'triangle';
+    click.frequency.setValueAtTime(900, t);
+    clickGain.gain.setValueAtTime(0.3, t);
+    clickGain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    click.connect(clickGain);
+    clickGain.connect(audioContext.destination);
+    click.start(t);
+    click.stop(t + 0.04);
+
+    // Deep wood resonance creak
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
     osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(110, t);
-    osc.frequency.exponentialRampToValueAtTime(240, t + 1.2);
-    gain.gain.setValueAtTime(0.15, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 1.3);
+    osc.frequency.setValueAtTime(105, t + 0.05);
+    osc.frequency.exponentialRampToValueAtTime(230, t + 1.3);
+    gain.gain.setValueAtTime(0.18, t + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 1.4);
     osc.connect(gain);
     gain.connect(audioContext.destination);
-    osc.start(t);
-    osc.stop(t + 1.3);
+    osc.start(t + 0.05);
+    osc.stop(t + 1.4);
   }
 
   function selectMode(vsAi) {
@@ -1039,15 +1216,24 @@
     document.getElementById('mc-label-1').innerText = `${playerNames[1].slice(0, 4).toUpperCase()}\nSTORE`;
     document.getElementById('mc-label-2').innerText = `${playerNames[2].slice(0, 4).toUpperCase()}\nSTORE`;
 
-    document.getElementById('setup-modal').classList.add('hidden');
+    // 1. Trigger Cloud / Temple Mist Transition
+    const mist = document.getElementById('mist-overlay');
+    mist.classList.add('active');
 
-    // Slow, Cinematic Vertical Board Opening
+    // 2. Hide setup modal beneath mist
     setTimeout(() => {
+      document.getElementById('setup-modal').classList.add('hidden');
+    }, 300);
+
+    // 3. Clear mist to reveal the closed wooden casket, then unhinge
+    setTimeout(() => {
+      mist.classList.remove('active');
       playHingeSound();
+
       const goldBoard = document.getElementById('main-gold-board');
       goldBoard.classList.remove('board-folded');
       startNewGame();
-    }, 400);
+    }, 900);
   }
 
   function startNewGame() {
