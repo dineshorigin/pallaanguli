@@ -3,871 +3,963 @@
 <html lang="ta">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Pallanguzhi - பல்லாங்குழி</title>
 <style>
   :root {
-    --gold: #e5b95f;
-    --gold-glow: rgba(229, 185, 95, 0.45);
-    --brass: #b8860b;
-    --wood-border: #140702;
-    --wood-deep: #200d04;
-    --wood-mid: #3a190b;
-    --wood-light: #5a2813;
+    --gold: #dfb15b;
+    --gold-bright: #ffe285;
+    --wood-rim: #140502;
+    --wood-main: #391807;
+    --wood-highlight: #692f11;
+    --seed-rind: #1d0a03;
+    --seed-body: #441c07;
+    --seed-facet: #ba7d4c;
+    --emerald: #4eed99;
   }
 
   * {
     box-sizing: border-box;
-    user-select: none;
-    -webkit-user-select: none;
     margin: 0;
     padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
     touch-action: manipulation;
   }
 
   html, body {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
-    background: #080301;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-    color: #eedacf;
+    background: radial-gradient(circle at center, #1b0903 0%, #060201 100%);
+    color: #ebd3be;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  /* Fullscreen Viewport Wrapper */
-  #app-root {
-    position: absolute;
+  /* Pre-game Welcome & Setup Overlay */
+  #setup-modal {
+    position: fixed;
     inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    background: radial-gradient(circle at center, #1b0c05 0%, #070301 90%, #000000 100%);
-    padding: 8px 12px;
-    box-sizing: border-box;
-    transition: transform 0.3s ease;
-  }
-
-  /* If phone is in portrait mode, automatically pivot 90deg and fit exactly */
-  @media (orientation: portrait) {
-    #app-root {
-      width: 100vh;
-      height: 100vw;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(90deg);
-      transform-origin: center center;
-    }
-  }
-
-  /* Top Navigation & Status Bar */
-  .header-bar {
-    width: 100%;
-    max-width: 1100px;
-    height: 44px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(180deg, rgba(30, 13, 6, 0.85) 0%, rgba(15, 6, 2, 0.95) 100%);
-    border: 1px solid #4d230f;
-    border-radius: 12px;
-    padding: 0 14px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-    flex-shrink: 0;
-    z-index: 10;
-  }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .brand h1 {
-    font-size: 1.25rem;
-    color: var(--gold);
-    letter-spacing: 2px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-  }
-
-  .brand span {
-    font-size: 0.75rem;
-    color: #9d7350;
-    font-weight: 500;
-  }
-
-  .scoreboard {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .player-tab {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 3px 12px;
-    border-radius: 20px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid #3c1a0a;
-    transition: all 0.25s ease;
-  }
-
-  .player-tab.active {
-    border-color: #52e396;
-    background: rgba(82, 227, 150, 0.15);
-    color: #72f5ac;
-    box-shadow: 0 0 12px rgba(82, 227, 150, 0.25);
-  }
-
-  .bank-pill {
-    background: #0d0502;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    padding: 1px 7px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.8rem;
-  }
-
-  /* Antique Teak Wood Playing Board */
-  .board-outer {
-    width: 100%;
-    max-width: 1100px;
-    flex: 1;
-    min-height: 0;
-    margin: 6px 0;
-    background:
-      radial-gradient(ellipse at 50% 50%, rgba(135, 62, 29, 0.4) 0%, rgba(45, 18, 7, 0.9) 75%, #180802 100%),
-      repeating-linear-gradient(90deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 2px, transparent 2px, transparent 8px),
-      linear-gradient(180deg, #441c0a 0%, #2b1105 50%, #1a0802 100%);
-    border: 10px solid #140602;
-    border-radius: 42px;
-    box-shadow:
-      0 20px 45px rgba(0, 0, 0, 0.95),
-      inset 0 3px 6px rgba(255, 255, 255, 0.15),
-      inset 0 -4px 10px rgba(0, 0, 0, 0.8);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    padding: 14px 22px;
-    box-sizing: border-box;
-  }
-
-  /* Center Brass Inlay Line with Hinges */
-  .brass-divider {
-    position: absolute;
-    left: 4%;
-    right: 4%;
-    top: 50%;
-    height: 3px;
-    transform: translateY(-50%);
-    background: linear-gradient(90deg, transparent 0%, #b8860b 15%, #ffe082 50%, #b8860b 85%, transparent 100%);
-    opacity: 0.55;
-    pointer-events: none;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.9);
-  }
-
-  .brass-hinge {
-    position: absolute;
-    width: 22px;
-    height: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: linear-gradient(180deg, #e5b95f, #7c5813);
-    border-radius: 3px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.8);
-    border: 1px solid #3c2505;
-  }
-  .brass-hinge.left { left: 24%; }
-  .brass-hinge.right { right: 24%; }
-
-  .row-wrapper {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 12px;
-    height: 44%;
-    align-items: center;
-    position: relative;
-    z-index: 2;
-  }
-
-  /* Perfectly Carved Wooden Cups */
-  .cup-cell {
-    height: 100%;
+    background: radial-gradient(circle at center, rgba(32, 13, 5, 0.96) 0%, rgba(6, 2, 1, 0.98) 100%);
+    z-index: 2000;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+    backdrop-filter: blur(8px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .cup {
-    width: 100%;
-    max-width: 110px;
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
-    background: radial-gradient(circle at 68% 72%, #030100 0%, #110602 45%, #2a1106 82%, #421c0b 98%);
-    border: 2px solid #230d04;
-    box-shadow:
-      inset 0 12px 24px rgba(0, 0, 0, 0.98),
-      inset 0 3px 6px rgba(0, 0, 0, 0.9),
-      0 2px 4px rgba(255, 255, 255, 0.08),
-      0 6px 12px rgba(0, 0, 0, 0.6);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
-  }
-
-  .cup.playable:hover {
+  #setup-modal.hidden {
+    opacity: 0;
     transform: scale(1.08);
-    border-color: var(--gold);
-    box-shadow:
-      0 0 18px rgba(229, 185, 95, 0.4),
-      inset 0 12px 24px rgba(0, 0, 0, 0.98);
-  }
-
-  .cup.active-target {
-    border-color: #52e396 !important;
-    box-shadow:
-      0 0 22px #52e396,
-      inset 0 10px 20px #000 !important;
-    transform: scale(1.05);
-  }
-
-  .seed-badge {
-    position: absolute;
-    bottom: 5px;
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: var(--gold);
-    text-shadow: 0 1px 4px #000, 0 0 2px #000;
-    pointer-events: none;
-    z-index: 5;
-  }
-
-  /* Tamarind Seeds (புளியங்கொட்டை) Realistic Rendering */
-  .seed-pit-canvas {
-    width: 68%;
-    height: 68%;
-    position: relative;
     pointer-events: none;
   }
 
-  .tamarind-seed {
-    position: absolute;
-    width: 17px;
-    height: 14px;
-    background: radial-gradient(circle at 45% 35%, #5a260e 0%, #361608 55%, #130702 100%);
-    /* Asymmetrical polished seed facet */
-    clip-path: polygon(15% 0%, 82% 8%, 100% 75%, 72% 100%, 18% 92%, 0% 42%);
-    box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.95);
-    border: 0.5px solid #0d0401;
-    transition: transform 0.2s ease;
-  }
-
-  /* One-sided lighter matte facet of real tamarind seeds */
-  .tamarind-seed::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    background: radial-gradient(ellipse at 40% 30%, rgba(199, 137, 95, 0.45) 0%, rgba(135, 78, 42, 0.15) 70%, transparent 100%);
-    clip-path: polygon(10% 10%, 80% 15%, 85% 70%, 65% 85%, 20% 75%);
-    filter: blur(0.3px);
-  }
-
-  /* Floating Sowing Hand / Seed Pod Animation */
-  #flying-hand {
-    position: absolute;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #7a3818, #301407 80%);
+  .setup-card {
+    background: radial-gradient(circle at top, #361708 0%, #170702 100%);
     border: 2px solid var(--gold);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.8), 0 0 16px var(--gold-glow);
-    display: none;
-    pointer-events: none;
-    z-index: 999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.05s linear;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(223, 177, 91, 0.15);
+    border-radius: 24px;
+    padding: 24px 32px;
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
   }
 
-  #flying-hand-count {
-    position: absolute;
-    inset: 0;
+  .setup-card h1 {
+    font-size: 1.8rem;
+    color: var(--gold-bright);
+    letter-spacing: 3px;
+    margin-bottom: 2px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+  }
+
+  .setup-card .sub {
+    font-size: 0.85rem;
+    color: #b8865a;
+    margin-bottom: 20px;
+  }
+
+  .mode-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .mode-btn {
+    background: rgba(10, 4, 1, 0.6);
+    border: 1px solid #5a280e;
+    color: #ebd3be;
+    padding: 10px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .mode-btn.active {
+    border-color: var(--gold);
+    background: linear-gradient(180deg, #612d11, #361606);
+    color: var(--gold-bright);
+    box-shadow: 0 0 14px rgba(223, 177, 91, 0.3);
+  }
+
+  .names-entry {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    font-weight: 800;
-    font-size: 0.95rem;
-    text-shadow: 0 1px 3px #000;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 22px;
+    text-align: left;
   }
 
-  /* Bottom Controls & Telemetry */
-  .bottom-bar {
+  .input-group label {
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 3px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .input-group input {
     width: 100%;
-    max-width: 1100px;
-    height: 42px;
+    padding: 8px 14px;
+    background: #0d0401;
+    border: 1px solid #4d230d;
+    border-radius: 8px;
+    color: #ebd3be;
+    font-size: 0.9rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+  }
+
+  .input-group input:focus {
+    border-color: var(--gold);
+  }
+
+  .start-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(180deg, #dfb15b 0%, #9e7323 100%);
+    color: #170701;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    transition: transform 0.15s, filter 0.2s;
+  }
+
+  .start-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+  }
+
+  /* Main Game Viewport */
+  #game-frame {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 14px;
+    box-sizing: border-box;
+    opacity: 0;
+    transform: scale(0.92);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  #game-frame.cinematic-open {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Sleek Minimalist Top Strip */
+  .top-strip {
+    width: 100%;
+    max-width: 1040px;
+    height: 38px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 6px;
-    flex-shrink: 0;
-    z-index: 10;
   }
 
-  .status-ticker {
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: #ead6c5;
+  .brand {
+    font-size: 1.15rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    font-weight: 800;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.9);
+  }
+
+  .players-scoreboard {
+    display: flex;
+    gap: 12px;
+  }
+
+  .player-pod {
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-
-  .status-ticker .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #52e396;
-    box-shadow: 0 0 8px #52e396;
-    animation: pulse 1.5s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-  }
-
-  .action-buttons {
-    display: flex;
-    gap: 8px;
-  }
-
-  button {
-    background: linear-gradient(180deg, #5a2712 0%, #2f1205 100%);
-    color: var(--gold);
-    border: 1px solid var(--gold);
-    padding: 6px 14px;
-    border-radius: 8px;
+    padding: 3px 12px;
+    border-radius: 16px;
     font-size: 0.8rem;
+    background: rgba(18, 7, 2, 0.8);
+    border: 1px solid #4a210d;
+    transition: all 0.3s;
+  }
+
+  .player-pod.active {
+    border-color: var(--emerald);
+    background: rgba(78, 237, 153, 0.14);
+    color: #7affbe;
+    font-weight: 700;
+    box-shadow: 0 0 12px rgba(78, 237, 153, 0.35);
+  }
+
+  .score-badge {
+    background: #0d0401;
+    border: 1px solid var(--gold);
+    color: var(--gold-bright);
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 0.85rem;
+  }
+
+  /* Sharp Large Wooden Board */
+  .board-wrapper {
+    width: 100%;
+    max-width: 1060px;
+    height: 77vh;
+    min-height: 250px;
+    background: radial-gradient(ellipse at center, var(--wood-highlight) 0%, var(--wood-main) 60%, var(--wood-rim) 100%);
+    border: 8px solid #140502;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.95), inset 0 2px 6px rgba(255,255,255,0.12);
+    border-radius: 34px;
+    padding: 10px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  /* Center Brass Inlay Hinge */
+  .board-wrapper::before {
+    content: '';
+    position: absolute;
+    left: 70px;
+    right: 70px;
+    top: 50%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(223, 177, 91, 0.35), transparent);
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+
+  /* Side Mother Store Cups (தாய்க்குழி) */
+  .mother-cup {
+    width: 52px;
+    height: 86%;
+    background: radial-gradient(circle at 65% 65%, #050201 0%, #150703 55%, #2a1106 100%);
+    border-radius: 26px;
+    border: 2px solid #281005;
+    box-shadow: inset 0 10px 22px rgba(0,0,0,0.95), 0 2px 4px rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 8px 2px;
+  }
+
+  .mother-cup-label {
+    position: absolute;
+    top: 6px;
+    font-size: 0.62rem;
+    color: var(--gold);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* 14-Pit Grid */
+  .pits-grid {
+    flex: 1;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .grid-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    align-items: center;
+  }
+
+  .pit-slot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .pit {
+    width: 100%;
+    max-width: 96px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 65% 70%, #050201 0%, #160904 50%, #2f1307 90%, #461f0c 100%);
+    border: 2px solid #230d04;
+    box-shadow: inset 0 8px 18px rgba(0,0,0,0.95), 0 2px 5px rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.2s;
+  }
+
+  .pit.playable:hover {
+    border-color: var(--gold);
+    transform: scale(1.05);
+  }
+
+  .pit.active-sow {
+    border-color: var(--emerald) !important;
+    box-shadow: 0 0 18px var(--emerald), inset 0 8px 18px #000 !important;
+  }
+
+  .pit-count {
+    position: absolute;
+    bottom: 3px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--gold-bright);
+    text-shadow: 0 1px 3px #000;
+  }
+
+  /* Tamarind Seeds (புளியங்கொட்டை) Cluster */
+  .seed-pit-cluster {
+    position: relative;
+    width: 65%;
+    height: 65%;
+  }
+
+  .tamarind-seed {
+    position: absolute;
+    width: 15px;
+    height: 12px;
+    background: radial-gradient(ellipse at 40% 35%, #6a2f11 0%, var(--seed-body) 50%, var(--seed-rind) 95%);
+    border-radius: 40% 55% 45% 55% / 55% 45% 55% 45%;
+    border: 1px solid #140702;
+    box-shadow: 1px 2px 4px rgba(0,0,0,0.85);
+  }
+
+  .tamarind-seed::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 6px;
+    height: 5px;
+    background: rgba(197, 138, 93, 0.35);
+    border-radius: 45%;
+  }
+
+  /* Minimalist Footer Bar */
+  .bottom-strip {
+    width: 100%;
+    max-width: 1040px;
+    height: 34px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 6px;
+  }
+
+  .status-message {
+    font-size: 0.82rem;
+    color: #edd2bd;
+    font-weight: 500;
+    text-shadow: 0 1px 3px #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .action-btn {
+    background: rgba(20, 8, 3, 0.7);
+    color: var(--gold);
+    border: 1px solid rgba(223, 177, 91, 0.35);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-    transition: all 0.18s ease;
+    transition: all 0.2s;
   }
 
-  button:hover {
-    background: linear-gradient(180deg, #743518 0%, #441a08 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+  .action-btn:hover {
+    background: linear-gradient(180deg, #622a0e 0%, #361606 100%);
+    border-color: var(--gold);
   }
 
-  button:active {
-    transform: translateY(1px);
-  }
-
-  button.primary {
-    border-color: #52e396;
-    color: #8affc2;
-    background: linear-gradient(180deg, #1f4f34 0%, #0d281a 100%);
-  }
-
-  /* Interactive Help Modal Dialog */
-  .modal-shade {
+  /* How to Play Modal */
+  .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.88);
+    background: rgba(0,0,0,0.85);
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
+    z-index: 2500;
     padding: 16px;
-    backdrop-blur: 4px;
   }
 
-  .modal-shade.visible {
+  .modal-overlay.open {
     display: flex;
   }
 
   .modal-card {
-    background: radial-gradient(circle at center, #2e1509 0%, #140702 100%);
+    background: radial-gradient(circle at center, #2e1408 0%, #140702 100%);
     border: 2px solid var(--gold);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.95);
-    border-radius: 20px;
-    padding: 22px 26px;
-    max-width: 620px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.95);
+    border-radius: 16px;
+    padding: 18px 22px;
+    max-width: 520px;
     width: 95%;
     max-height: 85vh;
     overflow-y: auto;
-    color: #eedacf;
+    color: #ebd3be;
+    line-height: 1.5;
   }
 
   .modal-card h2 {
-    color: var(--gold);
-    font-size: 1.35rem;
-    margin-bottom: 12px;
+    color: var(--gold-bright);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
     border-bottom: 1px solid #4a210d;
-    padding-bottom: 6px;
-    letter-spacing: 1px;
+    padding-bottom: 5px;
   }
 
-  .rule-item {
-    margin-bottom: 14px;
-    font-size: 0.9rem;
-    line-height: 1.45;
+  .rule-step {
+    margin-bottom: 10px;
+    font-size: 0.85rem;
   }
 
-  .rule-item b {
-    color: #8affc2;
+  .rule-step strong {
+    color: var(--emerald);
     display: block;
     margin-bottom: 2px;
-    font-size: 0.94rem;
   }
 
-  .modal-close-btn {
+  .modal-close {
     width: 100%;
-    margin-top: 10px;
-    padding: 10px;
-    font-size: 0.9rem;
+    margin-top: 8px;
+    padding: 8px;
     background: var(--gold);
-    color: #1a0802;
+    color: #170701;
     border: none;
+    font-weight: 800;
+    border-radius: 8px;
+    cursor: pointer;
   }
 </style>
 </head>
 <body>
 
-<div id="app-root">
-  <!-- Top Navigation & Scoreboard -->
-  <header class="header-bar">
-    <div class="brand">
-      <h1>பல்லாங்குழி</h1>
-      <span>Pallanguzhi • Heritage Edition</span>
+<!-- Setup & Customization Modal -->
+<div id="setup-modal">
+  <div class="setup-card">
+    <h1>பல்லாங்குழி</h1>
+    <div class="sub">Traditional Heritage Sowing Game</div>
+
+    <div class="mode-selector">
+      <button class="mode-btn active" id="btn-mode-ai" onclick="selectMode(true)">👤 Player vs AI</button>
+      <button class="mode-btn" id="btn-mode-2p" onclick="selectMode(false)">👥 2 Players (Pass & Play)</button>
     </div>
 
-    <div class="scoreboard">
-      <div class="player-tab" id="p2-tab">
-        <span>Player 2 (Top)</span>
-        <span class="bank-pill" id="p2-score">0</span>
+    <div class="names-entry">
+      <div class="input-group">
+        <label for="p1-name-input">Player 1 (Bottom Row)</label>
+        <input type="text" id="p1-name-input" value="Player 1" maxlength="15" autocomplete="off">
       </div>
-      <div class="player-tab active" id="p1-tab">
-        <span>Player 1 (Bottom)</span>
-        <span class="bank-pill" id="p1-score">0</span>
+      <div class="input-group">
+        <label for="p2-name-input">Player 2 (Top Row)</label>
+        <input type="text" id="p2-name-input" value="Azhagi (AI)" maxlength="15" autocomplete="off">
       </div>
     </div>
-  </header>
 
-  <!-- Carved Rosewood Board with 14 Pits -->
-  <main class="board-outer">
-    <div class="brass-divider"></div>
-    <div class="brass-hinge left"></div>
-    <div class="brass-hinge right"></div>
-
-    <!-- Top Row: Pits 13 down to 7 (Left to Right) -->
-    <div class="row-wrapper" id="top-row"></div>
-    <!-- Bottom Row: Pits 0 up to 6 (Left to Right) -->
-    <div class="row-wrapper" id="bottom-row"></div>
-  </main>
-
-  <!-- Bottom Telemetry & Controls -->
-  <footer class="bottom-bar">
-    <div class="status-ticker">
-      <div class="dot"></div>
-      <span id="status-label">Player 1 turn: Tap any cup on your side to sow.</span>
-    </div>
-
-    <div class="action-buttons">
-      <button class="primary" onclick="showHelpModal()">📖 How to Play</button>
-      <button onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
-      <button onclick="startMatch(false)">Pass & Play</button>
-      <button onclick="startMatch(true)">Play vs AI</button>
-    </div>
-  </footer>
+    <button class="start-btn" onclick="launchGameCinematic()">START GAME • ஆடுவோம்</button>
+  </div>
 </div>
 
-<!-- Animated Sowing Hand Avatar -->
-<div id="flying-hand">
-  <span id="flying-hand-count">0</span>
+<!-- Main Game Frame -->
+<div id="game-frame">
+  <!-- Minimalist Header Strip -->
+  <div class="top-strip">
+    <div class="brand">பல்லாங்குழி</div>
+    <div class="players-scoreboard">
+      <div class="player-pod" id="p2-pod">
+        <span id="p2-label-display">Player 2</span>
+        <span class="score-badge" id="p2-score">0</span>
+      </div>
+      <div class="player-pod active" id="p1-pod">
+        <span id="p1-label-display">Player 1</span>
+        <span class="score-badge" id="p1-score">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Board Wrapper -->
+  <div class="board-wrapper">
+    <!-- P2 Mother Cup (Left) -->
+    <div class="mother-cup" id="mc-2">
+      <span class="mother-cup-label" id="mc-label-2">P2</span>
+      <div class="seed-pit-cluster" id="mc-cluster-2"></div>
+    </div>
+
+    <!-- Center 14-Pit Grid -->
+    <div class="pits-grid">
+      <!-- Top Row: Pits 13 down to 7 (Player 2) -->
+      <div class="grid-row" id="row-top"></div>
+      <!-- Bottom Row: Pits 0 up to 6 (Player 1) -->
+      <div class="grid-row" id="row-bottom"></div>
+    </div>
+
+    <!-- P1 Mother Cup (Right) -->
+    <div class="mother-cup" id="mc-1">
+      <span class="mother-cup-label" id="mc-label-1">P1</span>
+      <div class="seed-pit-cluster" id="mc-cluster-1"></div>
+    </div>
+  </div>
+
+  <!-- Minimalist Footer Strip -->
+  <div class="bottom-strip">
+    <div class="status-message" id="status-text">Ready.</div>
+    <div class="actions">
+      <button class="action-btn" onclick="openHelp()">📖 Rules</button>
+      <button class="action-btn" onclick="showSetupScreen()">⚙️ Match Setup</button>
+      <button class="action-btn" onclick="toggleFullScreen()">⛶ Fit</button>
+    </div>
+  </div>
 </div>
 
-<!-- How to Play Interactive Guide -->
-<div class="modal-shade" id="help-modal">
+<!-- Help Modal -->
+<div class="modal-overlay" id="help-modal">
   <div class="modal-card">
     <h2>📖 How to Play Pallanguzhi (விளக்கம்)</h2>
-    <div class="rule-item">
-      <b>1. The Board & Setup (அமைப்பு):</b>
-      There are 14 carved cups (7 per player) containing 5 tamarind seeds (புளியங்கொட்டை) each. Player 1 controls the bottom row; Player 2 / AI controls the top row.
+    <div class="rule-step">
+      <strong>1. Board & Seeds:</strong>
+      14 cups (Bottom 7 belong to Player 1, Top 7 belong to Player 2). Each cup holds 5 tamarind seeds (புளியங்கொட்டை). The side mother cups store your captured seeds.
     </div>
-    <div class="rule-item">
-      <b>2. Sowing (விதைத்தல்):</b>
-      Tap any cup on your side with seeds. All seeds are scooped up and distributed one-by-one counter-clockwise into subsequent cups.
+    <div class="rule-step">
+      <strong>2. Sowing (விதைத்தல்):</strong>
+      On your turn, tap any cup on your side that has seeds. You pick them up and drop one seed counter-clockwise into each subsequent cup.
     </div>
-    <div class="rule-item">
-      <b>3. Continuous Scooping (தொடர் சுழற்சி):</b>
-      When your hand empties, look at the very next cup. If it contains seeds, you pick them all up and continue sowing without pausing!
+    <div class="rule-step">
+      <strong>3. Continuous Sowing (தொடர் சுழற்சி):</strong>
+      When your hand empties, check the very next cup. If it contains seeds, you scoop them all up and continue sowing!
     </div>
-    <div class="rule-item">
-      <b>4. The Empty Cup Capture (துடைத்தல்):</b>
-      If your hand runs out of seeds and the next cup is EMPTY, your turn ends. But you immediately <b>capture all the seeds in the cup following that empty one</b> into your store!
+    <div class="rule-step">
+      <strong>4. Empty Pit Capture (துடைத்தல்):</strong>
+      If your hand empties and the next cup is EMPTY, your turn ends, and you CAPTURE all seeds from the cup immediately following it into your store!
     </div>
-    <div class="rule-item">
-      <b>5. The "Pasu" Rule (பசு - 4 Seeds Bonus):</b>
-      Whenever any pit on the board reaches exactly 4 seeds during sowing, the owner of that side immediately collects those 4 seeds into their bank.
+    <div class="rule-step">
+      <strong>5. Pasu (பசு - 4 Seeds Bonus):</strong>
+      Whenever any cup accumulates exactly 4 seeds during sowing, the owner of that side immediately captures those 4 seeds!
     </div>
-    <button class="modal-close-btn" onclick="hideHelpModal()">Got it! Start Playing</button>
+    <button class="modal-close" onclick="closeHelp()">Back to Game</button>
   </div>
 </div>
 
 <script>
-  /* ==========================================================================
-     PALLANGUZHI ENGINE: Tactile Physics, Audio & Orientation Handler
-     ========================================================================== */
+  const TOTAL_PITS = 14;
+  const SEEDS_PER_PIT = 5;
 
-  const CUP_COUNT = 14;
-  const SEEDS_PER_CUP = 5;
-  let pits = new Array(CUP_COUNT).fill(SEEDS_PER_CUP);
-  let activeTurn = 1; // 1: Bottom (0-6), 2: Top (7-13)
-  let bank = { 1: 0, 2: 0 };
-  let isAiMode = false;
-  let isEngineBusy = false;
+  let pits = new Array(TOTAL_PITS).fill(SEEDS_PER_PIT);
+  let motherBank = { 1: 0, 2: 0 };
+  let currentTurn = 1; // 1: Player 1 (0..6), 2: Player 2 (7..13)
+  let isAiMode = true;
+  let isBusy = false;
+  let playerNames = { 1: "Player 1", 2: "Azhagi (AI)" };
 
-  // Synthesized Organic Wood & Seed Clatter Audio via Web Audio API
+  // Advanced Acoustic Multi-Layered Natural Seed Sound
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  const audioCtx = new AudioCtx();
+  let audioContext = null;
 
-  function playSeedAcousticClack() {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const now = audioCtx.currentTime;
-
-    // Resonant wooden cavity thud
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sine';
-    const pitch = 140 + Math.random() * 45;
-    osc.frequency.setValueAtTime(pitch, now);
-    osc.frequency.exponentialRampToValueAtTime(55, now + 0.14);
-    gain.gain.setValueAtTime(0.42, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start(now);
-    osc.stop(now + 0.14);
-
-    // Hard seed-shell impact snap
-    const click = audioCtx.createOscillator();
-    const clickGain = audioCtx.createGain();
-    click.type = 'triangle';
-    click.frequency.setValueAtTime(820 + Math.random() * 350, now);
-    clickGain.gain.setValueAtTime(0.22, now);
-    clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-    click.connect(clickGain);
-    clickGain.connect(audioCtx.destination);
-    click.start(now);
-    click.stop(now + 0.05);
+  function ensureAudio() {
+    if (!audioContext) audioContext = new AudioCtx();
+    if (audioContext.state === 'suspended') audioContext.resume();
   }
 
-  function playCaptureChime() {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const now = audioCtx.currentTime;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
+  // Realistic Acoustic Tamarind Seed Impact
+  function playNaturalSeedDrop() {
+    ensureAudio();
+    const t = audioContext.currentTime;
+
+    // Layer 1: Dry friction clatter (Filtered Noise Burst)
+    const bufferSize = audioContext.sampleRate * 0.035;
+    const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.25));
+    }
+    const whiteNoise = audioContext.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+
+    const noiseFilter = audioContext.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.setValueAtTime(1400 + Math.random() * 400, t);
+    noiseFilter.Q.setValueAtTime(3.5, t);
+
+    const noiseGain = audioContext.createGain();
+    noiseGain.gain.setValueAtTime(0.4, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.035);
+
+    whiteNoise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(audioContext.destination);
+    whiteNoise.start(t);
+
+    // Layer 2: Hollow carved wood pit body resonance
+    const woodOsc = audioContext.createOscillator();
+    const woodGain = audioContext.createGain();
+    woodOsc.type = 'triangle';
+    const pitPitch = 210 + Math.random() * 45;
+    woodOsc.frequency.setValueAtTime(pitPitch, t);
+    woodOsc.frequency.exponentialRampToValueAtTime(75, t + 0.09);
+
+    woodGain.gain.setValueAtTime(0.35, t);
+    woodGain.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+
+    woodOsc.connect(woodGain);
+    woodGain.connect(audioContext.destination);
+    woodOsc.start(t);
+    woodOsc.stop(t + 0.09);
+
+    // Optional Micro vibration on supported phones
+    if (navigator.vibrate) navigator.vibrate(20);
+  }
+
+  function playCaptureSound() {
+    ensureAudio();
+    const t = audioContext.currentTime;
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
     osc.type = 'triangle';
-    osc.frequency.setValueAtTime(340, now);
-    osc.frequency.exponentialRampToValueAtTime(680, now + 0.28);
-    gain.gain.setValueAtTime(0.35, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+    osc.frequency.setValueAtTime(300, t);
+    osc.frequency.exponentialRampToValueAtTime(680, t + 0.28);
+    gain.gain.setValueAtTime(0.3, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
     osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start(now);
-    osc.stop(now + 0.35);
+    gain.connect(audioContext.destination);
+    osc.start(t);
+    osc.stop(t + 0.32);
+
+    if (navigator.vibrate) navigator.vibrate([35, 45, 60]);
   }
 
-  // Build the Board Layout in DOM
-  function createBoard() {
-    const topRow = document.getElementById('top-row');
-    const bottomRow = document.getElementById('bottom-row');
+  // Pre-game Setup Controls
+  function selectMode(vsAi) {
+    isAiMode = vsAi;
+    document.getElementById('btn-mode-ai').classList.toggle('active', vsAi);
+    document.getElementById('btn-mode-2p').classList.toggle('active', !vsAi);
+    
+    const p2Input = document.getElementById('p2-name-input');
+    if (vsAi) {
+      p2Input.value = "Azhagi (AI)";
+    } else {
+      if (p2Input.value === "Azhagi (AI)") p2Input.value = "Player 2";
+    }
+  }
+
+  function showSetupScreen() {
+    document.getElementById('setup-modal').classList.remove('hidden');
+    document.getElementById('game-frame').classList.remove('cinematic-open');
+  }
+
+  function launchGameCinematic() {
+    ensureAudio();
+    const p1Input = document.getElementById('p1-name-input').value.trim();
+    const p2Input = document.getElementById('p2-name-input').value.trim();
+    playerNames[1] = p1Input || "Player 1";
+    playerNames[2] = p2Input || (isAiMode ? "Azhagi (AI)" : "Player 2");
+
+    document.getElementById('p1-label-display').innerText = playerNames[1];
+    document.getElementById('p2-label-display').innerText = playerNames[2];
+    document.getElementById('mc-label-1').innerText = playerNames[1].slice(0, 3).toUpperCase();
+    document.getElementById('mc-label-2').innerText = playerNames[2].slice(0, 3).toUpperCase();
+
+    // Hide setup modal and unfold board with cinematic transition
+    document.getElementById('setup-modal').classList.add('hidden');
+    setTimeout(() => {
+      document.getElementById('game-frame').classList.add('cinematic-open');
+      startNewGame();
+    }, 250);
+  }
+
+  function startNewGame() {
+    pits = new Array(TOTAL_PITS).fill(SEEDS_PER_PIT);
+    motherBank = { 1: 0, 2: 0 };
+    currentTurn = 1;
+    isBusy = false;
+    document.getElementById('status-text').innerText = `${playerNames[1]}'s turn. Tap any cup on your side to sow.`;
+    renderBoard();
+  }
+
+  function initBoardDOM() {
+    const topRow = document.getElementById('row-top');
+    const btmRow = document.getElementById('row-bottom');
     topRow.innerHTML = '';
-    bottomRow.innerHTML = '';
+    btmRow.innerHTML = '';
 
     // P2 pits: 13 down to 7 (Left to Right)
     for (let i = 13; i >= 7; i--) {
-      topRow.appendChild(makeCupElement(i));
+      topRow.appendChild(createPitElement(i));
     }
     // P1 pits: 0 up to 6 (Left to Right)
     for (let i = 0; i <= 6; i++) {
-      bottomRow.appendChild(makeCupElement(i));
+      btmRow.appendChild(createPitElement(i));
     }
-    paintBoard();
+    renderBoard();
   }
 
-  function makeCupElement(index) {
-    const cell = document.createElement('div');
-    cell.className = 'cup-cell';
-
-    const cup = document.createElement('div');
-    cup.className = 'cup';
-    cup.id = `cup-${index}`;
-    cup.onclick = () => onCupTapped(index);
-
-    const badge = document.createElement('span');
-    badge.className = 'seed-badge';
-    badge.id = `badge-${index}`;
-    badge.innerText = pits[index];
-
-    const canvas = document.createElement('div');
-    canvas.className = 'seed-pit-canvas';
-    canvas.id = `pit-canvas-${index}`;
-
-    cup.appendChild(badge);
-    cup.appendChild(canvas);
-    cell.appendChild(cup);
-    return cell;
+  function createPitElement(index) {
+    const slot = document.createElement('div');
+    slot.className = 'pit-slot';
+    const pit = document.createElement('div');
+    pit.className = 'pit';
+    pit.id = `pit-${index}`;
+    pit.onclick = () => onPitClick(index);
+    slot.appendChild(pit);
+    return slot;
   }
 
-  // Render Realistic Asymmetrical Tamarind Seeds in Each Cup
-  function paintBoard() {
-    for (let i = 0; i < CUP_COUNT; i++) {
+  function renderBoard() {
+    for (let i = 0; i < TOTAL_PITS; i++) {
+      const pitEl = document.getElementById(`pit-${i}`);
+      pitEl.innerHTML = '';
+
       const count = pits[i];
-      const cupEl = document.getElementById(`cup-${i}`);
-      const badgeEl = document.getElementById(`badge-${i}`);
-      const canvasEl = document.getElementById(`pit-canvas-${i}`);
 
-      badgeEl.innerText = count;
-      canvasEl.innerHTML = '';
+      // Number badge
+      const badge = document.createElement('span');
+      badge.className = 'pit-count';
+      badge.innerText = count;
+      pitEl.appendChild(badge);
 
-      // Scatter natural seeds inside the hollow
-      const displayed = Math.min(count, 14);
-      for (let s = 0; s < displayed; s++) {
+      // Tamarind Seeds Natural Cluster
+      const cluster = document.createElement('div');
+      cluster.className = 'seed-pit-cluster';
+
+      const showSeeds = Math.min(count, 16);
+      for (let s = 0; s < showSeeds; s++) {
         const seed = document.createElement('div');
         seed.className = 'tamarind-seed';
+        const angle = s * 2.39996; // Golden spiral distribution
+        const radius = Math.min(14, 3 + Math.sqrt(s) * 3);
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius * 0.8;
+        const rot = (s * 53 + i * 17) % 360;
 
-        // Organic clustering with polar distribution
-        const angle = (s / displayed) * Math.PI * 2 + (i * 0.4);
-        const radius = Math.min(18, displayed * 1.6);
-        const ox = Math.cos(angle) * radius;
-        const oy = Math.sin(angle) * radius;
-        const rot = (s * 57 + i * 29) % 360;
-
-        seed.style.left = `calc(50% + ${ox}px - 8px)`;
-        seed.style.top = `calc(50% + ${oy}px - 7px)`;
+        seed.style.left = `calc(50% + ${x}px - 7px)`;
+        seed.style.top = `calc(50% + ${y}px - 6px)`;
         seed.style.transform = `rotate(${rot}deg)`;
-        canvasEl.appendChild(seed);
+        cluster.appendChild(seed);
       }
+      pitEl.appendChild(cluster);
 
-      // Highlight selectable cups for the current active player
-      cupEl.classList.remove('playable');
-      if (!isEngineBusy) {
-        if (activeTurn === 1 && i >= 0 && i <= 6 && count > 0) {
-          cupEl.classList.add('playable');
-        } else if (activeTurn === 2 && !isAiMode && i >= 7 && i <= 13 && count > 0) {
-          cupEl.classList.add('playable');
-        }
+      // Playable highlights
+      pitEl.classList.remove('playable');
+      if (!isBusy) {
+        if (currentTurn === 1 && i >= 0 && i <= 6 && count > 0) pitEl.classList.add('playable');
+        if (currentTurn === 2 && !isAiMode && i >= 7 && i <= 13 && count > 0) pitEl.classList.add('playable');
       }
     }
 
-    document.getElementById('p1-score').innerText = bank[1];
-    document.getElementById('p2-score').innerText = bank[2];
-    document.getElementById('p1-tab').classList.toggle('active', activeTurn === 1);
-    document.getElementById('p2-tab').classList.toggle('active', activeTurn === 2);
+    // Render Mother Cups
+    [1, 2].forEach(p => {
+      const mc = document.getElementById(`mc-cluster-${p}`);
+      mc.innerHTML = '';
+      const total = motherBank[p];
+      const showCount = Math.min(total, 24);
+      for (let s = 0; s < showCount; s++) {
+        const seed = document.createElement('div');
+        seed.className = 'tamarind-seed';
+        const yOff = (s - showCount / 2) * 4.5;
+        const rot = (s * 41) % 360;
+        seed.style.left = `calc(50% - 7px)`;
+        seed.style.top = `calc(50% + ${yOff}px - 6px)`;
+        seed.style.transform = `rotate(${rot}deg)`;
+        mc.appendChild(seed);
+      }
+    });
+
+    document.getElementById('p1-score').innerText = motherBank[1];
+    document.getElementById('p2-score').innerText = motherBank[2];
+    document.getElementById('p1-pod').classList.toggle('active', currentTurn === 1);
+    document.getElementById('p2-pod').classList.toggle('active', currentTurn === 2);
   }
 
-  // Turn Handling & Sowing Motion
-  async function onCupTapped(index) {
-    if (isEngineBusy) return;
-    if (activeTurn === 1 && (index < 0 || index > 6)) return;
-    if (activeTurn === 2 && (index < 7 || index > 13)) return;
+  async function onPitClick(index) {
+    if (isBusy) return;
+    if (currentTurn === 1 && (index < 0 || index > 6)) return;
+    if (currentTurn === 2 && (index < 7 || index > 13)) return;
     if (pits[index] === 0) return;
 
     await executeSowing(index);
   }
 
-  async function executeSowing(startIndex) {
-    isEngineBusy = true;
-    let hand = pits[startIndex];
-    pits[startIndex] = 0;
-    paintBoard();
-    playSeedAcousticClack();
+  async function executeSowing(startPit) {
+    isBusy = true;
+    let hand = pits[startPit];
+    pits[startPit] = 0;
+    renderBoard();
+    playNaturalSeedDrop();
 
-    // Spawn Animated Hand
-    const handEl = document.getElementById('flying-hand');
-    const handCount = document.getElementById('flying-hand-count');
-    handEl.style.display = 'block';
-
-    let curr = startIndex;
-    moveHandToCup(curr, hand);
+    let curr = startPit;
 
     while (true) {
-      // Sow counter-clockwise (deliberate, steady speed: 560ms per drop)
+      // Sow counter-clockwise with deliberate, relaxed timing
       while (hand > 0) {
-        curr = (curr + 1) % CUP_COUNT;
+        curr = (curr + 1) % TOTAL_PITS;
         pits[curr]++;
         hand--;
 
-        playSeedAcousticClack();
-        pulseCup(curr);
-        moveHandToCup(curr, hand);
-        paintBoard();
+        playNaturalSeedDrop();
+        highlightPit(curr);
+        renderBoard();
+        await sleep(520);
 
-        await sleep(560);
-
-        // Pasu Rule: 4 Seeds accumulated in any pit during sowing
+        // Pasu Rule: Exactly 4 seeds accumulated during sowing
         if (pits[curr] === 4) {
           const owner = curr <= 6 ? 1 : 2;
-          bank[owner] += 4;
+          motherBank[owner] += 4;
           pits[curr] = 0;
-          playCaptureChime();
-          document.getElementById('status-label').innerText = `Pasu! 4 seeds captured by Player ${owner}!`;
-          paintBoard();
+          playCaptureSound();
+          document.getElementById('status-text').innerText = `Pasu! 4 seeds captured by ${playerNames[owner]}!`;
+          renderBoard();
           await sleep(600);
         }
       }
 
-      // Hand is empty: examine the subsequent cup
-      const nextCup = (curr + 1) % CUP_COUNT;
-
-      if (pits[nextCup] > 0) {
-        // Continuous scoop
-        hand = pits[nextCup];
-        pits[nextCup] = 0;
-        curr = nextCup;
-
-        playSeedAcousticClack();
-        moveHandToCup(curr, hand);
-        paintBoard();
-        document.getElementById('status-label').innerText = `Scooping up seeds from next cup...`;
-        await sleep(620);
+      // Check next pit
+      const nextPit = (curr + 1) % TOTAL_PITS;
+      if (pits[nextPit] > 0) {
+        // Scoop up next pit
+        hand = pits[nextPit];
+        pits[nextPit] = 0;
+        curr = nextPit;
+        playNaturalSeedDrop();
+        renderBoard();
+        document.getElementById('status-text').innerText = `Scooping next cup...`;
+        await sleep(550);
       } else {
-        // Next cup is empty -> Capture from adjacent cup!
-        handEl.style.display = 'none';
-        const captureCup = (nextCup + 1) % CUP_COUNT;
-
-        if (pits[captureCup] > 0) {
-          const won = pits[captureCup];
-          bank[activeTurn] += won;
-          pits[captureCup] = 0;
-          playCaptureChime();
-          document.getElementById('status-label').innerText = `Player ${activeTurn} captured ${won} seeds!`;
+        // Next pit is empty -> Capture from adjacent cup!
+        const capturePit = (nextPit + 1) % TOTAL_PITS;
+        if (pits[capturePit] > 0) {
+          const won = pits[capturePit];
+          motherBank[currentTurn] += won;
+          pits[capturePit] = 0;
+          playCaptureSound();
+          document.getElementById('status-text').innerText = `${playerNames[currentTurn]} captured ${won} seeds!`;
         } else {
-          document.getElementById('status-label').innerText = `Turn ended. Empty cup.`;
+          document.getElementById('status-text').innerText = `Empty cup. Turn ended.`;
         }
-
-        paintBoard();
+        renderBoard();
         await sleep(500);
         break;
       }
     }
 
-    handEl.style.display = 'none';
-    activeTurn = activeTurn === 1 ? 2 : 1;
-    isEngineBusy = false;
-    paintBoard();
+    currentTurn = currentTurn === 1 ? 2 : 1;
+    isBusy = false;
+    renderBoard();
 
-    if (checkMatchOver()) return;
+    if (checkEndGame()) return;
 
-    if (activeTurn === 2 && isAiMode) {
-      document.getElementById('status-label').innerText = "AI is thinking...";
+    if (currentTurn === 2 && isAiMode) {
+      document.getElementById('status-text').innerText = `${playerNames[2]} is thinking...`;
       await sleep(900);
-      runAiTurn();
+      runAi();
     } else {
-      document.getElementById('status-label').innerText = `Player ${activeTurn}'s turn.`;
+      document.getElementById('status-text').innerText = `${playerNames[currentTurn]}'s turn.`;
     }
   }
 
-  function moveHandToCup(index, count) {
-    const cupEl = document.getElementById(`cup-${index}`);
-    const handEl = document.getElementById('flying-hand');
-    const handCount = document.getElementById('flying-hand-count');
-    if (!cupEl || !handEl) return;
-
-    const rect = cupEl.getBoundingClientRect();
-    handEl.style.left = `${rect.left + rect.width / 2}px`;
-    handEl.style.top = `${rect.top - 15}px`;
-    handCount.innerText = count;
-  }
-
-  function pulseCup(index) {
-    const el = document.getElementById(`cup-${index}`);
-    if (el) {
-      el.classList.add('active-target');
-      setTimeout(() => el.classList.remove('active-target'), 480);
-    }
-  }
-
-  // AI Decision Engine (Picks move with optimal seed count & capture probability)
-  function runAiTurn() {
-    const validMoves = [];
+  function runAi() {
+    const valid = [];
     for (let i = 7; i <= 13; i++) {
-      if (pits[i] > 0) validMoves.push(i);
+      if (pits[i] > 0) valid.push(i);
     }
-    if (!validMoves.length) return;
-
-    // Sort by seed count
-    validMoves.sort((a, b) => pits[b] - pits[a]);
-    executeSowing(validMoves[0]);
+    if (!valid.length) return;
+    valid.sort((a, b) => pits[b] - pits[a]);
+    executeSowing(valid[0]);
   }
 
-  function checkMatchOver() {
-    const p1Empty = pits.slice(0, 7).every(s => s === 0);
-    const p2Empty = pits.slice(7, 14).every(s => s === 0);
+  function checkEndGame() {
+    const p1Empty = pits.slice(0, 7).every(v => v === 0);
+    const p2Empty = pits.slice(7, 14).every(v => v === 0);
 
     if (p1Empty || p2Empty) {
-      // Collect remaining seeds
-      for (let i = 0; i < 7; i++) { bank[1] += pits[i]; pits[i] = 0; }
-      for (let i = 7; i < 14; i++) { bank[2] += pits[i]; pits[i] = 0; }
-      paintBoard();
+      for (let i = 0; i < 7; i++) { motherBank[1] += pits[i]; pits[i] = 0; }
+      for (let i = 7; i < 14; i++) { motherBank[2] += pits[i]; pits[i] = 0; }
+      renderBoard();
 
-      let outcome = "Game Drawn!";
-      if (bank[1] > bank[2]) outcome = "Player 1 Wins!";
-      else if (bank[2] > bank[1]) outcome = "Player 2 Wins!";
+      let victor = "Game Tied!";
+      if (motherBank[1] > motherBank[2]) victor = `${playerNames[1]} Wins!`;
+      else if (motherBank[2] > motherBank[1]) victor = `${playerNames[2]} Wins!`;
 
-      document.getElementById('status-label').innerText = `Match Concluded! ${outcome}`;
+      document.getElementById('status-text').innerText = `Game Over! ${victor}`;
       return true;
     }
     return false;
   }
 
-  function startMatch(ai) {
-    pits = new Array(CUP_COUNT).fill(SEEDS_PER_CUP);
-    bank = { 1: 0, 2: 0 };
-    activeTurn = 1;
-    isAiMode = ai;
-    isEngineBusy = false;
-    document.getElementById('status-label').innerText = `Match Started (${ai ? 'vs AI' : 'Pass & Play'}). Player 1 turn.`;
-    paintBoard();
-  }
-
-  function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen().catch(() => {});
+  function highlightPit(index) {
+    const el = document.getElementById(`pit-${index}`);
+    if (el) {
+      el.classList.add('active-sow');
+      setTimeout(() => el.classList.remove('active-sow'), 420);
     }
   }
 
-  function showHelpModal() {
-    document.getElementById('help-modal').classList.add('visible');
+  function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+    }
   }
 
-  function hideHelpModal() {
-    document.getElementById('help-modal').classList.remove('visible');
-  }
+  function openHelp() { document.getElementById('help-modal').classList.add('open'); }
+  function closeHelp() { document.getElementById('help-modal').classList.remove('open'); }
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  // Window resize handler to maintain circular cups
-  window.addEventListener('resize', paintBoard);
-
-  createBoard();
+  initBoardDOM();
 </script>
 </body>
 </html>
