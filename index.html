@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b0d06">
-<title>பல்லாங்குழி • Heritage Edition (v3.6.2 • Learn & Celebrate)</title>
+<title>பல்லாங்குழி • Heritage Edition (v3.6.3 • Heritage Journey)</title>
 <style>
 :root {
   --brass:#efc875; --gold-dim:#a77b36; --ink:#180b05; --text:#f6ebd9;
@@ -258,13 +258,49 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 @media(max-width:420px){.tutorial-card{padding:14px}.tutorial-board-shell{padding:6px}.tutorial-board{padding:7px 5px}.tutorial-pit{border-width:1px}.tutorial-copy{font-size:12px}.tutorial-actions button{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.gain-float,.store-celebrate,.score-bloom,.victory-emblem{animation:none!important}.tutorial-hand{transition:none!important}}
 
+/* V3.6.3: quiet engagement controls; preserve the eight-button action grid. */
+.stats-trigger{flex:0 0 auto;border:1px solid #977146;border-radius:9px;background:#2b1b12;color:#f4d6aa;padding:8px 10px;font-size:12px;font-weight:800;white-space:nowrap;min-height:36px}
+.stats-trigger:hover{background:#49301a}
+.top-strip .stats-trigger{margin-left:auto}
+@media(max-width:700px){.top-strip .stats-trigger{font-size:11px;padding:5px 7px;min-height:33px}.players-scoreboard{gap:4px}.brand{font-size:14px}.player-pod{max-width:78px}}
+.resume-panel{margin-top:16px;border:1px solid #7caf8b;background:#143b2bbb;padding:13px;border-radius:13px;text-align:left}
+.resume-panel[hidden],.unlock-list[hidden]{display:none!important}
+.resume-heading{font-size:14px;font-weight:850;color:#aeffdb;margin-bottom:3px}
+.resume-summary{color:#e6d7bf;font-size:12px;line-height:1.5;margin-bottom:8px}
+.resume-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.resume-controls button{margin:0;padding:11px 5px;border-radius:9px;font-size:12px;font-weight:850;min-height:43px}
+.resume-go{background:#a5e9b7;border:0;color:#143221}
+.resume-discard{background:#392820;border:1px solid #997c56;color:#f4dfc4}
+.stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:13px 0}
+.stat-tile{border:1px solid #755434;background:#332015;border-radius:11px;padding:10px 5px;text-align:center}
+.stat-tile strong{display:block;color:#ffe1a6;font-size:23px;font-variant-numeric:tabular-nums}
+.stat-tile small{display:block;color:#cbb095;font-size:10px;margin-top:3px}
+.stats-section-title{color:#f2ca86;font-size:13px;font-weight:850;margin:18px 0 9px}
+.achievement-row{display:flex;align-items:center;gap:10px;border:1px solid #614a33;border-radius:12px;padding:9px;margin:7px 0;background:#29190e}
+.achievement-row.unlocked{border-color:#4ca780;background:#17402b77}
+.achievement-icon{font-size:24px;width:31px;flex:none;text-align:center;filter:grayscale(1);opacity:.55}
+.unlocked .achievement-icon{filter:none;opacity:1}
+.achievement-content{flex:1;min-width:0}
+.achievement-name{font-size:12px;font-weight:850;color:#f4e2c5}
+.achievement-detail{font-size:11px;color:#baa38c;margin-top:2px}
+.achievement-progress{height:4px;border-radius:10px;background:#0b0b09;margin-top:6px;overflow:hidden}
+.achievement-progress span{display:block;height:100%;background:#50d39a;max-width:100%;border-radius:10px}
+.match-history{display:flex;flex-direction:column;gap:6px}
+.match-record{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px;border-radius:9px;background:#2a1b12;border:1px solid #59432f;font-size:11px;color:#d4bca4}
+.match-record strong{font-size:12px;white-space:nowrap;color:#f4d49c}
+.match-record .win{color:#80e9b4}.match-record .loss{color:#ffb0a1}
+.stats-footnote{font-size:11px;color:#ad947d;line-height:1.5;margin-top:10px}
+.unlock-list{border:1px solid #63b789;background:#17463491;border-radius:12px;padding:10px;color:#c6ffe0;font-size:12px;line-height:1.5;margin:11px 0}
+#stats-modal .modal-card{max-height:min(90dvh,830px)}
+@media(max-width:360px){.stats-grid{gap:5px}.stat-tile strong{font-size:20px}.top-strip{gap:4px}.top-strip .stats-trigger{padding:5px 4px;font-size:10px}.top-strip .brand{font-size:12px}.player-pod{max-width:67px}.player-name{max-width:62px}}
 </style>
 </head>
 <body>
 
 <main id="game-frame" aria-label="Pallanguzhi game">
   <header class="top-strip">
-    <div class="brand">பல்லாங்குழி<small>LIVING BOARD · V3.6.2</small></div>
+    <div class="brand">பல்லாங்குழி<small>LIVING BOARD · V3.6.3</small></div>
+    <button type="button" class="stats-trigger" id="stats-btn" aria-label="Open match statistics and achievements">📊 Stats</button>
     <div class="players-scoreboard">
       <div class="player-pod" id="p2-pod"><span class="player-name" id="p2-label">Azhagi (AI)</span><span class="score-badge" id="p2-score">0</span></div>
       <div class="player-pod active" id="p1-pod"><span class="player-name" id="p1-label">Player 1</span><span class="score-badge" id="p1-score">0</span></div>
@@ -335,7 +371,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 
 <div class="overlay" id="setup-modal" role="dialog" aria-modal="true" aria-label="Set up game">
   <div class="modal-card">
-    <h1>பல்லாங்குழி</h1><p class="sub">TAMIL HERITAGE · INTERACTIVE EDITION</p>
+    <h1>பல்லாங்குழி</h1><p class="sub">TAMIL HERITAGE · JOURNEY EDITION</p>
     <span class="field-label">Game mode</span>
     <div class="button-grid"><button type="button" class="option active" data-mode="ai">👤 vs Computer</button><button type="button" class="option" data-mode="two">👥 2 Players</button></div>
     <div class="difficulty-chooser" id="difficulty-picker">
@@ -358,7 +394,15 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <label class="slider-line" for="volume-input">🔊 <input type="range" id="volume-input" min="0" max="100" value="65" step="5"><output id="volume-display">65%</output></label>
     <div style="text-align:center"><span class="live-badge">✋ Opposing hands &nbsp; • &nbsp; 🫘 Natural pace &nbsp; • &nbsp; 🔊 Bead clacks</span></div>
     <button type="button" class="secondary-btn tutorial-launch" id="tutorial-setup-btn">🎓 Learn to play · கற்றுக்கொள்வோம்</button>
-    <button type="button" class="primary-btn" id="start-btn">PLAY GAME · ஆடுவோம்</button>
+    <section class="resume-panel" id="resume-panel" hidden aria-label="Continue saved match">
+      <div class="resume-heading">💾 Continue your match?</div>
+      <div class="resume-summary" id="resume-summary"></div>
+      <div class="resume-controls">
+        <button type="button" class="resume-go" id="resume-btn">▶ Continue</button>
+        <button type="button" class="resume-discard" id="discard-save-btn">✕ Discard save</button>
+      </div>
+    </section>
+    <button type="button" class="primary-btn" id="start-btn">START NEW MATCH · ஆடுவோம்</button>
   </div>
 </div>
 
@@ -373,7 +417,9 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       <p><strong>5. Pasu · பசு:</strong> Whenever sowing makes a cup contain exactly 4 seeds, its owner immediately collects those 4 seeds into their store, even during an opponent's move.</p>
       <p><strong>6. Match end:</strong> When a player's seven cups are all empty at the end of a turn, this <em>single-round variant</em> ends. Each player collects the seeds left in their own row. Most seeds wins.</p>
       <p><strong>7. Smart play:</strong> Choose Easy, Medium, Hard, or Expert when facing the computer. Tap 💡 Hint on your turn for a suggested cup; the suggestion does not play for you. Tap ↶ Undo to restore the previous human decision (including the computer's reply in AI mode). Undo also works during an animation.</p>
-      <p><strong>8. Interactive lessons (v3.6.2):</strong> Open Learn from Match settings or Rules for four bilingual practice lessons. Each lesson uses a separate board; your current match is never changed.</p>
+      <p><strong>8. Interactive lessons (v3.6.3):</strong> Open Learn from Match settings or Rules for four bilingual practice lessons. Each lesson uses a separate board; your current match is never changed.</p>
+      <p><strong>9. Save &amp; resume (v3.6.3):</strong> The game automatically saves at completed-turn boundaries. If you close the app while beads are moving, Resume restores the position before that move. Use Continue on the setup screen to recover it.</p>
+      <p><strong>10. Heritage Journey:</strong> Tap 📊 Stats to view results, recent matches and achievements. Statistics count wins from the bottom player’s perspective and are kept only in this browser.</p>
       <p class="note">Player 1’s hand enters from below and points toward the top plank, while Player 2’s hand mirrors it from above. The hand orientation follows the rotated board on phones. Regional Pallanguzhi rules can vary; this game deliberately follows the six rules above. Completed moves conserve exactly 70 seeds. Nonterminating moves are rejected instead of applying a partial turn. The 🔊 Sound button plays short procedurally rendered wood taps and bead-on-wood clacks (no internet required). Volume is adjustable in Match settings. An animated hand collects and distributes beads; collisions and bounces are visual approximations, not a full physics simulation. Pace cycles between Natural (default), Relaxed and Fast. The “Finish move” control completes the current move instantly without changing its result.</p>
     </div>
     <button type="button" class="secondary-btn tutorial-launch" id="tutorial-rules-btn">🎓 Try the interactive tutorial · பயிற்சி</button>
@@ -389,12 +435,28 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <p class="result-message" id="result-message"></p>
     <div class="final-scores result-score-cards" id="final-scores"></div>
     <div class="score-comparison" aria-label="Share of captured seeds" id="score-comparison"><span id="score-share-1"></span><span id="score-share-2"></span></div>
+    <div class="unlock-list" id="new-unlocks" hidden aria-live="polite"></div>
+    <button type="button" class="secondary-btn" id="result-stats-btn">📊 Match history & achievements</button>
     <button type="button" class="secondary-btn" id="undo-end-btn" hidden>↶ Undo last move</button>
     <button type="button" class="primary-btn" id="again-btn">↻ Play again</button>
     <button type="button" class="secondary-btn" id="change-btn">⚙️ Change match settings</button>
   </div>
 </div>
 
+<div class="overlay hidden" id="stats-modal" role="dialog" aria-modal="true" aria-label="Match statistics and achievements">
+  <div class="modal-card">
+    <h2>📊 Heritage Journey · சாதனைகள்</h2>
+    <p class="difficulty-note">These results are for the bottom player (Player 1), across both game modes. Saved on this device only.</p>
+    <div class="stats-grid" id="stats-grid"></div>
+    <div class="stats-section-title">🏅 Achievements</div>
+    <div id="achievements"></div>
+    <div class="stats-section-title">🗓 Recent matches</div>
+    <div class="match-history" id="match-history"></div>
+    <p class="stats-footnote" id="stats-footnote">Results are saved locally in this browser. Clearing browser data also clears progress.</p>
+    <button type="button" class="secondary-btn" id="reset-stats-btn">🗑 Clear match statistics</button>
+    <button type="button" class="primary-btn" id="close-stats-btn">Back to game</button>
+  </div>
+</div>
 <!-- All four tutorial lessons are isolated from match state; real matches stay untouched. -->
 <div class="overlay hidden" id="tutorial-modal" role="dialog" aria-modal="true" aria-label="Interactive Pallanguzhi tutorial">
   <div class="modal-card tutorial-card">
@@ -434,7 +496,11 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   const row = p => p === 1 ? [0,1,2,3,4,5,6] : [7,8,9,10,11,12,13];
   let options = {ai:true, difficulty:'medium', theme:'bright', seedStyle:'natural', fast:false, pace:'natural', sound:true, volume:.65};
   let names = {1:'Player 1',2:'Azhagi (AI)'};
-  let state = {pits:Array(N).fill(START_SEEDS), banks:[0,0,0], turn:1, busy:false, over:false, epoch:0, aiTicket:0, started:false, activeMove:null, hintPit:null, history:[]};
+  let state = {pits:Array(N).fill(START_SEEDS), banks:[0,0,0], turn:1, busy:false, over:false, epoch:0, aiTicket:0, started:false, activeMove:null, hintPit:null, history:[], metrics:{moves:0,p1Pasu:0,p1Captured:0,biggestCapture:0}, matchId:null, matchStartedAt:0, recordedStatsBefore:null, resultRecorded:false};
+  const PROGRESS_KEY='pallanguzhi.heritage.v363.progress';
+  const STATS_KEY='pallanguzhi.heritage.v363.stats';
+  let stats={matches:0,wins:0,losses:0,draws:0,streak:0,bestStreak:0,bestScore:0,pasu:0,captured:0,expertWins:0,history:[]};
+  const emptyMetrics=()=>({moves:0,p1Pasu:0,p1Captured:0,biggestCapture:0});
   let audio = null, toastTimer = null;
   const activeAnims = new Set();
   const feedbackTimers = new Set();
@@ -446,6 +512,216 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   const layoutCenters = new Map();
   let layoutDirty = true;
   const portraitBoard = () => matchMedia('(orientation: portrait) and (max-width:700px)').matches;
+
+  // Browser-only progression. A saved position is ALWAYS at a completed-turn
+  // boundary. If the tab closes during a bead flight, the saved position is
+  // the beginning of that move, never an illegal partially sown board.
+  function storedGet(key){try{return localStorage.getItem(key);}catch{return null;}}
+  function storedSet(key,data){try{localStorage.setItem(key,JSON.stringify(data));return true;}catch{return false;}}
+  function storedRemove(key){try{localStorage.removeItem(key);}catch{}}
+  const isWhole=(v,max=TOTAL_SEEDS)=>Number.isInteger(v)&&v>=0&&v<=max;
+  function validPosition(pos){
+    return pos && Array.isArray(pos.pits) && pos.pits.length===N &&
+      pos.pits.every(v=>isWhole(v)) && Array.isArray(pos.banks) && pos.banks.length===3 &&
+      isWhole(pos.banks[1]) && isWhole(pos.banks[2]) && [1,2].includes(pos.turn) &&
+      pos.pits.reduce((a,b)=>a+b,0)+pos.banks[1]+pos.banks[2]===TOTAL_SEEDS &&
+      validMoves(pos.turn,pos.pits).length>0;
+  }
+  function cleanMetrics(data){
+    const m=emptyMetrics();
+    if(!data || typeof data!=='object')return m;
+    for(const key of Object.keys(m))if(isWhole(data[key],1_000_000))m[key]=data[key];
+    return m;
+  }
+  function loadSavedMatch(){
+    const raw=storedGet(PROGRESS_KEY);if(!raw)return null;
+    try{
+      const data=JSON.parse(raw);
+      if(data.version!==1 || typeof data.matchId!=='string' || !validPosition(data))throw new Error('invalid position');
+      if(!data.options || typeof data.options!=='object' || !data.names || typeof data.names!=='object')throw new Error('invalid metadata');
+      const history=Array.isArray(data.history)?data.history.slice(-40).filter(validPosition).map(h=>({...h,metrics:cleanMetrics(h.metrics)})):[];
+      const safeOptions={
+        ai:typeof data.options.ai==='boolean'?data.options.ai:true,
+        difficulty:['easy','medium','hard','expert'].includes(data.options.difficulty)?data.options.difficulty:'medium',
+        theme:['bright','dark'].includes(data.options.theme)?data.options.theme:'bright',
+        seedStyle:['natural','colored'].includes(data.options.seedStyle)?data.options.seedStyle:'natural',
+        pace:['natural','relaxed','fast'].includes(data.options.pace)?data.options.pace:'natural',
+        sound:typeof data.options.sound==='boolean'?data.options.sound:true,
+        volume:typeof data.options.volume==='number'&&Number.isFinite(data.options.volume)?Math.max(0,Math.min(1,data.options.volume)):.65
+      };
+      return {...data,history,options:safeOptions,
+        names:{1:String(data.names[1]||'Player 1').slice(0,18),2:String(data.names[2]||'Player 2').slice(0,18)},
+        metrics:cleanMetrics(data.metrics)};
+    }catch{storedRemove(PROGRESS_KEY);return null;}
+  }
+  function refreshResumePanel(){
+    const saved=loadSavedMatch(),panel=$('resume-panel');if(!panel)return;
+    panel.hidden=!saved;
+    if(saved){
+      const when=new Date(saved.savedAt||0);
+      const date=Number.isNaN(when.getTime())?'Recently':when.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+      $('resume-summary').textContent=`${saved.names[1]} vs ${saved.names[2]} · ${saved.options.ai?'Computer · '+saved.options.difficulty:'2 Players'} · Turn: ${saved.names[saved.turn]} · ${date}.`;
+    }
+  }
+  function saveStableMatch(){
+    if(!state.started||state.over||state.activeMove)return;
+    const pos={version:1,matchId:state.matchId,savedAt:Date.now(),
+      pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,
+      history:state.history.slice(-40).map(h=>({pits:h.pits.slice(),banks:h.banks.slice(),turn:h.turn,metrics:cleanMetrics(h.metrics)})),
+      metrics:{...state.metrics},matchStartedAt:state.matchStartedAt,
+      options:{ai:options.ai,difficulty:options.difficulty,theme:options.theme,seedStyle:options.seedStyle,pace:options.pace,sound:options.sound,volume:options.volume},
+      names:{...names}};
+    if(validPosition(pos))storedSet(PROGRESS_KEY,pos);
+  }
+  function removeSavedMatch(){storedRemove(PROGRESS_KEY);refreshResumePanel();}
+  function applySavedOptions(saved){
+    Object.assign(options,saved.options,{fast:saved.options.pace==='fast'});
+    document.body.classList.toggle('dark',options.theme==='dark');
+    for(const [attr,current] of [['mode',options.ai?'ai':'two'],['difficulty',options.difficulty],['theme',options.theme],['seeds',options.seedStyle]]){
+      document.querySelectorAll('[data-'+attr+']').forEach(b=>{
+        const selected=b.dataset[attr]===current;
+        b.classList.toggle('active',selected);
+        if(attr==='difficulty')b.setAttribute('aria-pressed',String(selected));
+      });
+    }
+    $('difficulty-picker').hidden=!options.ai;
+    $('difficulty-description').textContent=difficultyDescriptions[options.difficulty];
+    $('volume-input').value=Math.round(options.volume*100);
+    $('volume-display').textContent=Math.round(options.volume*100)+'%';
+    $('sound-btn').textContent=options.sound?'🔊 Sound':'🔇 Muted';
+    $('sound-btn').setAttribute('aria-pressed',String(options.sound));
+    $('sound-btn').classList.toggle('sound-off',!options.sound);
+    $('speed-btn').textContent={natural:'🎞 Pace: Natural',relaxed:'🌿 Pace: Relaxed',fast:'⏩ Pace: Fast'}[options.pace];
+    $('speed-btn').setAttribute('aria-pressed',String(options.fast));
+    $('theme-btn').textContent=options.theme==='bright'?'☀️ Theme':'🌙 Theme';
+    if(audio)audio.pallanguzhiMaster.gain.setTargetAtTime(options.sound?options.volume:0,audio.currentTime,.02);
+  }
+  function applyPlayerLabels(){
+    for(const p of [1,2]){
+      $('p'+p+'-label').textContent=names[p];
+      $('owner-'+p).textContent=names[p]+' • '+(p===1?'BOTTOM':'TOP');
+      $('mc-label-'+p).textContent=names[p].slice(0,6)+'\nSTORE';
+    }
+  }
+  function resumeMatch(){
+    const saved=loadSavedMatch();if(!saved){refreshResumePanel();toast('No valid saved match found.',1800);return;}
+    invalidateMatch();
+    applySavedOptions(saved);
+    names={...saved.names};$('p1-input').value=names[1];$('p2-input').value=names[2];
+    state.pits=saved.pits.slice();state.banks=saved.banks.slice();state.turn=saved.turn;
+    state.history=saved.history;state.metrics=saved.metrics;
+    state.over=false;state.started=true;state.matchId=saved.matchId;
+    state.matchStartedAt=isWhole(saved.matchStartedAt,9e15)?saved.matchStartedAt:Date.now();
+    state.recordedStatsBefore=null;state.resultRecorded=false;
+    applyPlayerLabels();
+    $('setup-modal').classList.add('hidden');$('end-modal').classList.add('hidden');$('stats-modal').classList.add('hidden');
+    render();setStatus(`💾 Match resumed · ${names[state.turn]}'s turn.`);
+    ensureAudio();
+    if(options.ai&&state.turn===2)scheduleAiTurn(()=>state.started&&!state.over);
+  }
+  function discardSavedMatch(){removeSavedMatch();toast('Saved match discarded. Start a new game.',1600);}
+
+  // Cumulative totals never rely on the limited recent-match list.
+  function defaultStats(){return {matches:0,wins:0,losses:0,draws:0,streak:0,bestStreak:0,bestScore:0,pasu:0,captured:0,expertWins:0,history:[]};}
+  function loadStats(){
+    try{
+      const v=JSON.parse(storedGet(STATS_KEY)||'null');
+      if(!v||v.version!==1||typeof v!=='object')return defaultStats();
+      const clean=defaultStats();
+      for(const key of Object.keys(clean))if(key!=='history'&&isWhole(v[key],1_000_000))clean[key]=v[key];
+      if(Array.isArray(v.history))clean.history=v.history.slice(0,20).filter(r=>r&&typeof r==='object'&&[1,2].every(p=>isWhole(r['score'+p])) && ['win','loss','draw'].includes(r.result)).map(r=>({
+        at:isWhole(r.at,9e15)?r.at:0,result:r.result,score1:r.score1,score2:r.score2,
+        ai:Boolean(r.ai),difficulty:String(r.difficulty||'medium').slice(0,12),
+        name:String(r.name||'Player 1').slice(0,18)
+      }));
+      return clean;
+    }catch{return defaultStats();}
+  }
+  function saveStats(){storedSet(STATS_KEY,{version:1,...stats});}
+  const achievements=[
+    {id:'first',emoji:'🏆',name:'First Victory',desc:'Win your first match',value:()=>stats.wins,goal:1},
+    {id:'wins5',emoji:'⭐',name:'Five Victories',desc:'Win 5 matches',value:()=>stats.wins,goal:5},
+    {id:'pasu10',emoji:'🌰',name:'Pasu Master',desc:'Earn 10 Pasu bonuses as Player 1',value:()=>stats.pasu,goal:10},
+    {id:'expert',emoji:'👑',name:'Expert Challenger',desc:'Beat Expert AI',value:()=>stats.expertWins,goal:1},
+    {id:'ten',emoji:'🎯',name:'Heritage Regular',desc:'Complete 10 matches',value:()=>stats.matches,goal:10}
+  ];
+  function achieved(){return achievements.filter(a=>a.value()>=a.goal).map(a=>a.id);}
+  function recordFinishedMatch(){
+    if(state.resultRecorded)return;
+    const before=achieved();
+    state.recordedStatsBefore=JSON.parse(JSON.stringify(stats));
+    state.resultRecorded=true;
+    const s1=state.banks[1],s2=state.banks[2];
+    const result=s1===s2?'draw':s1>s2?'win':'loss';
+    stats.matches++;
+    if(result==='win'){
+      stats.wins++;stats.streak++;
+      if(options.ai&&options.difficulty==='expert')stats.expertWins++;
+    }else{
+      if(result==='loss')stats.losses++;else stats.draws++;
+      stats.streak=0;
+    }
+    stats.bestStreak=Math.max(stats.bestStreak,stats.streak);
+    stats.bestScore=Math.max(stats.bestScore,s1);
+    stats.pasu+=state.metrics.p1Pasu;
+    stats.captured+=state.metrics.p1Captured;
+    stats.history.unshift({at:Date.now(),result,score1:s1,score2:s2,ai:options.ai,difficulty:options.difficulty,name:names[1]});
+    stats.history=stats.history.slice(0,20);
+    saveStats();
+    const unlocked=achievements.filter(a=>!before.includes(a.id)&&a.value()>=a.goal);
+    $('new-unlocks').hidden=unlocked.length===0;
+    $('new-unlocks').textContent=unlocked.length?'🏅 Achievement unlocked: '+unlocked.map(a=>a.emoji+' '+a.name).join(' · '):'';
+  }
+  function rollbackFinishedResult(){
+    if(state.resultRecorded&&state.recordedStatsBefore){
+      stats=state.recordedStatsBefore;
+      saveStats();
+    }
+    state.resultRecorded=false;state.recordedStatsBefore=null;
+    $('new-unlocks').hidden=true;
+  }
+  function renderStats(){
+    const grid=$('stats-grid');grid.replaceChildren();
+    const rate=stats.matches?Math.round(stats.wins/stats.matches*100):0;
+    const values=[['Matches',stats.matches],['Wins',stats.wins],['Win rate',rate+'%'],
+      ['Best streak',stats.bestStreak],['Best score',stats.bestScore],['Pasu bonuses',stats.pasu]];
+    for(const [label,value] of values){
+      const tile=document.createElement('div');tile.className='stat-tile';
+      const strong=document.createElement('strong');strong.textContent=value;
+      const small=document.createElement('small');small.textContent=label;
+      tile.append(strong,small);grid.append(tile);
+    }
+    const ach=$('achievements');ach.replaceChildren();
+    for(const a of achievements){
+      const n=Math.min(a.goal,a.value());const done=n>=a.goal;
+      const item=document.createElement('div');item.className='achievement-row'+(done?' unlocked':'');
+      const emoji=document.createElement('span');emoji.className='achievement-icon';emoji.textContent=a.emoji;
+      const content=document.createElement('div');content.className='achievement-content';
+      const title=document.createElement('div');title.className='achievement-name';title.textContent=a.name+(done?' · Unlocked ✓':'');
+      const desc=document.createElement('div');desc.className='achievement-detail';desc.textContent=`${a.desc} · ${n}/${a.goal}`;
+      const bar=document.createElement('div');bar.className='achievement-progress';const fill=document.createElement('span');fill.style.width=n/a.goal*100+'%';bar.append(fill);
+      content.append(title,desc,bar);item.append(emoji,content);ach.append(item);
+    }
+    const hist=$('match-history');hist.replaceChildren();
+    if(!stats.history.length){const empty=document.createElement('p');empty.className='difficulty-note';empty.textContent='No completed matches yet. Finish a match to see your journey.';hist.append(empty);}
+    else for(const m of stats.history){
+      const item=document.createElement('div');item.className='match-record';
+      const left=document.createElement('span');
+      const d=new Date(m.at);const when=!Number.isNaN(d.getTime())?d.toLocaleDateString(undefined,{month:'short',day:'numeric'}):'—';
+      left.textContent=`${when} · ${m.ai?'AI '+m.difficulty:'2 Players'}`;
+      const right=document.createElement('strong');right.className=m.result;
+      right.textContent=`${m.result==='win'?'Win':m.result==='loss'?'Loss':'Draw'} · ${m.score1}–${m.score2}`;
+      item.append(left,right);hist.append(item);
+    }
+    $('stats-footnote').textContent=`Player 1 results: ${stats.wins} wins · ${stats.losses} losses · ${stats.draws} draws. Records show the latest 20 matches. Totals and achievements stay on this device only.`;
+  }
+  function openStats(){renderStats();$('stats-modal').classList.remove('hidden');}
+  function closeStats(){$('stats-modal').classList.add('hidden');}
+  function resetStats(){
+    if(!confirm('Permanently erase match statistics and achievements on this device? This will not delete your saved match.'))return;
+    stats=defaultStats();state.recordedStatsBefore=null;saveStats();renderStats();toast('Statistics cleared.',1300);
+  }
+
 
   // Pure engine: all moves are computed before any UI changes.
   // Illegal moves, broken conservation and repeating sow loops never commit partial state.
@@ -1047,7 +1323,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   }
   function chooseAI(){return recommendMove(2,options.difficulty);}
 
-  function snapshot(){return {pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn};}
+  function snapshot(){return {pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,metrics:{...state.metrics}};}
   function updateAssistButtons(){
     const canHint=state.started&&!state.over&&!state.busy&&!(options.ai&&state.turn===2)&&validMoves(state.turn).length>0;
     $('hint-btn').disabled=!canHint;
@@ -1083,14 +1359,17 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   function undoMove(){
     if(!state.started||!state.history.length)return;
     const previous=state.history.pop();
+    if(state.over)rollbackFinishedResult();
     invalidateMatch(); // cancels any AI timer, current animation, or pending bead effects
     state.pits=previous.pits.slice();state.banks=previous.banks.slice();
+    state.metrics=cleanMetrics(previous.metrics);
     state.turn=previous.turn;state.over=false;state.started=true;
     state.hintPit=null;
     hideHintExplanation();
     $('end-modal').classList.add('hidden');
     render();
     setStatus(`↶ Move undone. ${names[state.turn]}'s turn.`);
+    saveStableMatch();
     toast('↶ Previous turn restored',1100);
   }
 
@@ -1144,22 +1423,34 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     state.banks=running.simulated.banks.slice();
     state.activeMove=null;
     updateSkipButton();
-    completeMove(running.mover,()=>true,false);
+    completeMove(running.mover,()=>true,false,running.simulated);
     if(!state.over)toast('⏭ Move completed',850);
   }
 
   // Single completion path for regular playback and animation-error recovery.
-  function completeMove(mover, live, recovered=false) {
+  function completeMove(mover, live, recovered=false, simulated=null) {
     if (!live()) return;
     state.activeMove=null;
     updateSkipButton();
     hideHand();
+    // Commit match progression ONCE, independent of how visual playback ended.
+    if(simulated){
+      state.metrics.moves++;
+      for(const e of simulated.events){
+        if(e.kind==='pasu'&&e.player===1)state.metrics.p1Pasu++;
+        if(e.kind==='capture'&&e.player===1){
+          state.metrics.p1Captured+=e.count;
+          state.metrics.biggestCapture=Math.max(state.metrics.biggestCapture,e.count);
+        }
+      }
+    }
     if (settleIfFinished(state.pits,state.banks)) {
       state.over=true;state.busy=false;render();finishMatch();return;
     }
     state.turn=other(mover);
     state.busy=false;
     render();
+    saveStableMatch();
     if (options.ai && state.turn===2) {
       scheduleAiTurn(live);
     } else {
@@ -1252,7 +1543,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       if(state.pits.some((v,i)=>v!==simulated.pits[i]) ||
           state.banks[1]!==simulated.banks[1] || state.banks[2]!==simulated.banks[2])
         throw new Error('Game engine/playback mismatch.');
-      completeMove(current,live);
+      completeMove(current,live,false,simulated);
     } catch(err) {
       console.error('Recovered animation failure:',err);
       if(!live())return;
@@ -1260,7 +1551,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       closeAnimations();
       state.pits=simulated.pits.slice();
       state.banks=simulated.banks.slice();
-      completeMove(current,live,true);
+      completeMove(current,live,true,simulated);
     }
   }
 
@@ -1282,6 +1573,8 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   function finishMatch(){
     closeAnimations();
     hideHintExplanation();
+    recordFinishedMatch();
+    removeSavedMatch();
     const score1=state.banks[1],score2=state.banks[2];
     const tied=score1===score2;
     const winner=score1>score2?1:2;
@@ -1311,21 +1604,21 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   function startGame(){
     invalidateMatch();
     state.pits=Array(N).fill(START_SEEDS);state.banks=[0,0,0];state.turn=1;state.over=false;state.started=true;state.history=[];
+    state.metrics=emptyMetrics();state.matchId=`${Date.now()}-${Math.random().toString(36).slice(2,10)}`;state.matchStartedAt=Date.now();
+    state.recordedStatsBefore=null;state.resultRecorded=false;
     names[1]=$('p1-input').value.trim()||'Player 1';
     names[2]=$('p2-input').value.trim()||(options.ai?'Azhagi (AI)':'Player 2');
-    for(const p of [1,2]){
-      $('p'+p+'-label').textContent=names[p];
-      $('owner-'+p).textContent=names[p]+' • '+(p===1?'BOTTOM':'TOP');
-      $('mc-label-'+p).textContent=names[p].slice(0,6)+'\nSTORE';
-    }
-    $('setup-modal').classList.add('hidden');$('end-modal').classList.add('hidden');
+    applyPlayerLabels();
+    $('setup-modal').classList.add('hidden');$('end-modal').classList.add('hidden');$('stats-modal').classList.add('hidden');
     render();setStatus(`${names[1]}'s turn. Choose a cup on your side.`);
+    removeSavedMatch();saveStableMatch();
     ensureAudio();
   }
   function showSetup(){
     invalidateMatch();state.started=false;state.over=false;state.history=[];render();
     $('end-modal').classList.add('hidden');$('rules-modal').classList.add('hidden');$('setup-modal').classList.remove('hidden');
     setStatus('Choose a game mode to start.');
+    refreshResumePanel();
   }
   function selectOption(group,value){
     document.querySelectorAll('[data-'+group+']').forEach(b=>b.classList.toggle('active',b.dataset[group]===value));
@@ -1499,8 +1792,16 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     tutorialRebuild();
   }
   function init(){
+    stats=loadStats();
     createBoard();
     tutorialInit();
+    refreshResumePanel();
+    $('stats-btn').addEventListener('click',openStats);
+    $('result-stats-btn').addEventListener('click',()=>{openStats();});
+    $('close-stats-btn').addEventListener('click',closeStats);
+    $('reset-stats-btn').addEventListener('click',resetStats);
+    $('resume-btn').addEventListener('click',resumeMatch);
+    $('discard-save-btn').addEventListener('click',discardSavedMatch);
     document.querySelectorAll('[data-mode],[data-difficulty],[data-theme],[data-seeds]').forEach(btn=>{
       const group=btn.dataset.mode!==undefined?'mode':btn.dataset.difficulty!==undefined?'difficulty':btn.dataset.theme!==undefined?'theme':'seeds';
       btn.addEventListener('click',()=>selectOption(group,btn.dataset[group]));
@@ -1542,7 +1843,8 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       if(options.sound)beadImpact('drop',1);
     });
     document.addEventListener('keydown',event=>{
-      if(event.key==='Escape'&&!$('tutorial-modal').classList.contains('hidden'))tutorialClose();
+      if(event.key==='Escape'&&!$('stats-modal').classList.contains('hidden'))closeStats();
+      else if(event.key==='Escape'&&!$('tutorial-modal').classList.contains('hidden'))tutorialClose();
       else if(event.key==='Escape'&&!$('rules-modal').classList.contains('hidden'))$('rules-modal').classList.add('hidden');
     });
     window.addEventListener('pointerdown', () => ensureAudio(), { once: true });
@@ -1554,7 +1856,10 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     }
     window.PallanguzhiTest={simulateMove,settleIfFinished,validMoves,owner,skipCurrentMove,undoMove,showHint,recommendMove,getSnapshot:()=>({pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,over:state.over,busy:state.busy,epoch:state.epoch,handVisible:$('player-hand').classList.contains('visible'),activeMove:Boolean(state.activeMove),pace:options.pace,difficulty:options.difficulty,history:state.history.length,hintPit:state.hintPit,handFacing:$('player-hand').dataset.facing}),startGame,chooseAI,
       tutorialOpen,tutorialRebuild,tutorialNext,tutorialPlay,tutorialSetLanguage,
-      getTutorial:()=>({open:tutorial.open,step:tutorial.step,running:tutorial.running,complete:tutorial.complete,pits:tutorial.pits.slice(),banks:tutorial.banks.slice(),lang:tutorial.lang})};
+      getTutorial:()=>({open:tutorial.open,step:tutorial.step,running:tutorial.running,complete:tutorial.complete,pits:tutorial.pits.slice(),banks:tutorial.banks.slice(),lang:tutorial.lang}),
+      getStats:()=>JSON.parse(JSON.stringify(stats)),getSaved:()=>loadSavedMatch(),resumeMatch,discardSavedMatch,openStats,
+      getMetrics:()=>({...state.metrics}),playPit,showSetup,
+      getMatch:()=>({matchId:state.matchId,started:state.started,over:state.over,resultRecorded:state.resultRecorded})};
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
