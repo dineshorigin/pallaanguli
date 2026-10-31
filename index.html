@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b0d06">
-<title>பல்லாங்குழி • Living Board Edition (v3.1)</title>
+<title>பல்லாங்குழி • Living Board Edition (v3.2)</title>
 <style>
 :root {
   --brass:#efc875; --gold-dim:#a77b36; --ink:#180b05; --text:#f6ebd9;
@@ -59,7 +59,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 .seed-colored-2{background:radial-gradient(circle at 28% 24%,#8af6bd,#087b56 70%,#064835)}
 .seed-colored-3{background:radial-gradient(circle at 28% 24%,#91c7ff,#285bbd 70%,#132b6c)}
 .seed-colored-4{background:radial-gradient(circle at 28% 24%,#dfa7ff,#8741c0 70%,#441766)}
-/* Rounded, glossy pieces with soft self-shadow: beads sit inside the carved cups. */
 .tamarind-seed::after{content:"";position:absolute;left:17%;top:13%;width:38%;height:26%;border-radius:50%;background:radial-gradient(ellipse,#fff8 0%,#fff1 65%,transparent 80%);transform:rotate(-18deg)}
 .seed-natural::after{background:radial-gradient(ellipse,#d99f5d8c 0%,#f1bb5012 70%,transparent 85%)}
 .tamarind-seed.seed-landed{animation:bead-settle 235ms cubic-bezier(.2,.85,.2,1.0) backwards}
@@ -69,7 +68,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   73%{transform:translate(-50%,-62%) rotate(calc(var(--rot) - 4deg)) scale(.98,1.07)}
   100%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(1)}
 }
-
 .board-seam{position:absolute;left:6%;right:6%;height:9px;top:50%;transform:translateY(-50%);z-index:10;display:flex;align-items:center;justify-content:space-around;pointer-events:none}
 .board-seam span{width:clamp(21px,5vw,43px);height:9px;border:1px solid #ffe09a;border-radius:2px;background:linear-gradient(#fff0b2,#c79642,#74431c);box-shadow:0 3px 7px #000a}
 .status-message{color:#f4d8b1;font-size:clamp(11px,1.25vw,14px);font-weight:650;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
@@ -79,7 +77,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 .hand-counter{position:fixed;z-index:70;pointer-events:none;display:none;background:linear-gradient(#ffdb91,#d59c3b);color:#211006;border:1px solid #fff3c5;padding:5px 10px;font-size:13px;font-weight:900;border-radius:18px;transform:translate(-50%,-150%);box-shadow:0 6px 11px #000a,0 0 15px #e5af5a4a;transition:left 165ms cubic-bezier(.22,.72,.25,1),top 165ms cubic-bezier(.22,.72,.25,1);font-variant-numeric:tabular-nums}
 .flying-seed{z-index:69;position:fixed;pointer-events:none;left:0;top:0;width:clamp(10px,1.55vw,15px);height:clamp(9px,1.3vw,13px);will-change:transform,filter;filter:drop-shadow(0 4px 5px #0009)}
 .flying-seed.scoop-seed{z-index:71}
-/* A tiny impact halo makes the eye follow the exact cup that received a bead. */
 .pit.drop-impact::before{content:"";position:absolute;inset:24%;border:1px solid #ffe9ad8a;border-radius:50%;pointer-events:none;animation:impact-ring 220ms ease-out forwards;z-index:1}
 @keyframes impact-ring{from{opacity:.9;transform:scale(.5)}to{opacity:0;transform:scale(1.65)}}
 .overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(4,2,1,.88);backdrop-filter:blur(7px);overflow:auto}
@@ -111,7 +108,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   .actions{width:100%;justify-content:space-around}.action-btn{padding:7px 8px;font-size:11px}
   .modal-card{padding:20px}.modal-card h1{font-size:26px}
 }
-/* The full 14-cup board remains tappable when a phone is held upright. */
 @media (orientation:portrait) and (max-width:700px){
   .play-arena{position:absolute;width:calc(100dvh - 156px - env(safe-area-inset-top) - env(safe-area-inset-bottom));max-width:none;height:calc(100dvw - 24px);max-height:none;min-height:0;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);gap:8px}
   .outer-mother-cup{flex-basis:52px;border-width:3px;padding:8px 3px;gap:4px}
@@ -128,7 +124,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
-/* V3 • Animated hand, tactile bead physics, and material-aware sound */
 .player-hand{position:fixed;left:0;top:0;width:clamp(72px,9vw,114px);aspect-ratio:116/165;z-index:73;pointer-events:none;opacity:0;visibility:hidden;transform:translate(-50%,-50%);transition:left 190ms cubic-bezier(.25,.72,.25,1),top 190ms cubic-bezier(.25,.72,.25,1),opacity 170ms ease,visibility 170ms;filter:drop-shadow(7px 14px 8px #000b);will-change:left,top;}
 .player-hand.visible{opacity:.95;visibility:visible}
 .player-hand svg{width:100%;height:100%;overflow:visible}
@@ -169,6 +164,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 </style>
 </head>
 <body>
+
 <main id="game-frame" aria-label="Pallanguzhi game">
   <header class="top-strip">
     <div class="brand">பல்லாங்குழி<small>PALLANGUZHI</small></div>
@@ -211,7 +207,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   </footer>
 </main>
 
-<!-- Lightweight inline SVG: articulated fingers, skin highlights, and moving wrist. No images or network. -->
 <div class="player-hand" id="player-hand" aria-hidden="true" data-player="1">
  <svg viewBox="0 0 116 165" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -254,6 +249,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <button type="button" class="primary-btn" id="start-btn">PLAY GAME · ஆடுவோம்</button>
   </div>
 </div>
+
 <div class="overlay hidden" id="rules-modal" role="dialog" aria-modal="true" aria-label="Rules">
   <div class="modal-card">
     <h2>📖 How to play · விதிகள்</h2>
@@ -269,6 +265,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <button type="button" class="primary-btn" id="close-rules">Back to game</button>
   </div>
 </div>
+
 <div class="overlay hidden" id="end-modal" role="dialog" aria-modal="true" aria-label="Game result">
   <div class="modal-card">
     <h1>ஆட்டம் முடிந்தது!</h1><p class="sub">MATCH COMPLETE</p>
@@ -278,6 +275,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <button type="button" class="secondary-btn" id="change-btn">⚙️ Change match settings</button>
   </div>
 </div>
+
 <script>
 (() => {
   'use strict';
@@ -294,7 +292,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   const activeAnims = new Set();
   const portraitBoard = () => matchMedia('(orientation: portrait) and (max-width:700px)').matches;
 
-  // Pure, deterministic game engine. UI never decides whether a move is legal or how it scores.
   function simulateMove(originalPits, originalBanks, player, selected) {
     if (!Number.isInteger(selected) || selected < 0 || selected >= N || owner(selected) !== player || originalPits[selected] <= 0)
       throw new Error('Illegal move: select a nonempty pit on your side.');
@@ -313,8 +310,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         inHand -= 1;
         drops += 1;
         events.push({kind:'drop',pit:cursor,left:inHand});
-        // Pasu affects only the pit just landed in; it does not change
-        // cursor. When the hand empties, we must inspect (cursor + 1) % N.
         if (pits[cursor] === 4) {
           const credited = owner(cursor);
           pits[cursor] = 0;
@@ -323,12 +318,10 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         }
         if (drops >= MAX_DROPS) safetyStop = true;
       }
-      // A hard cap cannot strand seeds in the virtual hand; finish its sowing first.
       if (safetyStop) {
         events.push({kind:'safety'});
         break;
       }
-      // Inspect strictly the NEXT pit, even when Pasu cleared cursor.
       const next = (cursor + 1) % N;
       if (pits[next] > 0) {
         inHand = pits[next];
@@ -371,7 +364,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         const slot = document.createElement('div'); slot.className='pit-slot';
         const pit = document.createElement('button');
         pit.type='button'; pit.className='pit'; pit.id='pit-'+index;
-        // A single click works for mouse, touch and keyboard: no touchstart/click double trigger.
         pit.addEventListener('click', () => playPit(index));
         slot.append(pit); fragment.append(slot);
       }
@@ -380,8 +372,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     render();
   }
 
-  // Existing beads stay where they landed. Incrementally add/remove sprites,
-  // rather than replacing every cup's contents and making the pile teleport.
   function seedNode(index, serial, store=false) {
     const el=document.createElement('span');
     const color=options.seedStyle==='natural'?'seed-natural':'seed-colored-'+((index+serial)%5);
@@ -393,7 +383,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       el.style.left=(50+Math.cos(golden)*34*radius)+'%';
       el.style.bottom=(8+Math.floor(serial/3)*6)+'%';
     }else{
-      // Simulates a loosely-packed scattering constrained by a round cup.
       const radius=Math.sqrt((serial+.7)/25)*34;
       el.style.left=(50+Math.cos(golden)*radius+jitter*2.3)+'%';
       el.style.top=(50+Math.sin(golden)*radius*.78+Math.cos(serial*3.1)*2)+'%';
@@ -404,6 +393,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     el.dataset.serial=String(serial);
     return el;
   }
+
   function nudgeNearbyBeads(pitIndex){
     if(options.fast||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
     const beads=Array.from($('pit-'+pitIndex).querySelectorAll('.seed-pit-cluster .tamarind-seed'));
@@ -417,6 +407,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       ],{duration:215,easing:'ease-out'});}catch{}
     }
   }
+
   function paintPit(index,landed=false){
     const el=$('pit-'+index);if(!el)return;
     const count=state.pits[index];
@@ -429,15 +420,20 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     const old=cluster.children.length;
     for(let j=old;j<target;j++){
       const bead=seedNode(index,j);
-      if(landed&&j===target-1)bead.classList.add('seed-landed');
+      if(landed&&j===target-1){
+        bead.classList.add('seed-landed');
+        bead.addEventListener('animationend', () => bead.classList.remove('seed-landed'), { once: true });
+      }
       cluster.append(bead);
     }
-    // Toggle material without moving existing beads.
     Array.from(cluster.children).forEach((bead,j)=>{
       const color=options.seedStyle==='natural'?'seed-natural':'seed-colored-'+((index+j)%5);
       if(!bead.classList.contains(color)){
         bead.className='tamarind-seed '+color;
-        if(landed&&j===target-1)bead.classList.add('seed-landed');
+        if(landed&&j===target-1){
+          bead.classList.add('seed-landed');
+          bead.addEventListener('animationend', () => bead.classList.remove('seed-landed'), { once: true });
+        }
       }
     });
     if(landed&&target>old)nudgeNearbyBeads(index);
@@ -455,7 +451,10 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     const old=bank.children.length;
     for(let i=old;i<visible;i++){
       const bead=seedNode(player,i,true);
-      if(newlyAdded)bead.classList.add('seed-landed');
+      if(newlyAdded){
+        bead.classList.add('seed-landed');
+        bead.addEventListener('animationend', () => bead.classList.remove('seed-landed'), { once: true });
+      }
       bead.style.animationDelay=Math.min(140,(i-old)*17)+'ms';
       bank.append(bead);
     }
@@ -494,7 +493,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     $('hand-counter').style.display='none';
   }
   function handBadge(pos,count){
-    // The counter is printed on the moving hand instead of following a disconnected cursor.
     $('hand-visual-count').textContent=count>0?String(count):'';
     $('hand-counter').style.display='none';
   }
@@ -519,7 +517,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       el.style.transition='none';
       const entry=portraitBoard()?{x:point.x+53,y:point.y}:{x:point.x,y:point.y+64};
       el.style.left=entry.x+'px';el.style.top=entry.y+'px';
-      // Force the off-board start pose before transitioning to the target.
       void el.offsetWidth;
       el.style.transition='';
       el.classList.add('visible');
@@ -543,16 +540,11 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     activeAnims.clear();
   }
 
-  // A shallow parabolic arc, a little tumbling in the air, then a squash-and-bounce
-  // on impact. Each moving bead has its own trajectory; the landing position is
-  // slightly scattered inside the destination cup. All animation is cosmetic.
   function motionTime(kind){
     if(matchMedia('(prefers-reduced-motion: reduce)').matches)return 0;
     if(options.fast)return{drop:95,scoop:100,capture:155}[kind]||95;
     return{drop:285,scoop:225,capture:390}[kind]||280;
   }
-  // 2D gravity-and-bounce approximation. A bead drops from the animated fingertips,
-  // hits the curved bowl, rebounds twice and settles with a slight tumble.
   async function fly(from,to,{kind='drop',index=0,serial=0,delay=0}={}){
     const duration=motionTime(kind);
     if(duration<=0)return;
@@ -576,8 +568,8 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     ] : [
       frame(0,0,0,.96,.96),
       frame(.33,-Math.min(8,dist*.14),spin*.28,1.08,1.05),
-      frame(.69,1,spin*.75,1.19,.76), // compression against the wood
-      frame(.81,-Math.min(11,Math.max(4,dist*.13)),spin*.83,.94,1.07), // rebound
+      frame(.69,1,spin*.75,1.19,.76),
+      frame(.81,-Math.min(11,Math.max(4,dist*.13)),spin*.83,.94,1.07),
       frame(.92,-Math.min(4,Math.max(2,dist*.04)),spin*.94,1.05,.92),
       frame(1,0,spin,1,1)
     ];
@@ -606,7 +598,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         limiter.attack.value=.003;limiter.release.value=.07;
         master.connect(limiter);limiter.connect(audio.destination);
         audio.pallanguzhiMaster=master;
-        // Short, precomputed friction/noise impulse for wood-and-bead contact.
         const samples=Math.floor(audio.sampleRate*.07);
         const buffer=audio.createBuffer(1,samples,audio.sampleRate);
         const data=buffer.getChannelData(0);
@@ -619,9 +610,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     }catch{return null;}
   }
 
-  // Material-specific procedural sound: tamarind seeds give a warm, woody tick;
-  // glass-like colored beads give a delicate high-pitched click and short ring.
-  // All sounds are generated locally using Web Audio—no audio downloads required.
   function beadImpact(kind='drop',strength=1,offset=0){
     const ctx=ensureAudio();if(!ctx)return;
     try{
@@ -656,14 +644,13 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       click.start(t);click.stop(t+.035);
     }catch{};
   }
+
   function scoopSound(count){
-    // A handful of seeds brushes together, without an irritating long effect.
     const taps=Math.min(5,Math.max(2,Math.ceil(count/3)));
     for(let i=0;i<taps;i++) beadImpact('pickup',.44+i*.06,i*(options.fast?.017:.044));
   }
   function captureSound(){
     beadImpact('bank',1.0,0);beadImpact('bank',.6,.06);
-    // Three short low-energy collisions emulate a pile of beads settling.
     beadImpact('drop',.37,.09);beadImpact('drop',.24,.16);
     if(navigator.vibrate)navigator.vibrate(25);
   }
@@ -675,8 +662,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   async function animateScoop(pit,count,player=state.turn,live=()=>true){
     const at=center('pit-'+pit);
     await moveHand(at,player,'open');
-    // Restart/settings can invalidate the match during the awaited hand travel.
-    // Never spawn flying pieces or update the hand after that happens.
     if(!live())return;
     handPose('grip');
     scoopSound(count);
@@ -690,6 +675,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     if(!live())return;
     handBadge(at,count);
   }
+
   async function animateCapture(pit,player,count,live){
     const at=center('pit-'+pit),to=center('mc-'+player);
     await moveHand(at,player,'open');if(!live())return;
@@ -714,8 +700,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   function validMoves(player,pits=state.pits){return row(player).filter(i=>pits[i]>0);}
 
   function chooseAI() {
-    // Score all seven legal options using the same actual rules (including Pasu),
-    // then discount the opponent's best immediate response.
     const choices=validMoves(2);
     if(!choices.length)return null;
     let selected=choices[0],best=-Infinity;
@@ -742,11 +726,9 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     return selected;
   }
 
-  // Move playback is locked and cancellable. Opening settings/restarting increments the
-  // epoch, so callbacks from an old match can never mutate a new match.
   async function playPit(index,fromAI=false) {
     if(!state.started||state.busy||state.over||owner(index)!==state.turn||state.pits[index]<=0)return;
-    if(options.ai&&state.turn===2&&!fromAI)return; // critical: human cannot play AI's row
+    if(options.ai&&state.turn===2&&!fromAI)return;
     const current=state.turn;
     const epoch=state.epoch;
     let simulated;
@@ -770,7 +752,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           if(!options.fast)await wait(75);
         }else if(event.kind==='drop'){
           const dest=center('pit-'+event.pit);
-          // The hand travels over the next cup before releasing ONE bead.
           await moveHand(dest,current,'grip');
           if(!live())return;
           handPose('release');
@@ -780,7 +761,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           paintPit(event.pit,true);
           const pitEl=$('pit-'+event.pit);
           pitEl.classList.remove('drop-impact');
-          void pitEl.offsetWidth; // restart the impact ring even for back-to-back drops
+          void pitEl.offsetWidth;
           pitEl.classList.add('drop-impact');
           setTimeout(()=>pitEl.classList.remove('drop-impact'),options.fast?100:235);
           highlightPit(event.pit,'pulse',options.fast?110:230);
@@ -816,7 +797,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         }
       }
       if(!live())return;
-      // Check the animation and the rule engine still agree.
       if(state.pits.some((v,i)=>v!==simulated.pits[i]) || state.banks[1]!==simulated.banks[1] || state.banks[2]!==simulated.banks[2]) {
         throw new Error('Game engine/playback mismatch.');
       }
@@ -824,16 +804,29 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       if(settleIfFinished(state.pits,state.banks)) {
         state.over=true;state.busy=false;render();finishMatch();return;
       }
-      state.turn=other(current);render();
+
+      // Switch turn
+      state.turn=other(current);
+
+      // Turn-pass check if incoming player has 0 seeds
+      if(validMoves(state.turn).length === 0) {
+        if(settleIfFinished(state.pits, state.banks)) {
+          state.over=true;state.busy=false;render();finishMatch();return;
+        }
+        toast(`${names[state.turn]} has no seeds! Turn passes back.`, 1600);
+        state.turn = other(state.turn);
+      }
+
+      render();
+
       if(options.ai&&state.turn===2){
         setStatus(`${names[2]} is thinking…`);
         await wait(options.fast?180:630);
         if(!live())return;
         const choice=chooseAI();
-        state.busy=false;
         if(choice===null){
-          // Defensive fallback. This should already have been caught by settleIfFinished.
-          if(settleIfFinished(state.pits,state.banks)){state.over=true;render();finishMatch();}
+          if(settleIfFinished(state.pits,state.banks)){state.over=true;state.busy=false;render();finishMatch();}
+          else {state.turn=1;state.busy=false;render();setStatus(`${names[1]}'s turn.`);}
           return;
         }
         await playPit(choice,true);
@@ -845,17 +838,18 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       console.error(err);
       if(live()){
         state.busy=false;
-        // Recover by applying deterministic result instead of leaving a half-finished hand.
         state.pits=simulated.pits.slice();state.banks=simulated.banks.slice();
         hideHand();
         if(settleIfFinished(state.pits,state.banks)){state.over=true;render();finishMatch();}
         else{
           state.turn=other(current);
+          if(validMoves(state.turn).length === 0){
+            if(settleIfFinished(state.pits,state.banks)){state.over=true;render();finishMatch();return;}
+            state.turn=other(state.turn);
+          }
           state.busy=false;
           render();
           setStatus('Animation interrupted; move completed safely.');
-          // If the human's playback failed, the AI must still receive its turn.
-          // Otherwise a valid 70-seed game can become stuck on an unclickable AI row.
           if(options.ai && state.turn===2 && state.started && !state.over){
             queueMicrotask(()=>{
               if(!live() || !state.started || state.over || state.busy || state.turn!==2)return;
@@ -956,7 +950,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     document.addEventListener('keydown',event=>{
       if(event.key==='Escape'&&!$('rules-modal').classList.contains('hidden'))$('rules-modal').classList.add('hidden');
     });
-    // Exposes pure engine for deterministic browser tests, no private game state mutation.
+    window.addEventListener('pointerdown', () => ensureAudio(), { once: true });
     window.PallanguzhiTest={simulateMove,settleIfFinished,validMoves,owner,getSnapshot:()=>({pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,over:state.over,busy:state.busy,epoch:state.epoch,handVisible:$('player-hand').classList.contains('visible')}),startGame,chooseAI};
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
@@ -964,4 +958,3 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 </script>
 </body>
 </html>
-
