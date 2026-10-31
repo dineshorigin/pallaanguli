@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b0d06">
-<title>பல்லாங்குழி • Heritage Edition (v3.6.1 • Natural Hands)</title>
+<title>பல்லாங்குழி • Heritage Edition (v3.6.2 • Learn & Celebrate)</title>
 <style>
 :root {
   --brass:#efc875; --gold-dim:#a77b36; --ink:#180b05; --text:#f6ebd9;
@@ -210,13 +210,61 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   .pit .tamarind-seed.seed-landed{will-change:auto}
 }
 @media (prefers-reduced-motion:reduce){.player-hand svg{transition:none}}
+/* V3.6.2: tiny compositor-friendly feedback; existing hand and board geometry unchanged. */
+@keyframes gain-float {0%{opacity:0;transform:translate3d(-50%,12px,0) scale(.84)}20%{opacity:1}78%{opacity:1}100%{opacity:0;transform:translate3d(-50%,-40px,0) scale(1.08)}}
+@keyframes score-bloom {0%{transform:scale(1)}45%{transform:scale(1.24);color:#fff7c5}100%{transform:scale(1)}}
+@keyframes store-celebrate {0%,100%{outline-color:transparent}35%{outline-color:#f9d17c}}
+.gain-float{position:fixed;left:0;top:0;z-index:82;pointer-events:none;padding:6px 12px;border:1px solid #fff1c7;border-radius:18px;background:#40270de8;color:#ffe7a7;font-size:17px;font-weight:900;white-space:nowrap;animation:gain-float 780ms ease-out forwards;will-change:transform,opacity}
+.gain-float.pasu{background:#174939e8;color:#bafbe0;border-color:#66d6ac}
+.outer-mother-cup.store-celebrate{outline:3px solid transparent;outline-offset:1px;animation:store-celebrate 660ms ease-out}
+.score-badge.score-bloom,.store-count.score-bloom{animation:score-bloom 600ms ease-out}
+.hint-explanation{position:fixed;z-index:86;left:50%;bottom:calc(66px + env(safe-area-inset-bottom));transform:translateX(-50%);max-width:min(92vw,590px);width:max-content;display:flex;align-items:flex-start;gap:10px;border-radius:13px;padding:10px 12px;background:#1b3c30f5;border:1px solid #6cddb0;color:#dffdef;font-size:12px;line-height:1.45;box-shadow:0 8px 21px #0009}
+.hint-explanation[hidden]{display:none!important}.hint-explanation button{flex:none;border:none;background:transparent;color:inherit;font-weight:900;font-size:15px;padding:1px 4px}
+@media(max-width:700px){.hint-explanation{bottom:calc(111px + env(safe-area-inset-bottom));font-size:11px}}
+.victory-emblem{text-align:center;font-size:44px;line-height:1.3;animation:emblem-appear 670ms cubic-bezier(.2,.9,.2,1) both}
+@keyframes emblem-appear {from{opacity:0;transform:translateY(9px) scale(.7)}to{opacity:1;transform:translateY(0) scale(1)}}
+.result-message{text-align:center;font-size:13px;color:#ddbd93;margin:6px 0 16px}
+.result-score-cards{gap:10px;margin:11px 0 13px}
+.result-score-cards .result-player{flex:1;min-width:0;border:1px solid #866538;background:#322116;border-radius:14px;padding:10px;text-align:center;display:flex;flex-direction:column;gap:3px}
+.result-score-cards .result-player strong{font-size:22px;color:#ffdf96}.result-score-cards .result-player span{font-size:12px;overflow-wrap:anywhere}
+.score-comparison{width:100%;height:9px;background:#43241b;display:flex;overflow:hidden;border-radius:10px;margin:4px 0 19px}
+#score-share-1{background:linear-gradient(90deg,#38be8b,#8deac1);transition:width .6s ease}
+#score-share-2{background:linear-gradient(90deg,#edbc6d,#a37036);transition:width .6s ease}
+/* Tutorial mini-board has its own state and never mutates the main match. */
+.tutorial-card{max-width:560px;padding:20px 23px}
+.tutorial-topline{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.tutorial-kicker{font-weight:850;color:#f7d896;font-size:12px;letter-spacing:.55px}
+.tutorial-languages{display:flex;gap:4px;border:1px solid #6a4d30;border-radius:10px;padding:3px;background:#201109}
+.tut-lang{border:0;background:transparent;color:#d0baa4;font-weight:800;font-size:12px;padding:6px 8px;border-radius:7px}
+.tut-lang.active{background:#76602b;color:#fff1c3}
+.tutorial-card h2{font-size:clamp(17px,4vw,23px);color:#ffe1a4;margin:12px 0 6px}
+.tutorial-copy{font-size:13px;line-height:1.5;color:#f0dac0;min-height:37px;margin:0 0 12px}
+.tutorial-board-shell{background:linear-gradient(135deg,#613317,#3f200c);border:2px solid #b17d42;padding:10px;border-radius:16px}
+.tutorial-bank-row{display:flex;justify-content:space-between;color:#ffe4ab;font-size:12px;font-weight:800;margin-bottom:7px}
+.tutorial-bank-row b{border:1px solid #c9a266;padding:1px 7px;border-radius:10px;background:#1e0d05}
+.tutorial-board{position:relative;display:flex;flex-direction:column;gap:9px;background:#281005;border:3px solid #291109;border-radius:14px;padding:9px 7px}
+.tutorial-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:clamp(3px,1vw,9px)}
+.tutorial-pit{position:relative;min-width:0;aspect-ratio:1/1;border:2px solid #6d391a;border-radius:50%;color:#ffe6ab;background:radial-gradient(circle at 65% 70%,#120701,#381505 65%,#7c3a15);font-weight:900;font-size:clamp(11px,3.3vw,17px);box-shadow:inset 0 5px 10px #0009;touch-action:manipulation;transition:background .14s,border-color .14s}
+.tutorial-pit:disabled{cursor:default;opacity:.85}.tutorial-pit.tut-choice{border-color:#88eabd;box-shadow:0 0 0 3px #55eeb54e,inset 0 5px 10px #0009;opacity:1}
+.tutorial-pit.tut-current{border-color:#ffed8e;background:radial-gradient(circle at 65% 70%,#381505,#7e4318 65%,#af7040)}
+.tutorial-pit .tut-dot{position:absolute;width:3px;height:3px;top:23%;left:37%;border-radius:50%;background:#ffdb86;box-shadow:5px 1px #a96e37,2px 5px #f7cd7b;pointer-events:none}
+.tutorial-pit.tut-choice::after{content:'★';position:absolute;right:-3px;top:-8px;font-size:12px;color:#9effd0}
+.tutorial-hand{position:absolute;left:50%;top:50%;z-index:2;font-size:21px;transform:translate(-50%,-105%);pointer-events:none;opacity:0;transition:left .17s ease-out,top .17s ease-out,opacity .15s}
+.tutorial-hand.visible{opacity:1}
+.tutorial-feedback{min-height:33px;display:flex;justify-content:center;align-items:center;text-align:center;margin-top:9px;color:#ffe6b5;font-size:12px;line-height:1.35}
+.tutorial-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}.tutorial-actions button{margin:0;padding:12px 8px}
+.tutorial-actions button:disabled{opacity:.4;cursor:not-allowed}
+.tutorial-exit{display:block;margin:12px auto 0;border:0;background:transparent;color:#d8baa4;padding:8px;font-size:12px;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:420px){.tutorial-card{padding:14px}.tutorial-board-shell{padding:6px}.tutorial-board{padding:7px 5px}.tutorial-pit{border-width:1px}.tutorial-copy{font-size:12px}.tutorial-actions button{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.gain-float,.store-celebrate,.score-bloom,.victory-emblem{animation:none!important}.tutorial-hand{transition:none!important}}
+
 </style>
 </head>
 <body>
 
 <main id="game-frame" aria-label="Pallanguzhi game">
   <header class="top-strip">
-    <div class="brand">பல்லாங்குழி<small>LIVING BOARD · V3.6.1</small></div>
+    <div class="brand">பல்லாங்குழி<small>LIVING BOARD · V3.6.2</small></div>
     <div class="players-scoreboard">
       <div class="player-pod" id="p2-pod"><span class="player-name" id="p2-label">Azhagi (AI)</span><span class="score-badge" id="p2-score">0</span></div>
       <div class="player-pod active" id="p1-pod"><span class="player-name" id="p1-label">Player 1</span><span class="score-badge" id="p1-score">0</span></div>
@@ -282,11 +330,12 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 </div>
 <div class="hand-counter" id="hand-counter" aria-hidden="true"></div>
 <div class="toast" id="toast" role="status"></div>
+<div class="hint-explanation" id="hint-explanation" hidden role="status" aria-live="polite"><span id="hint-explanation-text"></span><button type="button" id="hint-dismiss" aria-label="Dismiss hint explanation">✕</button></div>
 <button type="button" class="skip-move" id="skip-btn" hidden disabled aria-label="Finish the current move without waiting for animations">⏭ Finish move</button>
 
 <div class="overlay" id="setup-modal" role="dialog" aria-modal="true" aria-label="Set up game">
   <div class="modal-card">
-    <h1>பல்லாங்குழி</h1><p class="sub">TAMIL HERITAGE · SMART PLAY EDITION</p>
+    <h1>பல்லாங்குழி</h1><p class="sub">TAMIL HERITAGE · INTERACTIVE EDITION</p>
     <span class="field-label">Game mode</span>
     <div class="button-grid"><button type="button" class="option active" data-mode="ai">👤 vs Computer</button><button type="button" class="option" data-mode="two">👥 2 Players</button></div>
     <div class="difficulty-chooser" id="difficulty-picker">
@@ -308,6 +357,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <span class="field-label">Sound volume · ஒலி அளவு</span>
     <label class="slider-line" for="volume-input">🔊 <input type="range" id="volume-input" min="0" max="100" value="65" step="5"><output id="volume-display">65%</output></label>
     <div style="text-align:center"><span class="live-badge">✋ Opposing hands &nbsp; • &nbsp; 🫘 Natural pace &nbsp; • &nbsp; 🔊 Bead clacks</span></div>
+    <button type="button" class="secondary-btn tutorial-launch" id="tutorial-setup-btn">🎓 Learn to play · கற்றுக்கொள்வோம்</button>
     <button type="button" class="primary-btn" id="start-btn">PLAY GAME · ஆடுவோம்</button>
   </div>
 </div>
@@ -322,24 +372,57 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       <p><strong>4. Capture · துடைத்தல்:</strong> If that next cup is empty, your turn ends. Capture all seeds in the cup immediately after the empty one, if any. They go to the current player's store.</p>
       <p><strong>5. Pasu · பசு:</strong> Whenever sowing makes a cup contain exactly 4 seeds, its owner immediately collects those 4 seeds into their store, even during an opponent's move.</p>
       <p><strong>6. Match end:</strong> When a player's seven cups are all empty at the end of a turn, this <em>single-round variant</em> ends. Each player collects the seeds left in their own row. Most seeds wins.</p>
-      <p><strong>7. Smart play (v3.5):</strong> Choose Easy, Medium, Hard, or Expert when facing the computer. Tap 💡 Hint on your turn for a suggested cup; the suggestion does not play for you. Tap ↶ Undo to restore the previous human decision (including the computer's reply in AI mode). Undo also works during an animation.</p>
-      <p class="note">In v3.6.1, Player 1’s hand enters from below and points toward the top plank, while Player 2’s hand mirrors it from above. The hand orientation follows the rotated board on phones. Regional Pallanguzhi rules can vary; this game deliberately follows the six rules above. Completed moves conserve exactly 70 seeds. Nonterminating moves are rejected instead of applying a partial turn. The 🔊 Sound button plays short procedurally rendered wood taps and bead-on-wood clacks (no internet required). Volume is adjustable in Match settings. An animated hand collects and distributes beads; collisions and bounces are visual approximations, not a full physics simulation. Pace cycles between Natural (default), Relaxed and Fast. The “Finish move” control completes the current move instantly without changing its result.</p>
+      <p><strong>7. Smart play:</strong> Choose Easy, Medium, Hard, or Expert when facing the computer. Tap 💡 Hint on your turn for a suggested cup; the suggestion does not play for you. Tap ↶ Undo to restore the previous human decision (including the computer's reply in AI mode). Undo also works during an animation.</p>
+      <p><strong>8. Interactive lessons (v3.6.2):</strong> Open Learn from Match settings or Rules for four bilingual practice lessons. Each lesson uses a separate board; your current match is never changed.</p>
+      <p class="note">Player 1’s hand enters from below and points toward the top plank, while Player 2’s hand mirrors it from above. The hand orientation follows the rotated board on phones. Regional Pallanguzhi rules can vary; this game deliberately follows the six rules above. Completed moves conserve exactly 70 seeds. Nonterminating moves are rejected instead of applying a partial turn. The 🔊 Sound button plays short procedurally rendered wood taps and bead-on-wood clacks (no internet required). Volume is adjustable in Match settings. An animated hand collects and distributes beads; collisions and bounces are visual approximations, not a full physics simulation. Pace cycles between Natural (default), Relaxed and Fast. The “Finish move” control completes the current move instantly without changing its result.</p>
     </div>
+    <button type="button" class="secondary-btn tutorial-launch" id="tutorial-rules-btn">🎓 Try the interactive tutorial · பயிற்சி</button>
     <button type="button" class="primary-btn" id="close-rules">Back to game</button>
   </div>
 </div>
 
 <div class="overlay hidden" id="end-modal" role="dialog" aria-modal="true" aria-label="Game result">
   <div class="modal-card">
-    <h1>ஆட்டம் முடிந்தது!</h1><p class="sub">MATCH COMPLETE</p>
+    <div class="victory-emblem" aria-hidden="true">🏆</div>
+    <h1 id="result-heading">ஆட்டம் முடிந்தது!</h1><p class="sub" id="result-subtitle">A BEAUTIFUL MATCH</p>
     <div class="winner-line" id="winner-text"></div>
-    <div class="final-scores" id="final-scores"></div>
+    <p class="result-message" id="result-message"></p>
+    <div class="final-scores result-score-cards" id="final-scores"></div>
+    <div class="score-comparison" aria-label="Share of captured seeds" id="score-comparison"><span id="score-share-1"></span><span id="score-share-2"></span></div>
     <button type="button" class="secondary-btn" id="undo-end-btn" hidden>↶ Undo last move</button>
     <button type="button" class="primary-btn" id="again-btn">↻ Play again</button>
     <button type="button" class="secondary-btn" id="change-btn">⚙️ Change match settings</button>
   </div>
 </div>
 
+<!-- All four tutorial lessons are isolated from match state; real matches stay untouched. -->
+<div class="overlay hidden" id="tutorial-modal" role="dialog" aria-modal="true" aria-label="Interactive Pallanguzhi tutorial">
+  <div class="modal-card tutorial-card">
+    <div class="tutorial-topline">
+      <span class="tutorial-kicker">🎓 <span id="tutorial-progress">LESSON 1 / 4</span></span>
+      <div class="tutorial-languages" role="group" aria-label="Tutorial language">
+        <button type="button" class="tut-lang active" data-tut-lang="en" aria-pressed="true">English</button>
+        <button type="button" class="tut-lang" data-tut-lang="ta" aria-pressed="false">தமிழ்</button>
+      </div>
+    </div>
+    <h2 id="tutorial-title">Learn to sow</h2>
+    <p class="tutorial-copy" id="tutorial-copy">Tap the glowing cup to practice.</p>
+    <div class="tutorial-board-shell">
+      <div class="tutorial-bank-row"><span>⬆ P2 <b id="tut-bank2">0</b></span><span>⬇ P1 <b id="tut-bank1">0</b></span></div>
+      <div class="tutorial-board" id="tutorial-board" aria-label="Practice board with fourteen interactive cups">
+        <div class="tutorial-row" id="tut-top-row" aria-label="Top row"></div>
+        <div class="tutorial-row" id="tut-bottom-row" aria-label="Bottom row"></div>
+        <div class="tutorial-hand" id="tut-hand" aria-hidden="true">✋</div>
+      </div>
+      <div class="tutorial-feedback" id="tutorial-feedback" aria-live="polite">Choose the highlighted cup.</div>
+    </div>
+    <div class="tutorial-actions">
+      <button type="button" class="secondary-btn" id="tutorial-replay">↻ Replay</button>
+      <button type="button" class="primary-btn" id="tutorial-next" disabled>Next lesson →</button>
+    </div>
+    <button type="button" class="tutorial-exit" id="tutorial-exit">Close tutorial · பயிற்சியை மூடு</button>
+  </div>
+</div>
 <script>
 (() => {
   'use strict';
@@ -354,6 +437,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   let state = {pits:Array(N).fill(START_SEEDS), banks:[0,0,0], turn:1, busy:false, over:false, epoch:0, aiTicket:0, started:false, activeMove:null, hintPit:null, history:[]};
   let audio = null, toastTimer = null;
   const activeAnims = new Set();
+  const feedbackTimers = new Set();
   const pitTimers = new Map();
   const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   let lastHandPos = null;
@@ -674,7 +758,41 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     },ms));
   }
 
+  function clearCaptureFeedback(){
+    for(const timer of feedbackTimers)clearTimeout(timer);
+    feedbackTimers.clear();
+    document.querySelectorAll('.gain-float').forEach(el=>el.remove());
+    document.querySelectorAll('.outer-mother-cup.store-celebrate').forEach(el=>el.classList.remove('store-celebrate'));
+    document.querySelectorAll('.score-bloom').forEach(el=>el.classList.remove('score-bloom'));
+  }
+  function celebrateCapture(player,amount,pasu=false){
+    const cup=$('mc-'+player),score=$('p'+player+'-score'),counter=$('mc-count-'+player);
+    if(!cup||amount<=0)return;
+    if(reducedMotion())return;
+    const pos=center('mc-'+player);
+    const badge=document.createElement('span');
+    badge.className='gain-float'+(pasu?' pasu':'');
+    badge.textContent=pasu?'🌰 பசு! +4':'+'+amount+' 🌰';
+    badge.style.left=Math.min(innerWidth-35,Math.max(35,pos.x))+'px';
+    badge.style.top=Math.max(55,Math.min(innerHeight-110,pos.y))+'px';
+    document.body.append(badge);
+    for(const el of [cup,score,counter]){
+      const name=el===cup?'store-celebrate':'score-bloom';
+      el.classList.remove(name);
+      // Restart a tiny celebration only once per capture, never per seed.
+      void el.offsetWidth;
+      el.classList.add(name);
+    }
+    const timer=setTimeout(()=>{
+      badge.remove();
+      cup.classList.remove('store-celebrate');
+      score.classList.remove('score-bloom');counter.classList.remove('score-bloom');
+      feedbackTimers.delete(timer);
+    },810);
+    feedbackTimers.add(timer);
+  }
   function closeAnimations() {
+    clearCaptureFeedback();
     for(const anim of activeAnims){try{anim.cancel();}catch{}}
     activeAnims.clear();
     for(const timer of pitTimers.values())clearTimeout(timer);
@@ -937,16 +1055,29 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     $('undo-btn').disabled=!state.started||state.history.length===0;
     $('undo-end-btn').hidden=state.history.length===0;
   }
+  function hideHintExplanation(){
+    $('hint-explanation').hidden=true;
+    $('hint-explanation-text').textContent='';
+  }
   function showHint(){
     if(!state.started||state.over||state.busy||(options.ai&&state.turn===2))return;
-    if(state.hintPit!==null){state.hintPit=null;render();setStatus('Hint hidden. Choose any highlighted cup.');return;}
+    if(state.hintPit!==null){state.hintPit=null;hideHintExplanation();render();setStatus('Hint hidden. Choose any highlighted cup.');return;}
     const pit=recommendMove(state.turn,'hard');
     if(pit===null){toast('No safe move found.',1500);return;}
     state.hintPit=pit;
-    const next=applyCandidate(state.pits,state.banks,state.turn,pit);
-    const gain=next.banks[state.turn]-state.banks[state.turn];
+    const simulated=simulateMove(state.pits,state.banks,state.turn,pit);
+    const ownGain=simulated.banks[state.turn]-state.banks[state.turn];
+    const theirGain=simulated.banks[other(state.turn)]-state.banks[other(state.turn)];
+    const captures=simulated.events.filter(e=>e.kind==='capture'&&e.player===state.turn).reduce((n,e)=>n+e.count,0);
+    const pasu=simulated.events.filter(e=>e.kind==='pasu'&&e.player===state.turn).length;
     const localCup=pit<7?pit+1:14-pit;
-    setStatus(`💡 Try cup ${localCup} (${state.pits[pit]} seeds) · projected +${gain} to your store.`);
+    setStatus(`💡 Suggested cup ${localCup} • +${ownGain} to your store.`);
+    const effects=[];
+    if(captures)effects.push(`captures ${captures}`);
+    if(pasu)effects.push(`${pasu} Pasu bonus${pasu>1?'es':''}`);
+    if(!effects.length)effects.push('preserves a useful position');
+    $('hint-explanation-text').textContent=`💡 Cup ${localCup} has ${state.pits[pit]} seeds. This move ${effects.join(' and ')}; your store gains ${ownGain} and your opponent gains ${theirGain}. The recommendation also considers the opponent's reply.`;
+    $('hint-explanation').hidden=false;
     render();
   }
   function undoMove(){
@@ -956,6 +1087,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     state.pits=previous.pits.slice();state.banks=previous.banks.slice();
     state.turn=previous.turn;state.over=false;state.started=true;
     state.hintPit=null;
+    hideHintExplanation();
     $('end-modal').classList.add('hidden');
     render();
     setStatus(`↶ Move undone. ${names[state.turn]}'s turn.`);
@@ -1050,6 +1182,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       if(state.history.length>40)state.history.shift();
     }
     state.hintPit=null;
+    hideHintExplanation();
     state.busy=true;
     state.activeMove={simulated,mover:current,epoch};
     updateSkipButton();
@@ -1097,6 +1230,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           if(!live())return;
           state.pits[event.pit]=0;state.banks[event.player]+=4;
           paintPit(event.pit);paintBank(event.player,4);
+          celebrateCapture(event.player,4,true);
           handBadge(source,hand);
           if(!options.fast&&!reducedMotion())await wait(Math.round(42*paceMultiplier()));
         }else if(event.kind==='capture'){
@@ -1107,6 +1241,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           if(!live())return;
           state.pits[event.pit]=0;state.banks[event.player]+=event.count;
           paintPit(event.pit);paintBank(event.player,event.count);
+          celebrateCapture(event.player,event.count);
           if(!options.fast&&!reducedMotion())await wait(Math.round(50*paceMultiplier()));
         }else if(event.kind==='no-capture'){
           setStatus('Empty cup followed by another empty cup. No capture.');
@@ -1129,20 +1264,50 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     }
   }
 
+  function playVictoryChime(){
+    const ctx=ensureAudio();if(!ctx||!options.sound||options.volume===0)return;
+    try{
+      [523.25,659.25,783.99].forEach((freq,i)=>{
+        const osc=ctx.createOscillator(),gain=ctx.createGain();
+        const start=ctx.currentTime+i*.12;
+        osc.type='sine';osc.frequency.setValueAtTime(freq,start);
+        gain.gain.setValueAtTime(.0001,start);
+        gain.gain.linearRampToValueAtTime(.055,start+.016);
+        gain.gain.exponentialRampToValueAtTime(.0001,start+.32);
+        osc.connect(gain);gain.connect(ctx.pallanguzhiMaster);
+        osc.start(start);osc.stop(start+.34);
+      });
+    }catch{}
+  }
   function finishMatch(){
     closeAnimations();
+    hideHintExplanation();
     const score1=state.banks[1],score2=state.banks[2];
-    const text=score1===score2?'It’s a tie! 🤝':`${names[score1>score2?1:2]} wins! 🏆`;
+    const tied=score1===score2;
+    const winner=score1>score2?1:2;
+    const text=tied?'A beautiful draw! 🤝':`${names[winner]} wins!`;
     $('winner-text').textContent=text;
+    $('result-heading').textContent=tied?'சமநிலை!':'வாழ்த்துகள்!';
+    $('result-subtitle').textContent=tied?'A MATCH WELL PLAYED':'HERITAGE CHAMPION';
+    $('result-message').textContent=tied
+      ? 'Both players collected the same number of seeds. Ready for a rematch?'
+      : `${names[winner]} gathered ${state.banks[winner]} out of ${TOTAL_SEEDS} seeds. Play again and try a different strategy!`;
     $('final-scores').replaceChildren();
     for(const p of [1,2]){
-      const box=document.createElement('span');box.textContent=`${names[p]}: ${state.banks[p]}`;$('final-scores').append(box);
+      const box=document.createElement('div');box.className='result-player';
+      const playerName=document.createElement('span');playerName.textContent=names[p];
+      const score=document.createElement('strong');score.textContent=state.banks[p];
+      box.append(playerName,score);$('final-scores').append(box);
     }
+    $('score-share-1').style.width=score1/TOTAL_SEEDS*100+'%';
+    $('score-share-2').style.width=score2/TOTAL_SEEDS*100+'%';
+    $('score-comparison').setAttribute('aria-label',`${names[1]} ${score1} seeds, ${names[2]} ${score2} seeds`);
     setStatus(`Game over — ${text} (${score1} – ${score2})`);
     $('end-modal').classList.remove('hidden');
+    playVictoryChime();
   }
 
-  function invalidateMatch(){state.epoch++;state.aiTicket++;state.busy=false;state.activeMove=null;state.hintPit=null;updateSkipButton();closeAnimations();clearTimeout(toastTimer);$('toast').classList.remove('visible');}
+  function invalidateMatch(){hideHintExplanation();state.epoch++;state.aiTicket++;state.busy=false;state.activeMove=null;state.hintPit=null;updateSkipButton();closeAnimations();clearTimeout(toastTimer);$('toast').classList.remove('visible');}
   function startGame(){
     invalidateMatch();
     state.pits=Array(N).fill(START_SEEDS);state.banks=[0,0,0];state.turn=1;state.over=false;state.started=true;state.history=[];
@@ -1185,8 +1350,157 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();}
     catch{toast('Fullscreen is unavailable in this browser.');}
   }
+
+  // Guided practice uses a separate 70-seed model and the production simulator.
+  // These four short positions are deliberately constructed so each example
+  // ends quickly, while the real game and its hand animations remain untouched.
+  const tutorialLessons=[
+    {id:'sowing',selected:0,pits:[5,0,0,0,0,0,0,0,11,11,11,11,11,10],
+      en:{title:'1. Sow one at a time',copy:'Tap the glowing bottom cup with 5 seeds. Watch one seed go into each following cup.',ready:'Tap the glowing cup to begin!',done:'Excellent! Five seeds were planted, one in each following cup.'},
+      ta:{title:'1. விதைகளை விதைப்போம்',copy:'கீழே ஒளிரும் 5 விதைகள் உள்ள குழியைத் தொடுங்கள். அடுத்தடுத்த குழிகளில் ஒவ்வொரு விதையாகப் போகும்.',ready:'ஒளிரும் குழியைத் தொடுங்கள்!',done:'அருமை! ஐந்து குழிகளில் தலா ஒரு விதை விதைக்கப்பட்டது.'}},
+    {id:'chain',selected:0,pits:[2,0,0,2,0,0,0,0,11,11,11,11,11,11],
+      en:{title:'2. Keep sowing',copy:'After the first 2 seeds are placed, the next cup has seeds. The hand picks them up and continues.',ready:'Tap the highlighted cup with 2 seeds.',done:'Great! When the next cup contains seeds, sowing continues.'},
+      ta:{title:'2. தொடர் விதைத்தல்',copy:'முதல் 2 விதைகள் தீர்ந்ததும் அடுத்த குழியில் விதைகள் இருந்தால் அவற்றையும் எடுத்துத் தொடர வேண்டும்.',ready:'ஒளிரும் 2 விதைகள் உள்ள குழியைத் தொடுங்கள்.',done:'நன்று! அடுத்த குழியில் விதைகள் இருந்ததால் தொடர்ந்து விதைத்தோம்.'}},
+    {id:'pasu',selected:0,pits:[1,3,0,0,7,7,7,7,7,7,7,7,5,5],
+      en:{title:'3. Pasu · பசு',copy:'The next cup already has 3 seeds. Drop one more to make exactly 4: its owner wins all four!',ready:'Tap the highlighted cup to trigger Pasu.',done:'பசு! Four seeds moved into the owner’s store.'},
+      ta:{title:'3. பசு · நான்கு விதைகள்',copy:'அடுத்த குழியில் 3 விதைகள் உள்ளன. மேலும் 1 விதை விழுந்தால் 4 விதைகளும் அந்தக் குழியின் உரிமையாளருக்குச் சேரும்.',ready:'பசு பெற ஒளிரும் குழியைத் தொடுங்கள்.',done:'பசு! நான்கு விதைகளும் உரிமையாளரின் தாய்க்குழியில் சேர்ந்தன.'}},
+    {id:'capture',selected:0,pits:[1,0,0,6,7,7,7,7,7,7,7,7,4,3],
+      en:{title:'4. Capture · துடைத்தல்',copy:'After your last seed lands, if the next cup is empty, you collect seeds from the cup after that.',ready:'Tap the glowing cup to make a capture.',done:'You did it! Six seeds were captured. You’re ready for a real match!'},
+      ta:{title:'4. விதைகளைக் கைப்பற்றுதல்',copy:'கையில் விதைகள் முடிந்ததும் அடுத்த குழி காலியாக இருந்தால், அதற்கு அடுத்த குழியின் விதைகளை எடுத்துக்கொள்ளலாம்.',ready:'விதைகளைக் கைப்பற்ற ஒளிரும் குழியைத் தொடுங்கள்.',done:'சூப்பர்! ஆறு விதைகள் கைப்பற்றப்பட்டன. இப்போது ஆடத் தயாராகிவிட்டீர்கள்!'}}
+  ];
+  const tutorial={open:false,step:0,lang:'en',pits:[],banks:[0,0,0],running:false,complete:false,ticket:0};
+  function tutorialText(){return tutorialLessons[tutorial.step][tutorial.lang];}
+  function tutorialFeedback(text){$('tutorial-feedback').textContent=text;}
+  function tutorialRebuild(){
+    const lesson=tutorialLessons[tutorial.step];
+    tutorial.ticket++;tutorial.running=false;tutorial.complete=false;
+    tutorial.pits=lesson.pits.slice();tutorial.banks=[0,0,0];
+    if(tutorial.pits.reduce((a,b)=>a+b,0)!==TOTAL_SEEDS)throw new Error('Tutorial model must have exactly 70 seeds');
+    $('tut-hand').classList.remove('visible');
+    $('tutorial-next').disabled=true;
+    tutorialDraw();
+    tutorialFeedback(tutorialText().ready);
+  }
+  function tutorialDraw(activePit=null){
+    const lesson=tutorialLessons[tutorial.step];
+    $('tutorial-progress').textContent=tutorial.lang==='ta'?`பாடம் ${tutorial.step+1} / ${tutorialLessons.length}`:`LESSON ${tutorial.step+1} / ${tutorialLessons.length}`;
+    $('tutorial-replay').textContent=tutorial.lang==='ta'?'↻ மீண்டும் பார்க்க':'↻ Replay';
+    $('tutorial-exit').textContent=tutorial.lang==='ta'?'பயிற்சியை மூடு':'Close tutorial';
+    $('tutorial-title').textContent=tutorialText().title;
+    $('tutorial-copy').textContent=tutorialText().copy;
+    $('tutorial-next').textContent=tutorial.step===tutorialLessons.length-1
+      ? (state.started?(tutorial.lang==='ta'?'ஆட்டத்திற்குத் திரும்பு →':'Return to match →'):(tutorial.lang==='ta'?'ஆடத் தொடங்கலாம் →':'Play a match →'))
+      : (tutorial.lang==='ta'?'அடுத்த பாடம் →':'Next lesson →');
+    $('tut-bank1').textContent=tutorial.banks[1];$('tut-bank2').textContent=tutorial.banks[2];
+    for(let i=0;i<N;i++){
+      const btn=$('tut-pit-'+i),choice=!tutorial.running&&!tutorial.complete&&i===lesson.selected;
+      btn.textContent=tutorial.pits[i];
+      btn.disabled=!choice;
+      btn.classList.toggle('tut-choice',choice);
+      btn.classList.toggle('tut-current',i===activePit);
+      btn.setAttribute('aria-label',`${owner(i)===1?'Bottom':'Top'} cup ${i<7?i+1:14-i}, ${tutorial.pits[i]} seeds${choice?', select this cup':''}`);
+    }
+  }
+  function tutorialPoint(index){
+    const pit=$('tut-pit-'+index),area=$('tutorial-board');
+    const p=pit.getBoundingClientRect(),b=area.getBoundingClientRect();
+    const hand=$('tut-hand');
+    hand.style.left=p.left-b.left+p.width/2+'px';hand.style.top=p.top-b.top+p.height/2+'px';
+    hand.classList.add('visible');
+  }
+  function tutorialMessage(event){
+    const ta=tutorial.lang==='ta';
+    switch(event.kind){
+      case 'pickup':return ta?`${event.count} விதைகள் எடுக்கப்பட்டன`:`Picked up ${event.count} seeds`;
+      case 'drop':return ta?'ஒரு விதையை அடுத்த குழியில் போட்டோம்':'One seed lands in the next cup';
+      case 'pasu':return ta?'பசு! உரிமையாளருக்கு +4 விதைகள்':'Pasu! +4 seeds for the cup owner';
+      case 'capture':return ta?`${event.count} விதைகள் கைப்பற்றப்பட்டன`:`Captured ${event.count} seeds!`;
+      case 'no-capture':return ta?'அடுத்த குழிகள் காலி; விதைத்தல் முடிந்தது':'The next cup is empty. Sowing ends.';
+      default:return '';
+    }
+  }
+  async function tutorialPlay(index){
+    if(!tutorial.open||tutorial.running||tutorial.complete||index!==tutorialLessons[tutorial.step].selected)return;
+    let result;
+    try{result=simulateMove(tutorial.pits,tutorial.banks,1,index);}
+    catch(err){tutorialFeedback(err.message);return;}
+    tutorial.running=true;const ticket=++tutorial.ticket;
+    tutorialDraw();
+    const still=()=>tutorial.open&&ticket===tutorial.ticket;
+    for(const event of result.events){
+      if(!still())return;
+      if(event.kind==='pickup'){tutorial.pits[event.pit]=0;scoopSound(event.count);}
+      if(event.kind==='drop'){tutorial.pits[event.pit]++;beadImpact('drop',.35);}
+      if(event.kind==='pasu'){
+        tutorial.pits[event.pit]=0;tutorial.banks[event.player]+=4;
+        captureSound();
+      }
+      if(event.kind==='capture'){
+        tutorial.pits[event.pit]=0;tutorial.banks[event.player]+=event.count;
+        captureSound();
+      }
+      if(event.pit!==undefined)tutorialPoint(event.pit);
+      tutorialDraw(event.pit??null);tutorialFeedback(tutorialMessage(event));
+      if(!reducedMotion())await wait(event.kind==='pasu'||event.kind==='capture'?540:260);
+      else await wait(30);
+    }
+    if(!still())return;
+    if(tutorial.pits.some((v,i)=>v!==result.pits[i])||tutorial.banks[1]!==result.banks[1]||tutorial.banks[2]!==result.banks[2]){
+      tutorial.running=false;tutorialFeedback('Tutorial playback mismatch. Press Replay.');return;
+    }
+    tutorial.running=false;tutorial.complete=true;tutorialDraw();
+    $('tut-hand').classList.remove('visible');
+    $('tutorial-next').disabled=false;
+    tutorialFeedback(tutorialText().done);
+  }
+  function tutorialSetLanguage(lang){
+    if(lang!=='en'&&lang!=='ta')return;
+    tutorial.lang=lang;
+    document.querySelectorAll('[data-tut-lang]').forEach(btn=>{
+      const active=btn.dataset.tutLang===lang;btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));
+    });
+    tutorialDraw();
+    if(!tutorial.running)tutorialFeedback(tutorialText()[tutorial.complete?'done':'ready']);
+  }
+  function tutorialOpen(){
+    // Never hide an in-flight real match under a lesson; keep it pristine.
+    if(state.busy||state.activeMove){$('rules-modal').classList.add('hidden');toast('Finish the current move before opening the tutorial.',2300);return;}
+    $('rules-modal').classList.add('hidden');
+    tutorial.open=true;tutorial.step=0;tutorialRebuild();
+    $('tutorial-modal').classList.remove('hidden');
+  }
+  function tutorialClose(){
+    tutorial.ticket++;tutorial.running=false;tutorial.open=false;
+    $('tutorial-modal').classList.add('hidden');$('tut-hand').classList.remove('visible');
+  }
+  function tutorialNext(){
+    if(!tutorial.open||tutorial.running||!tutorial.complete)return;
+    if(tutorial.step===tutorialLessons.length-1){
+      tutorialClose();
+      if(!state.started)startGame();
+    }else{tutorial.step++;tutorialRebuild();}
+  }
+  function tutorialInit(){
+    for(const [target,indices] of [['tut-top-row',[13,12,11,10,9,8,7]],['tut-bottom-row',[0,1,2,3,4,5,6]]]){
+      const fragment=document.createDocumentFragment();
+      for(const index of indices){
+        const btn=document.createElement('button');btn.type='button';btn.id='tut-pit-'+index;
+        btn.className='tutorial-pit';btn.addEventListener('click',()=>tutorialPlay(index));
+        fragment.append(btn);
+      }
+      $(target).append(fragment);
+    }
+    $('tutorial-setup-btn').addEventListener('click',tutorialOpen);
+    $('tutorial-rules-btn').addEventListener('click',tutorialOpen);
+    $('tutorial-exit').addEventListener('click',tutorialClose);
+    $('tutorial-replay').addEventListener('click',tutorialRebuild);
+    $('tutorial-next').addEventListener('click',tutorialNext);
+    document.querySelectorAll('[data-tut-lang]').forEach(btn=>btn.addEventListener('click',()=>tutorialSetLanguage(btn.dataset.tutLang)));
+    tutorialRebuild();
+  }
   function init(){
     createBoard();
+    tutorialInit();
     document.querySelectorAll('[data-mode],[data-difficulty],[data-theme],[data-seeds]').forEach(btn=>{
       const group=btn.dataset.mode!==undefined?'mode':btn.dataset.difficulty!==undefined?'difficulty':btn.dataset.theme!==undefined?'theme':'seeds';
       btn.addEventListener('click',()=>selectOption(group,btn.dataset[group]));
@@ -1200,6 +1514,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     $('speed-btn').setAttribute('aria-label','Gameplay pace: natural. Tap to change.');
     $('skip-btn').addEventListener('click',skipCurrentMove);
     $('hint-btn').addEventListener('click',showHint);
+    $('hint-dismiss').addEventListener('click',()=>{state.hintPit=null;hideHintExplanation();render();});
     $('undo-btn').addEventListener('click',undoMove);
     $('undo-end-btn').addEventListener('click',undoMove);
     $('start-btn').addEventListener('click',startGame);
@@ -1227,7 +1542,8 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       if(options.sound)beadImpact('drop',1);
     });
     document.addEventListener('keydown',event=>{
-      if(event.key==='Escape'&&!$('rules-modal').classList.contains('hidden'))$('rules-modal').classList.add('hidden');
+      if(event.key==='Escape'&&!$('tutorial-modal').classList.contains('hidden'))tutorialClose();
+      else if(event.key==='Escape'&&!$('rules-modal').classList.contains('hidden'))$('rules-modal').classList.add('hidden');
     });
     window.addEventListener('pointerdown', () => ensureAudio(), { once: true });
     window.addEventListener('resize', invalidateLayout, {passive:true});
@@ -1236,7 +1552,9 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       const boardObserver=new ResizeObserver(invalidateLayout);
       boardObserver.observe($('arena'));
     }
-    window.PallanguzhiTest={simulateMove,settleIfFinished,validMoves,owner,skipCurrentMove,undoMove,showHint,recommendMove,getSnapshot:()=>({pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,over:state.over,busy:state.busy,epoch:state.epoch,handVisible:$('player-hand').classList.contains('visible'),activeMove:Boolean(state.activeMove),pace:options.pace,difficulty:options.difficulty,history:state.history.length,hintPit:state.hintPit,handFacing:$('player-hand').dataset.facing}),startGame,chooseAI};
+    window.PallanguzhiTest={simulateMove,settleIfFinished,validMoves,owner,skipCurrentMove,undoMove,showHint,recommendMove,getSnapshot:()=>({pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,over:state.over,busy:state.busy,epoch:state.epoch,handVisible:$('player-hand').classList.contains('visible'),activeMove:Boolean(state.activeMove),pace:options.pace,difficulty:options.difficulty,history:state.history.length,hintPit:state.hintPit,handFacing:$('player-hand').dataset.facing}),startGame,chooseAI,
+      tutorialOpen,tutorialRebuild,tutorialNext,tutorialPlay,tutorialSetLanguage,
+      getTutorial:()=>({open:tutorial.open,step:tutorial.step,running:tutorial.running,complete:tutorial.complete,pits:tutorial.pits.slice(),banks:tutorial.banks.slice(),lang:tutorial.lang})};
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
