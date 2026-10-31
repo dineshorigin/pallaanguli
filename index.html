@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b0d06">
-<title>பல்லாங்குழி • Heritage Edition (v3.4.1 • Natural Flow)</title>
+<title>பல்லாங்குழி • Heritage Edition (v3.5 • Smart Play)</title>
 <style>
 :root {
   --brass:#efc875; --gold-dim:#a77b36; --ink:#180b05; --text:#f6ebd9;
@@ -172,13 +172,34 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   .tamarind-seed{box-shadow:0 1px 2px #000a}
   .flying-seed{filter:none}
 }
+/* V3.5: coaching and safe undo controls, kept lightweight for Android. */
+.pit.hinted{border-color:#94f5d5!important;box-shadow:0 0 0 3px #39dca755,0 0 18px #5bebae,inset 0 9px 17px #000e!important}
+.pit.hinted::after{content:'★';position:absolute;right:3px;top:0;color:#c3ffe3;font-size:12px;text-shadow:0 1px 3px #000;pointer-events:none}
+.action-btn:disabled{opacity:.38;cursor:not-allowed}
+.action-btn.assist-btn:not(:disabled){color:#abf1d1;border-color:#2b9677;background:#174536}
+#hint-btn[aria-pressed="true"]{background:#145c48;border-color:#90ebca}
+.difficulty-chooser[hidden]{display:none!important}
+.difficulty-chooser .button-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.difficulty-chooser .option{min-width:0;padding:10px 3px;font-size:12px}
+.difficulty-note{font-size:11px;color:#d4bca1;line-height:1.35;margin:6px 0 0}
+#undo-end-btn[hidden]{display:none}
+@media(max-width:700px){
+  .bottom-strip{flex-direction:column;align-items:stretch;gap:5px}
+  .bottom-strip .status-message{width:100%;flex:0 0 auto;text-align:center;line-height:17px;min-height:17px}
+  .actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:5px}
+  .actions .action-btn{white-space:nowrap;min-width:0;font-size:10px;padding:8px 1px}
+}
+@media (orientation:portrait) and (max-width:700px){
+  .play-arena{width:calc(100dvh - 190px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}
+}
+@media(max-width:420px){.difficulty-chooser .option{font-size:11px}}
 </style>
 </head>
 <body>
 
 <main id="game-frame" aria-label="Pallanguzhi game">
   <header class="top-strip">
-    <div class="brand">பல்லாங்குழி<small>LIVING BOARD · V3.4.1</small></div>
+    <div class="brand">பல்லாங்குழி<small>LIVING BOARD · V3.5</small></div>
     <div class="players-scoreboard">
       <div class="player-pod" id="p2-pod"><span class="player-name" id="p2-label">Azhagi (AI)</span><span class="score-badge" id="p2-score">0</span></div>
       <div class="player-pod active" id="p1-pod"><span class="player-name" id="p1-label">Player 1</span><span class="score-badge" id="p1-score">0</span></div>
@@ -208,6 +229,8 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   <footer class="bottom-strip">
     <div class="status-message" id="status-text" aria-live="polite">Choose a game mode to start.</div>
     <div class="actions">
+      <button type="button" class="action-btn assist-btn" id="hint-btn" aria-pressed="false" disabled title="Highlight a suggested cup">💡 Hint</button>
+      <button type="button" class="action-btn assist-btn" id="undo-btn" disabled title="Undo your last move (and the AI reply, if any)">↶ Undo</button>
       <button type="button" class="action-btn" id="speed-btn" aria-pressed="false">🎞 Pace: Natural</button>
       <button type="button" class="action-btn" id="sound-btn" aria-pressed="true" title="Wooden seed taps and bead-on-wood clacks (procedurally rendered)">🔊 Sound</button>
       <button type="button" class="action-btn" id="theme-btn">☀️ Theme</button>
@@ -246,9 +269,19 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 
 <div class="overlay" id="setup-modal" role="dialog" aria-modal="true" aria-label="Set up game">
   <div class="modal-card">
-    <h1>பல்லாங்குழி</h1><p class="sub">TAMIL HERITAGE · ULTRA-SMOOTH EDITION</p>
+    <h1>பல்லாங்குழி</h1><p class="sub">TAMIL HERITAGE · SMART PLAY EDITION</p>
     <span class="field-label">Game mode</span>
     <div class="button-grid"><button type="button" class="option active" data-mode="ai">👤 vs Computer</button><button type="button" class="option" data-mode="two">👥 2 Players</button></div>
+    <div class="difficulty-chooser" id="difficulty-picker">
+      <span class="field-label">Computer difficulty · திறன் நிலை</span>
+      <div class="button-grid">
+        <button type="button" class="option" data-difficulty="easy" aria-pressed="false">🌱 Easy</button>
+        <button type="button" class="option active" data-difficulty="medium" aria-pressed="true">🪴 Medium</button>
+        <button type="button" class="option" data-difficulty="hard" aria-pressed="false">🔥 Hard</button>
+        <button type="button" class="option" data-difficulty="expert" aria-pressed="false">👑 Expert</button>
+      </div>
+      <p class="difficulty-note" id="difficulty-description">Medium considers each move's immediate outcome.</p>
+    </div>
     <span class="field-label">Wood theme</span>
     <div class="button-grid"><button type="button" class="option active" data-theme="bright">☀️ Warm teak</button><button type="button" class="option" data-theme="dark">🌙 Rosewood</button></div>
     <span class="field-label">Seed style</span>
@@ -272,6 +305,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       <p><strong>4. Capture · துடைத்தல்:</strong> If that next cup is empty, your turn ends. Capture all seeds in the cup immediately after the empty one, if any. They go to the current player's store.</p>
       <p><strong>5. Pasu · பசு:</strong> Whenever sowing makes a cup contain exactly 4 seeds, its owner immediately collects those 4 seeds into their store, even during an opponent's move.</p>
       <p><strong>6. Match end:</strong> When a player's seven cups are all empty at the end of a turn, this <em>single-round variant</em> ends. Each player collects the seeds left in their own row. Most seeds wins.</p>
+      <p><strong>7. Smart play (v3.5):</strong> Choose Easy, Medium, Hard, or Expert when facing the computer. Tap 💡 Hint on your turn for a suggested cup; the suggestion does not play for you. Tap ↶ Undo to restore the previous human decision (including the computer's reply in AI mode). Undo also works during an animation.</p>
       <p class="note">Regional Pallanguzhi rules can vary; this game deliberately follows the six rules above. Completed moves conserve exactly 70 seeds. Nonterminating moves are rejected instead of applying a partial turn. The 🔊 Sound button plays short procedurally rendered wood taps and bead-on-wood clacks (no internet required). Volume is adjustable in Match settings. An animated hand collects and distributes beads; collisions and bounces are visual approximations, not a full physics simulation. Pace cycles between Natural (default), Relaxed and Fast. The “Finish move” control completes the current move instantly without changing its result.</p>
     </div>
     <button type="button" class="primary-btn" id="close-rules">Back to game</button>
@@ -283,6 +317,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <h1>ஆட்டம் முடிந்தது!</h1><p class="sub">MATCH COMPLETE</p>
     <div class="winner-line" id="winner-text"></div>
     <div class="final-scores" id="final-scores"></div>
+    <button type="button" class="secondary-btn" id="undo-end-btn" hidden>↶ Undo last move</button>
     <button type="button" class="primary-btn" id="again-btn">↻ Play again</button>
     <button type="button" class="secondary-btn" id="change-btn">⚙️ Change match settings</button>
   </div>
@@ -297,9 +332,9 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   const owner = pit => pit < 7 ? 1 : 2;
   const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
   const row = p => p === 1 ? [0,1,2,3,4,5,6] : [7,8,9,10,11,12,13];
-  let options = {ai:true, theme:'bright', seedStyle:'natural', fast:false, pace:'natural', sound:true, volume:.65};
+  let options = {ai:true, difficulty:'medium', theme:'bright', seedStyle:'natural', fast:false, pace:'natural', sound:true, volume:.65};
   let names = {1:'Player 1',2:'Azhagi (AI)'};
-  let state = {pits:Array(N).fill(START_SEEDS), banks:[0,0,0], turn:1, busy:false, over:false, epoch:0, aiTicket:0, started:false, activeMove:null};
+  let state = {pits:Array(N).fill(START_SEEDS), banks:[0,0,0], turn:1, busy:false, over:false, epoch:0, aiTicket:0, started:false, activeMove:null, hintPit:null, history:[]};
   let audio = null, toastTimer = null;
   const activeAnims = new Set();
   const pitTimers = new Map();
@@ -465,6 +500,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     countNode.textContent=count;
     const playable=state.started&&!state.busy&&!state.over&&count>0&&owner(index)===state.turn&&!(options.ai&&state.turn===2);
     el.disabled=!playable;el.classList.toggle('playable',playable);
+    el.classList.toggle('hinted',state.hintPit===index && playable);
     el.setAttribute('aria-label',`Player ${owner(index)} cup ${index<7?index+1:14-index}, ${count} ${options.seedStyle==='natural'?'seeds':'beads'}${playable?', tap to play':''}`);
   }
 
@@ -500,6 +536,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     }
     $('ind-1').textContent=state.turn===1&&!state.over ? (state.busy?'SOWING…':'YOUR TURN') : '';
     $('ind-2').textContent=state.turn===2&&!state.over ? (options.ai?'AI PLAYING…':state.busy?'SOWING…':'YOUR TURN') : '';
+    updateAssistButtons();
   }
 
   function setStatus(text) {$('status-text').textContent=text;}
@@ -796,38 +833,106 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 
   function validMoves(player,pits=state.pits){return row(player).filter(i=>pits[i]>0);}
 
-  // 1-ply lookahead with opponent-reply risk; ignores any nonterminating candidate.
-  function chooseAI() {
-    const choices = validMoves(2);
-    let selected = null, best = -Infinity;
-    for (const choice of choices) {
-      let res;
-      try { res = simulateMove(state.pits,state.banks,2,choice); }
-      catch (err) { console.warn('Skipped invalid AI move',choice,err.message); continue; }
-      const endPits = res.pits.slice(), endBanks = res.banks.slice();
-      if (settleIfFinished(endPits,endBanks)) {
-        const val = (endBanks[2]-endBanks[1])*10;
-        if (val>best) {best=val;selected=choice;}
-        continue;
-      }
-      let replyPenalty=0;
-      for (const reply of validMoves(1,res.pits)) {
-        try {
-          const next=simulateMove(res.pits,res.banks,1,reply);
-          // Final settlement matters for a reply that ends the round.
-          const replyPits=next.pits.slice(), replyBanks=next.banks.slice();
-          settleIfFinished(replyPits,replyBanks);
-          const oppGain=(replyBanks[1]-res.banks[1])-(replyBanks[2]-res.banks[2]);
-          replyPenalty=Math.max(replyPenalty,oppGain);
-        } catch (err) { /* Unsafe/nonterminating reply is not considered legal. */ }
-      }
-      const ownGain=res.banks[2]-state.banks[2];
-      const theirGain=res.banks[1]-state.banks[1];
-      const territory=row(2).reduce((n,i)=>n+res.pits[i],0);
-      const val=ownGain*10-theirGain*10-replyPenalty*5+territory*.08-choice*.00001;
-      if (val>best) {best=val;selected=choice;}
+  // A bounded minimax adviser shared by AI and hints. Search only validated moves;
+  // the simulation and all AI searches remain independent of UI animations.
+  const difficultyDescriptions={
+    easy:'Easy chooses randomly among legal cups — ideal for beginners.',
+    medium:'Medium compares immediate captures, Pasu, and remaining seeds.',
+    hard:'Hard also considers the opponent’s best reply.',
+    expert:'Expert considers a further response using a bounded 3-ply search.'
+  };
+  function evaluatePosition(pits,banks,perspective,finished=false) {
+    const rival=other(perspective);
+    const difference=banks[perspective]-banks[rival];
+    if(finished) return difference*14+(difference>0?600:difference<0?-600:0);
+    const ours=row(perspective).reduce((sum,i)=>sum+pits[i],0);
+    const theirs=row(rival).reduce((sum,i)=>sum+pits[i],0);
+    const mobility=validMoves(perspective,pits).length-validMoves(rival,pits).length;
+    return difference*11+(ours-theirs)*.27+mobility*.45;
+  }
+  function applyCandidate(pits,banks,player,pit){
+    const result=simulateMove(pits,banks,player,pit);
+    const ps=result.pits.slice(), bs=result.banks.slice();
+    const over=settleIfFinished(ps,bs);
+    return {pits:ps,banks:bs,over};
+  }
+  function recommendMove(player,difficulty='hard',pits=state.pits,banks=state.banks){
+    const available=[];
+    for(const pit of validMoves(player,pits)){
+      try{ available.push({pit,next:applyCandidate(pits,banks,player,pit)}); }
+      catch{/* Nonterminating sowing sequences are not legal moves. */}
     }
-    return selected;
+    if(!available.length)return null;
+    if(difficulty==='easy')return available[Math.floor(Math.random()*available.length)].pit;
+    const depth={medium:1,hard:2,expert:3}[difficulty]||1;
+    const started=performance.now();
+    const deadline=started+(difficulty==='expert'?55:35);
+    let explored=0;
+    const maxNodes=difficulty==='expert'?200:85;
+    function search(ps,bs,turn,left,alpha,beta,over){
+      if(over||left===0||explored>=maxNodes||performance.now()>deadline)
+        return evaluatePosition(ps,bs,player,over);
+      const moves=validMoves(turn,ps);
+      if(!moves.length)return evaluatePosition(ps,bs,player,true);
+      const maximize=turn===player;
+      let best=maximize?-Infinity:Infinity,found=false;
+      for(const pit of moves){
+        if(explored>=maxNodes||performance.now()>deadline)break;
+        let next;
+        try{next=applyCandidate(ps,bs,turn,pit);}catch{continue;}
+        explored++;found=true;
+        const score=search(next.pits,next.banks,other(turn),left-1,alpha,beta,next.over);
+        best=maximize?Math.max(best,score):Math.min(best,score);
+        if(maximize)alpha=Math.max(alpha,best);else beta=Math.min(beta,best);
+        if(beta<=alpha)break;
+      }
+      return found?best:evaluatePosition(ps,bs,player,over);
+    }
+    // An immediate estimate remains the fallback if the search budget expires.
+    const ordered=available.map(({pit,next})=>({pit,next,baseline:evaluatePosition(next.pits,next.banks,player,next.over)}))
+      .sort((a,b)=>b.baseline-a.baseline || a.pit-b.pit);
+    let choice=ordered[0].pit, best=-Infinity;
+    for(const item of ordered){
+      if(explored>=maxNodes||performance.now()>deadline)break;
+      const score=depth===1?item.baseline:
+        search(item.next.pits,item.next.banks,other(player),depth-1,-Infinity,Infinity,item.next.over);
+      if(score>best){best=score;choice=item.pit;}
+    }
+    return choice;
+  }
+  function chooseAI(){return recommendMove(2,options.difficulty);}
+
+  function snapshot(){return {pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn};}
+  function updateAssistButtons(){
+    const canHint=state.started&&!state.over&&!state.busy&&!(options.ai&&state.turn===2)&&validMoves(state.turn).length>0;
+    $('hint-btn').disabled=!canHint;
+    $('hint-btn').setAttribute('aria-pressed',String(canHint&&state.hintPit!==null));
+    $('undo-btn').disabled=!state.started||state.history.length===0;
+    $('undo-end-btn').hidden=state.history.length===0;
+  }
+  function showHint(){
+    if(!state.started||state.over||state.busy||(options.ai&&state.turn===2))return;
+    if(state.hintPit!==null){state.hintPit=null;render();setStatus('Hint hidden. Choose any highlighted cup.');return;}
+    const pit=recommendMove(state.turn,'hard');
+    if(pit===null){toast('No safe move found.',1500);return;}
+    state.hintPit=pit;
+    const next=applyCandidate(state.pits,state.banks,state.turn,pit);
+    const gain=next.banks[state.turn]-state.banks[state.turn];
+    const localCup=pit<7?pit+1:14-pit;
+    setStatus(`💡 Try cup ${localCup} (${state.pits[pit]} seeds) · projected +${gain} to your store.`);
+    render();
+  }
+  function undoMove(){
+    if(!state.started||!state.history.length)return;
+    const previous=state.history.pop();
+    invalidateMatch(); // cancels any AI timer, current animation, or pending bead effects
+    state.pits=previous.pits.slice();state.banks=previous.banks.slice();
+    state.turn=previous.turn;state.over=false;state.started=true;
+    state.hintPit=null;
+    $('end-modal').classList.add('hidden');
+    render();
+    setStatus(`↶ Move undone. ${names[state.turn]}'s turn.`);
+    toast('↶ Previous turn restored',1100);
   }
 
   // AI thinking owns the input lock until it is ready to initiate its move.
@@ -913,6 +1018,11 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     let simulated;
     try {simulated=simulateMove(state.pits,state.banks,current,index);}
     catch(err) {setStatus(err.message);toast(err.message,2300);return;}
+    if(!options.ai || current===1){
+      state.history.push(snapshot());
+      if(state.history.length>40)state.history.shift();
+    }
+    state.hintPit=null;
     state.busy=true;
     state.activeMove={simulated,mover:current,epoch};
     updateSkipButton();
@@ -1005,10 +1115,10 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     $('end-modal').classList.remove('hidden');
   }
 
-  function invalidateMatch(){state.epoch++;state.aiTicket++;state.busy=false;state.activeMove=null;updateSkipButton();closeAnimations();clearTimeout(toastTimer);$('toast').classList.remove('visible');}
+  function invalidateMatch(){state.epoch++;state.aiTicket++;state.busy=false;state.activeMove=null;state.hintPit=null;updateSkipButton();closeAnimations();clearTimeout(toastTimer);$('toast').classList.remove('visible');}
   function startGame(){
     invalidateMatch();
-    state.pits=Array(N).fill(START_SEEDS);state.banks=[0,0,0];state.turn=1;state.over=false;state.started=true;
+    state.pits=Array(N).fill(START_SEEDS);state.banks=[0,0,0];state.turn=1;state.over=false;state.started=true;state.history=[];
     names[1]=$('p1-input').value.trim()||'Player 1';
     names[2]=$('p2-input').value.trim()||(options.ai?'Azhagi (AI)':'Player 2');
     for(const p of [1,2]){
@@ -1021,7 +1131,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     ensureAudio();
   }
   function showSetup(){
-    invalidateMatch();state.started=false;state.over=false;render();
+    invalidateMatch();state.started=false;state.over=false;state.history=[];render();
     $('end-modal').classList.add('hidden');$('rules-modal').classList.add('hidden');$('setup-modal').classList.remove('hidden');
     setStatus('Choose a game mode to start.');
   }
@@ -1032,6 +1142,11 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       const input=$('p2-input');
       if(options.ai&&(input.value==='Player 2'||input.value==='Azhagi (AI)'))input.value='Azhagi (AI)';
       if(!options.ai&&input.value==='Azhagi (AI)')input.value='Player 2';
+      $('difficulty-picker').hidden=!options.ai;
+    }else if(group==='difficulty'){
+      options.difficulty=value;
+      $('difficulty-description').textContent=difficultyDescriptions[value];
+      document.querySelectorAll('[data-difficulty]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.difficulty===value)));
     }else if(group==='theme'){
       options.theme=value;document.body.classList.toggle('dark',value==='dark');
     }else if(group==='seeds'){
@@ -1045,8 +1160,8 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   }
   function init(){
     createBoard();
-    document.querySelectorAll('[data-mode],[data-theme],[data-seeds]').forEach(btn=>{
-      const group=btn.dataset.mode!==undefined?'mode':btn.dataset.theme!==undefined?'theme':'seeds';
+    document.querySelectorAll('[data-mode],[data-difficulty],[data-theme],[data-seeds]').forEach(btn=>{
+      const group=btn.dataset.mode!==undefined?'mode':btn.dataset.difficulty!==undefined?'difficulty':btn.dataset.theme!==undefined?'theme':'seeds';
       btn.addEventListener('click',()=>selectOption(group,btn.dataset[group]));
     });
     $('volume-input').addEventListener('input',e=>{
@@ -1057,6 +1172,9 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     });
     $('speed-btn').setAttribute('aria-label','Gameplay pace: natural. Tap to change.');
     $('skip-btn').addEventListener('click',skipCurrentMove);
+    $('hint-btn').addEventListener('click',showHint);
+    $('undo-btn').addEventListener('click',undoMove);
+    $('undo-end-btn').addEventListener('click',undoMove);
     $('start-btn').addEventListener('click',startGame);
     $('again-btn').addEventListener('click',startGame);
     $('match-btn').addEventListener('click',showSetup);
@@ -1091,7 +1209,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       const boardObserver=new ResizeObserver(invalidateLayout);
       boardObserver.observe($('arena'));
     }
-    window.PallanguzhiTest={simulateMove,settleIfFinished,validMoves,owner,skipCurrentMove,getSnapshot:()=>({pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,over:state.over,busy:state.busy,epoch:state.epoch,handVisible:$('player-hand').classList.contains('visible'),activeMove:Boolean(state.activeMove),pace:options.pace}),startGame,chooseAI};
+    window.PallanguzhiTest={simulateMove,settleIfFinished,validMoves,owner,skipCurrentMove,undoMove,showHint,recommendMove,getSnapshot:()=>({pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,over:state.over,busy:state.busy,epoch:state.epoch,handVisible:$('player-hand').classList.contains('visible'),activeMove:Boolean(state.activeMove),pace:options.pace,difficulty:options.difficulty,history:state.history.length,hintPit:state.hintPit}),startGame,chooseAI};
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
