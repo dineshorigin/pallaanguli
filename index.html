@@ -4,22 +4,29 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b0d06">
-<title>பல்லாங்குழி • Heritage Edition (v3.6.3 • Heritage Journey)</title>
+<title>பல்லாங்குழி • Heritage Edition (v3.8 • Commercial Edition)</title>
 <style>
 :root {
   --brass:#efc875; --gold-dim:#a77b36; --ink:#180b05; --text:#f6ebd9;
   --muted:#c9ac8f; --mint:#70e4b4; --glow:rgba(42,218,137,.28);
   --wood1:#a76132; --wood2:#75401e; --wood3:#451d0d; --pit-core:#1b0904;
   --panel:rgba(24,12,7,.96); --back:#160b06;
+
+  /* Photometric directional lighting coordinates */
+  --l-dx: 0.42;
+  --l-dy: 0.72;
+  --l-angle: 125deg;
+  --l-glow: rgba(255, 230, 180, 0.12);
 }
 body.dark {
   --brass:#e4b65b; --wood1:#653319; --wood2:#421c0d; --wood3:#230d05;
   --pit-core:#080302; --panel:rgba(15,8,5,.97); --back:#090504;
+  --l-glow: rgba(255, 215, 140, 0.08);
 }
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;height:100dvh;overflow:hidden}
 body{background:radial-gradient(ellipse at center,#382012 0%,var(--back) 75%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
 button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #9fdafc;outline-offset:3px}
-#game-frame{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top) + 10px) max(12px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 10px) max(12px,env(safe-area-inset-left))}
+#game-frame{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top) + 10px) max(12px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 10px) max(12px,env(safe-area-inset-left));position:relative}
 .top-strip,.bottom-strip{width:100%;max-width:1100px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex:0 0 auto}
 .top-strip{min-height:49px}.bottom-strip{min-height:45px}
 .brand{font-weight:850;letter-spacing:1.2px;font-size:clamp(16px,2.3vw,23px);color:var(--brass);white-space:nowrap}
@@ -30,35 +37,49 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 .player-name{font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:750}
 .score-badge{flex-shrink:0;color:#ffe0a0;background:#201006;border:1px solid #b38d50;border-radius:8px;min-width:29px;text-align:center;padding:2px 5px;font-weight:850;font-variant-numeric:tabular-nums}
 .arena-stage{flex:1;min-height:0;width:100%;max-width:1100px;position:relative;display:flex;align-items:center;justify-content:center}
-.play-arena{width:100%;height:min(70dvh,610px);min-height:210px;display:flex;align-items:stretch;gap:clamp(7px,1.5vw,15px);filter:drop-shadow(0 17px 20px #070201)}
-.outer-mother-cup{position:relative;flex:0 0 clamp(46px,7vw,82px);background:linear-gradient(105deg,var(--wood3),var(--wood1) 38%,var(--wood2) 65%,var(--wood3));border:4px solid #2e1408;border-radius:28px;box-shadow:inset 2px 2px 5px #ffffff2e,inset -4px -5px 8px #0008;display:flex;flex-direction:column;align-items:center;gap:9px;padding:10px 4px;min-width:0}
-.outer-mother-cup.active-owner{border-color:#5bbe8b;box-shadow:0 0 15px var(--glow),inset 0 2px 6px #fff2}
+.play-arena{width:100%;height:min(70dvh,610px);min-height:210px;display:flex;align-items:stretch;gap:clamp(7px,1.5vw,15px);filter:drop-shadow(0 17px 20px #070201);position:relative}
+
+/* Outer Mother Cups with Dynamic Photometric Bevel */
+.outer-mother-cup{position:relative;flex:0 0 clamp(46px,7vw,82px);background:linear-gradient(calc(var(--l-angle) - 20deg),var(--wood3),var(--wood1) 38%,var(--wood2) 65%,var(--wood3));border:4px solid #2e1408;border-radius:28px;box-shadow:inset 2px 2px 5px rgba(255,255,255,.18),inset -4px -5px 8px #0008,calc(var(--l-dx)*7px) calc(var(--l-dy)*9px) 16px rgba(0,0,0,0.7);display:flex;flex-direction:column;align-items:center;gap:9px;padding:10px 4px;min-width:0;transition:box-shadow .3s ease}
+.outer-mother-cup.active-owner{border-color:#5bbe8b;box-shadow:0 0 15px var(--glow),inset 0 2px 6px #fff2,calc(var(--l-dx)*7px) calc(var(--l-dy)*9px) 16px rgba(0,0,0,0.7)}
 .mother-tag{color:#f6d59b;font-size:clamp(9px,1.1vw,12px);line-height:1.25;font-weight:850;text-align:center;overflow:hidden;width:100%;text-overflow:ellipsis;white-space:normal;text-shadow:1px 1px 2px #120602}
-.mother-cavity{width:100%;flex:1;min-height:0;position:relative;border:2px solid #2c1106;border-radius:24px;background:radial-gradient(ellipse at 60% 72%,var(--pit-core),#371706 66%,#5b2c11);box-shadow:inset 0 13px 21px #000e,0 2px 4px #0009;overflow:hidden}
+.mother-cavity{width:100%;flex:1;min-height:0;position:relative;border:2px solid #2c1106;border-radius:24px;background:radial-gradient(ellipse at calc(50% + var(--l-dx)*16%) calc(50% + var(--l-dy)*18%),var(--pit-core),#371706 66%,#5b2c11);box-shadow:inset calc(var(--l-dx)*9px) calc(var(--l-dy)*14px) 22px #000e,inset calc(var(--l-dx)*-3px) calc(var(--l-dy)*-3px) 5px var(--l-glow),0 2px 4px #0009;overflow:hidden}
 .mother-pile{position:absolute;inset:0;pointer-events:none}
 .store-count{flex:none;font-size:11px;font-weight:900;color:#efc875;background:#241005;border:1px solid #c6984e;border-radius:12px;padding:1px 8px}
+
+/* Board Planks with Photometric Surface Gradients */
 .casket-wrapper{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:7px;position:relative}
-.plank{height:calc(50% - 3.5px);background:radial-gradient(ellipse at 48% 30%,var(--wood1),var(--wood2) 63%,var(--wood3));border:clamp(4px,.65vw,7px) solid #361708;border-radius:19px;padding:6px clamp(4px,1vw,14px);display:flex;flex-direction:column;position:relative;box-shadow:inset 0 3px 5px #fff2,inset 0 -5px 12px #110501ae,0 7px 10px #060301a8;transition:border-color .2s,box-shadow .2s}
-.plank.active-side{border-color:#448961;box-shadow:0 0 17px var(--glow),inset 0 3px 5px #fff2,0 7px 10px #000a}
+.plank{height:calc(50% - 3.5px);background:radial-gradient(ellipse at calc(48% - var(--l-dx)*10%) calc(30% - var(--l-dy)*10%),var(--wood1),var(--wood2) 63%,var(--wood3));border:clamp(4px,.65vw,7px) solid #361708;border-radius:19px;padding:6px clamp(4px,1vw,14px);display:flex;flex-direction:column;position:relative;box-shadow:inset 0 3px 5px rgba(255,255,255,.14),inset calc(var(--l-dx)*-5px) calc(var(--l-dy)*-8px) 14px #110501ae,calc(var(--l-dx)*6px) calc(var(--l-dy)*8px) 15px rgba(0,0,0,.65);transition:border-color .2s,box-shadow .2s}
+.plank.active-side{border-color:#448961;box-shadow:0 0 17px var(--glow),inset 0 3px 5px #fff2,calc(var(--l-dx)*6px) calc(var(--l-dy)*8px) 15px rgba(0,0,0,.65)}
 .owner-bar{display:flex;justify-content:space-between;align-items:center;min-height:21px;gap:5px;padding:0 4px;color:#ffe0a0;font-size:clamp(10px,1vw,13px);font-weight:800;white-space:nowrap;overflow:hidden}
 .owner-name{overflow:hidden;text-overflow:ellipsis}.owner-indicator{color:#c1a082;font-size:clamp(9px,.9vw,11px);font-weight:850;flex:none}
 .plank.active-side .owner-indicator{color:var(--mint)}
 .pits-row{flex:1;min-height:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:clamp(2px,.7vw,10px);align-items:center}
 .pit-slot{display:flex;justify-content:center;align-items:center;min-width:0;height:100%}
-.pit{display:block;appearance:none;position:relative;width:100%;max-width:100px;aspect-ratio:1;border-radius:50%;padding:0;overflow:hidden;background:radial-gradient(circle at 60% 72%,var(--pit-core) 0%,#331406 52%,#6f3415 100%);border:2px solid #321408;box-shadow:inset 0 10px 18px #000e,inset 0 -2px 3px #ffffff16,0 3px 5px #0009;touch-action:manipulation;transition:border-color .15s,transform .15s,box-shadow .15s;color:var(--text)}
-.pit.playable{border-color:#d7ae67;box-shadow:inset 0 9px 17px #000d,0 0 9px #eac07152}
-.pit.playable:hover{transform:scale(1.05);border-color:#ffdc8d;box-shadow:0 0 15px #ffcf75a3,inset 0 9px 17px #000d}
-.pit:disabled{cursor:default}.pit.pulse{border-color:#9df5cb!important;box-shadow:0 0 20px #56ebb4,inset 0 8px 20px #000e!important}
-.pit.capture-pulse{border-color:#ffdb8a!important;box-shadow:0 0 24px #e8b94f,inset 0 9px 18px #000c!important}
+
+/* Photometric Hemispherical Pit Cups */
+.pit{display:block;appearance:none;position:relative;width:100%;max-width:100px;aspect-ratio:1;border-radius:50%;padding:0;overflow:hidden;background:radial-gradient(circle at calc(50% + var(--l-dx)*20%) calc(50% + var(--l-dy)*22%),var(--pit-core) 0%,#331406 52%,#6f3415 100%);border:2px solid #321408;box-shadow:inset calc(var(--l-dx)*10px) calc(var(--l-dy)*13px) 20px #000e,inset calc(var(--l-dx)*-3px) calc(var(--l-dy)*-3px) 4px var(--l-glow),0 3px 5px #0009;touch-action:manipulation;transition:border-color .15s,transform .15s,box-shadow .15s,filter .2s;color:var(--text)}
+.pit.playable{border-color:#d7ae67;box-shadow:inset calc(var(--l-dx)*9px) calc(var(--l-dy)*12px) 17px #000d,0 0 9px #eac07152}
+.pit.playable:hover{transform:scale(1.05);border-color:#ffdc8d;box-shadow:0 0 15px #ffcf75a3,inset calc(var(--l-dx)*9px) calc(var(--l-dy)*12px) 17px #000d}
+.pit:disabled{cursor:default}.pit.pulse{border-color:#9df5cb!important;box-shadow:0 0 20px #56ebb4,inset calc(var(--l-dx)*8px) calc(var(--l-dy)*10px) 20px #000e!important}
+.pit.capture-pulse{border-color:#ffdb8a!important;box-shadow:0 0 24px #e8b94f,inset calc(var(--l-dx)*9px) calc(var(--l-dy)*11px) 18px #000c!important}
+.pit.hand-occluded{filter:brightness(0.78);box-shadow:inset calc(var(--l-dx)*14px) calc(var(--l-dy)*17px) 24px #000,inset 0 0 8px rgba(0,0,0,0.8),0 3px 5px #0009}
+
 .seed-pit-cluster{position:absolute;inset:12%;pointer-events:none}
 .pit-count{pointer-events:none;position:absolute;z-index:2;bottom:1px;left:50%;transform:translateX(-50%);font-size:clamp(10px,1.3vw,15px);font-weight:900;color:#ffe5ab;text-shadow:0 1px 4px #000,0 0 2px #000;font-variant-numeric:tabular-nums}
-.tamarind-seed{display:block;position:absolute;width:clamp(6px,1.55vw,15px);height:clamp(5px,1.3vw,13px);border-radius:44% 56% 46% 54% / 56% 46% 54% 44%;border:1px solid #210b04;box-shadow:1px 2px 3px #000b;pointer-events:none}
-.seed-natural{background:radial-gradient(ellipse at 30% 25%,#9c6035 0%,#61290f 30%,#300f05 80%,#170601)}
-.seed-colored-0{background:radial-gradient(circle at 28% 24%,#fa6969,#992020 70%,#520808)}
-.seed-colored-1{background:radial-gradient(circle at 28% 24%,#ffdf64,#b76f13 70%,#68400c)}
-.seed-colored-2{background:radial-gradient(circle at 28% 24%,#8af6bd,#087b56 70%,#064835)}
-.seed-colored-3{background:radial-gradient(circle at 28% 24%,#91c7ff,#285bbd 70%,#132b6c)}
-.seed-colored-4{background:radial-gradient(circle at 28% 24%,#dfa7ff,#8741c0 70%,#441766)}
+
+/* Multi-Tier Photometric Tamarind Seeds */
+.tamarind-seed{display:block;position:absolute;width:clamp(6px,1.55vw,15px);height:clamp(5px,1.3vw,13px);border-radius:44% 56% 46% 54% / 56% 46% 54% 44%;border:1px solid #210b04;box-shadow:calc(var(--l-dx)*2px + 1px) calc(var(--l-dy)*3px + 1px) 3px rgba(0,0,0,0.88);pointer-events:none;transition:box-shadow .2s ease}
+.tamarind-seed[data-tier="low"]{box-shadow:calc(var(--l-dx)*1px) calc(var(--l-dy)*2px) 2px rgba(0,0,0,0.92)}
+.tamarind-seed[data-tier="mid"]{box-shadow:calc(var(--l-dx)*2.5px + 1px) calc(var(--l-dy)*3.5px + 1px) 4px rgba(0,0,0,0.8),inset 0 1px 1px rgba(255,255,255,0.12)}
+.tamarind-seed[data-tier="high"]{box-shadow:calc(var(--l-dx)*4px + 1px) calc(var(--l-dy)*5px + 2px) 6px rgba(0,0,0,0.7),inset 0 1px 2px rgba(255,255,255,0.22)}
+
+.seed-natural{background:radial-gradient(ellipse at calc(30% - var(--l-dx)*10%) calc(25% - var(--l-dy)*10%),#9c6035 0%,#61290f 30%,#300f05 80%,#170601)}
+.seed-colored-0{background:radial-gradient(circle at calc(28% - var(--l-dx)*10%) calc(24% - var(--l-dy)*10%),#fa6969,#992020 70%,#520808)}
+.seed-colored-1{background:radial-gradient(circle at calc(28% - var(--l-dx)*10%) calc(24% - var(--l-dy)*10%),#ffdf64,#b76f13 70%,#68400c)}
+.seed-colored-2{background:radial-gradient(circle at calc(28% - var(--l-dx)*10%) calc(24% - var(--l-dy)*10%),#8af6bd,#087b56 70%,#064835)}
+.seed-colored-3{background:radial-gradient(circle at calc(28% - var(--l-dx)*10%) calc(24% - var(--l-dy)*10%),#91c7ff,#285bbd 70%,#132b6c)}
+.seed-colored-4{background:radial-gradient(circle at calc(28% - var(--l-dx)*10%) calc(24% - var(--l-dy)*10%),#dfa7ff,#8741c0 70%,#441766)}
 .tamarind-seed::after{content:"";position:absolute;left:17%;top:13%;width:38%;height:26%;border-radius:50%;background:radial-gradient(ellipse,#fff8 0%,#fff1 65%,transparent 80%);transform:rotate(-18deg)}
 .seed-natural::after{background:radial-gradient(ellipse,#d99f5d8c 0%,#f1bb5012 70%,transparent 85%)}
 .tamarind-seed.seed-landed{animation:bead-settle 235ms cubic-bezier(.2,.85,.2,1.0) backwards}
@@ -68,15 +89,18 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   73%{transform:translate(-50%,-62%) rotate(calc(var(--rot) - 4deg)) scale(.98,1.07)}
   100%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(1)}
 }
+
 .board-seam{position:absolute;left:6%;right:6%;height:9px;top:50%;transform:translateY(-50%);z-index:10;display:flex;align-items:center;justify-content:space-around;pointer-events:none}
-.board-seam span{width:clamp(21px,5vw,43px);height:9px;border:1px solid #ffe09a;border-radius:2px;background:linear-gradient(#fff0b2,#c79642,#74431c);box-shadow:0 3px 7px #000a}
+.board-seam span{width:clamp(21px,5vw,43px);height:9px;border:1px solid #ffe09a;border-radius:2px;background:linear-gradient(var(--l-angle),#fff0b2,#c79642,#74431c);box-shadow:calc(var(--l-dx)*3px) calc(var(--l-dy)*4px) 7px #000a}
 .status-message{color:#f4d8b1;font-size:clamp(11px,1.25vw,14px);font-weight:650;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
 .actions{display:flex;gap:6px;flex:none}
-.action-btn{font-size:12px;font-weight:750;background:#25140d;color:#f0d3b2;border:1px solid #6e452d;border-radius:9px;padding:8px 10px;touch-action:manipulation}
+.action-btn{font-size:12px;font-weight:750;background:#25140d;color:#f0d3b2;border:1px solid #6e452d;border-radius:9px;padding:8px 10px;touch-action:manipulation;display:inline-flex;align-items:center;justify-content:center;gap:3px}
 .action-btn:hover{background:#4c2917}.action-btn[aria-pressed="true"]{color:#a4f5d0;border-color:#43bb8b}
-.hand-counter{position:fixed;z-index:70;pointer-events:none;display:none;background:linear-gradient(#ffdb91,#d59c3b);color:#211006;border:1px solid #fff3c5;padding:5px 10px;font-size:13px;font-weight:900;border-radius:18px;transform:translate(-50%,-150%);box-shadow:0 6px 11px #000a,0 0 15px #e5af5a4a;transition:left 165ms cubic-bezier(.22,.72,.25,1),top 165ms cubic-bezier(.22,.72,.25,1);font-variant-numeric:tabular-nums}
-.flying-seed{z-index:69;position:fixed;pointer-events:none;left:0;top:0;width:clamp(10px,1.55vw,15px);height:clamp(9px,1.3vw,13px);will-change:transform;filter:drop-shadow(0 4px 5px #0009)}
-.flying-seed.scoop-seed{z-index:71}
+.hand-counter{position:fixed;z-index:75;pointer-events:none;display:none;background:linear-gradient(#ffdb91,#d59c3b);color:#211006;border:1px solid #fff3c5;padding:5px 10px;font-size:13px;font-weight:900;border-radius:18px;transform:translate(-50%,-150%);box-shadow:0 6px 11px #000a,0 0 15px #e5af5a4a;transition:left 165ms cubic-bezier(.22,.72,.25,1),top 165ms cubic-bezier(.22,.72,.25,1);font-variant-numeric:tabular-nums}
+
+/* Parabolic Flying Seed with Dynamic Altitude Shadows */
+.flying-seed{z-index:71;position:fixed;pointer-events:none;left:0;top:0;width:clamp(10px,1.55vw,15px);height:clamp(9px,1.3vw,13px);will-change:transform,filter}
+.flying-seed.scoop-seed{z-index:74}
 .pit.drop-impact::before{content:"";position:absolute;inset:24%;border:1px solid #ffe9ad8a;border-radius:50%;pointer-events:none;animation:impact-ring 220ms ease-out forwards;z-index:1}
 @keyframes impact-ring{from{opacity:.9;transform:scale(.5)}to{opacity:0;transform:scale(1.65)}}
 .overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(4,2,1,.88);backdrop-filter:blur(7px);overflow:auto}
@@ -97,7 +121,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 .primary-btn:hover{filter:brightness(1.07)}.secondary-btn{padding:11px 15px;border:1px solid #9f774b;background:#352018;color:#f4ddc4;border-radius:10px;font-weight:750;width:100%;margin-top:10px}
 .rules{font-size:14px;line-height:1.55;color:#e6d1bd}.rules p{margin:0 0 12px}.rules strong{color:#87edbe}.rules .note{color:#edc78b;font-size:12px}
 .winner-line{font-size:20px;text-align:center;font-weight:850;color:#8cedb7;margin:8px 0 12px}.final-scores{display:flex;justify-content:center;gap:16px;font-weight:800;color:#ffe4b5}
-.toast{position:fixed;z-index:80;left:50%;bottom:70px;transform:translateX(-50%);width:max-content;max-width:90vw;border:1px solid #d6aa60;background:#251407;color:#ffe4b8;padding:9px 16px;border-radius:16px;font-size:13px;box-shadow:0 8px 24px #000b;pointer-events:none;opacity:0;transition:opacity .2s;text-align:center}
+.toast{position:fixed;z-index:90;left:50%;bottom:70px;transform:translateX(-50%);width:max-content;max-width:90vw;border:1px solid #d6aa60;background:#251407;color:#ffe4b8;padding:9px 16px;border-radius:16px;font-size:13px;box-shadow:0 8px 24px #000b;pointer-events:none;opacity:0;transition:opacity .2s;text-align:center}
 .toast.visible{opacity:1}
 @media(max-width:700px){
   .brand{font-size:15px}.brand small{font-size:9px;letter-spacing:1px}
@@ -124,9 +148,10 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
-.player-hand{position:fixed;left:0;top:0;width:clamp(72px,9vw,114px);aspect-ratio:116/165;z-index:73;pointer-events:none;opacity:0;visibility:hidden;transform:translate3d(-150px,-150px,0);transition:opacity 115ms ease,visibility 115ms;filter:drop-shadow(3px 5px 4px #0009);will-change:transform;}
+/* Realistic Opposing Hands */
+.player-hand{position:fixed;left:0;top:0;width:clamp(72px,9vw,114px);aspect-ratio:116/165;z-index:73;pointer-events:none;opacity:0;visibility:hidden;transform:translate3d(-150px,-150px,0);transition:opacity 115ms ease,visibility 115ms;will-change:transform;}
 .player-hand.visible{opacity:.95;visibility:visible}
-.player-hand svg{width:100%;height:100%;overflow:visible}
+.player-hand svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(calc(var(--l-dx)*3px) calc(var(--l-dy)*4px) 5px rgba(0,0,0,0.65))}
 .player-hand .hand-finger{transform-box:fill-box;transform-origin:50% 84%;transition:transform 190ms cubic-bezier(.25,.75,.25,1)}
 .player-hand .hand-thumb{transform-box:fill-box;transform-origin:65% 74%;transition:transform 190ms cubic-bezier(.25,.75,.25,1)}
 .player-hand.grip .finger-1{transform:translate(4px,13px) rotate(8deg) scaleY(.77)}
@@ -141,9 +166,13 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 .player-hand .hand-cuff{fill:#e8d3a5}
 .player-hand .hand-seed-count{position:absolute;bottom:23%;left:50%;transform:translateX(-50%);padding:2px 7px;min-width:23px;text-align:center;border-radius:14px;background:linear-gradient(135deg,#ffebaa,#e0ad54);color:#2a1706;font-weight:900;font-size:clamp(10px,1.2vw,13px);box-shadow:0 3px 7px #0007;border:1px solid #fff6c7;}
 .player-hand .hand-seed-count:empty{display:none}
-.player-hand.vanishing{transition:opacity 190ms ease,visibility 190ms}
-.player-hand.turned svg{transform:rotate(-90deg)}
-.player-hand.turned .hand-seed-count{transform:translateX(-50%) rotate(-90deg)}
+
+/* Dedicated Dynamic Ambient Hand-Cast Shadow Element */
+.hand-cast-shadow{position:fixed;left:0;top:0;width:clamp(74px,9.2vw,118px);aspect-ratio:116/165;z-index:72;pointer-events:none;opacity:0;visibility:hidden;will-change:transform,filter,opacity;transition:opacity 130ms ease,visibility 130ms;background:radial-gradient(ellipse at 50% 60%,rgba(14,6,2,0.72) 0%,rgba(14,6,2,0.48) 55%,transparent 85%);border-radius:45% 45% 35% 35%;filter:blur(8px)}
+.hand-cast-shadow.visible{opacity:1;visibility:visible}
+.hand-cast-shadow.lowered{filter:blur(4px);opacity:.75}
+.hand-cast-shadow.lifted{filter:blur(11px);opacity:.42}
+
 .pit .tamarind-seed.seed-landed{will-change:transform}
 .pit .tamarind-seed.seed-landed{animation:realistic-landing 225ms cubic-bezier(.2,.67,.2,1) both}
 @keyframes realistic-landing{
@@ -157,21 +186,25 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 .slider-line input{flex:1;min-width:60px;accent-color:#f7c96e;touch-action:auto}
 .live-badge{display:inline-flex;gap:6px;justify-content:center;align-items:center;margin-top:11px;background:#4531175c;border:1px solid #9a6a3659;color:#f3d09b;border-radius:20px;padding:5px 11px;font-size:11px;font-weight:700;letter-spacing:.2px;}
 #sound-btn.sound-off{color:#e2b9a4}
-@media (orientation:portrait) and (max-width:700px){.player-hand{width:75px;filter:drop-shadow(5px 7px 7px #0009)}}
-@media(max-height:460px){.player-hand{width:70px}}
-@media(prefers-reduced-motion:reduce){.player-hand{transition:none!important}.pit .tamarind-seed.seed-landed{animation:none!important}}
-/* V3.4: short, accessible escape for long continuous-sowing turns. */
+@media (orientation:portrait) and (max-width:700px){
+  .player-hand{width:75px}
+  .hand-cast-shadow{width:77px}
+}
+@media(max-height:460px){
+  .player-hand{width:70px}
+  .hand-cast-shadow{width:72px}
+}
+@media(prefers-reduced-motion:reduce){
+  .player-hand{transition:none!important}
+  .hand-cast-shadow{display:none!important}
+  .pit .tamarind-seed.seed-landed{animation:none!important}
+}
+
 .skip-move{position:fixed;right:16px;bottom:calc(75px + env(safe-area-inset-bottom));z-index:85;border:1px solid #e6c57e;background:linear-gradient(160deg,#45301b,#211208);color:#ffe8bc;border-radius:999px;padding:10px 15px;font-weight:850;font-size:12px;box-shadow:0 8px 22px #000b;cursor:pointer}
 .skip-move[hidden]{display:none!important}.skip-move:focus-visible{outline:3px solid #9fdafc;outline-offset:2px}
 @media(max-width:700px){.skip-move{right:10px;bottom:calc(79px + env(safe-area-inset-bottom));padding:9px 12px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.flying-seed{display:none}.player-hand{transition:none!important}}
-/* Avoid one expensive offscreen filtered layer around the complete mobile board. */
-@media(max-width:700px){
-  .play-arena{filter:none}
-  .tamarind-seed{box-shadow:0 1px 2px #000a}
-  .flying-seed{filter:none}
-}
-/* V3.5: coaching and safe undo controls, kept lightweight for Android. */
+
 .pit.hinted{border-color:#94f5d5!important;box-shadow:0 0 0 3px #39dca755,0 0 18px #5bebae,inset 0 9px 17px #000e!important}
 .pit.hinted::after{content:'★';position:absolute;right:3px;top:0;color:#c3ffe3;font-size:12px;text-shadow:0 1px 3px #000;pointer-events:none}
 .action-btn:disabled{opacity:.38;cursor:not-allowed}
@@ -193,24 +226,22 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 }
 @media(max-width:420px){.difficulty-chooser .option{font-size:11px}}
 
-/* V3.6.1: the two players reach in from opposite sides of the board.
-   Bottom player's fingers point up (towards the top row); top player's
-   fingers point down. The badge remains upright and readable. */
+/* Directional Facing for Hands */
 .player-hand svg{transform-origin:50% 50%;transition:none}
 .player-hand[data-facing="bottom"] svg{transform:rotate(0deg)}
 .player-hand[data-facing="top"] svg{transform:rotate(180deg)}
+.hand-cast-shadow[data-facing="bottom"]{transform-origin:50% 60%}
+.hand-cast-shadow[data-facing="top"]{transform-origin:50% 40%}
 @media (orientation:portrait) and (max-width:700px){
-  /* The game board itself is rotated +90deg in this viewport. */
   .player-hand[data-facing="bottom"] svg{transform:rotate(90deg)}
   .player-hand[data-facing="top"] svg{transform:rotate(-90deg)}
-  .player-hand{filter:none}
 }
 @media (max-width:700px){
   .pit.drop-impact::before{box-shadow:none}
   .pit .tamarind-seed.seed-landed{will-change:auto}
 }
 @media (prefers-reduced-motion:reduce){.player-hand svg{transition:none}}
-/* V3.6.2: tiny compositor-friendly feedback; existing hand and board geometry unchanged. */
+
 @keyframes gain-float {0%{opacity:0;transform:translate3d(-50%,12px,0) scale(.84)}20%{opacity:1}78%{opacity:1}100%{opacity:0;transform:translate3d(-50%,-40px,0) scale(1.08)}}
 @keyframes score-bloom {0%{transform:scale(1)}45%{transform:scale(1.24);color:#fff7c5}100%{transform:scale(1)}}
 @keyframes store-celebrate {0%,100%{outline-color:transparent}35%{outline-color:#f9d17c}}
@@ -230,7 +261,48 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 .score-comparison{width:100%;height:9px;background:#43241b;display:flex;overflow:hidden;border-radius:10px;margin:4px 0 19px}
 #score-share-1{background:linear-gradient(90deg,#38be8b,#8deac1);transition:width .6s ease}
 #score-share-2{background:linear-gradient(90deg,#edbc6d,#a37036);transition:width .6s ease}
-/* Tutorial mini-board has its own state and never mutates the main match. */
+
+/* Step 2 Viral WhatsApp Button Styling */
+.share-whatsapp-btn{
+  background:linear-gradient(135deg,#25D366 0%,#128C7E 100%)!important;
+  color:#ffffff!important;
+  box-shadow:0 6px 20px rgba(37,211,102,0.38)!important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-weight:850!important;
+  margin-top:12px;
+}
+.share-whatsapp-btn:hover{filter:brightness(1.12)}
+
+/* Step 1 Monetization Modals & Test Ad Simulator */
+.reward-ad-card{max-width:400px;text-align:center;border-color:#eab308;box-shadow:0 24px 75px rgba(234,179,8,0.25)}
+.reward-ad-card h2{color:#fde047;font-size:20px;margin-bottom:8px}
+.reward-icon{font-size:48px;margin-bottom:6px;display:block}
+.ad-badge-tag{display:inline-block;padding:2px 8px;border-radius:6px;background:#374151;color:#fbbf24;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+
+#ad-simulator-overlay{
+  position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.96);
+  display:none;flex-direction:column;justify-content:center;align-items:center;padding:20px;
+}
+#ad-simulator-overlay.active{display:flex}
+.sim-ad-container{
+  width:min(90vw,480px);background:#1a130f;border:2px solid #eab308;
+  border-radius:18px;padding:22px;text-align:center;box-shadow:0 0 50px rgba(234,179,8,0.3);
+  position:relative;
+}
+.sim-ad-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:12px;color:#f3d49e;font-weight:800}
+.sim-ad-video-mock{
+  height:180px;background:radial-gradient(circle at center,#3a2012 0%,#110702 100%);
+  border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  border:1px dashed #6d4b2e;margin-bottom:16px;
+}
+.sim-progress-bar{width:100%;height:8px;background:#2b1a11;border-radius:4px;overflow:hidden;margin-top:8px}
+.sim-progress-fill{height:100%;background:#eab308;width:0%;transition:width 0.1s linear}
+.sim-ad-cancel{background:transparent;border:none;color:#9ca3af;font-size:11px;text-decoration:underline;margin-top:10px;cursor:pointer}
+
+/* Tutorial styles */
 .tutorial-card{max-width:560px;padding:20px 23px}
 .tutorial-topline{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .tutorial-kicker{font-weight:850;color:#f7d896;font-size:12px;letter-spacing:.55px}
@@ -258,7 +330,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 @media(max-width:420px){.tutorial-card{padding:14px}.tutorial-board-shell{padding:6px}.tutorial-board{padding:7px 5px}.tutorial-pit{border-width:1px}.tutorial-copy{font-size:12px}.tutorial-actions button{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.gain-float,.store-celebrate,.score-bloom,.victory-emblem{animation:none!important}.tutorial-hand{transition:none!important}}
 
-/* V3.6.3: quiet engagement controls; preserve the eight-button action grid. */
+/* Stats & Journey */
 .stats-trigger{flex:0 0 auto;border:1px solid #977146;border-radius:9px;background:#2b1b12;color:#f4d6aa;padding:8px 10px;font-size:12px;font-weight:800;white-space:nowrap;min-height:36px}
 .stats-trigger:hover{background:#49301a}
 .top-strip .stats-trigger{margin-left:auto}
@@ -299,7 +371,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 
 <main id="game-frame" aria-label="Pallanguzhi game">
   <header class="top-strip">
-    <div class="brand">பல்லாங்குழி<small>LIVING BOARD · V3.6.3</small></div>
+    <div class="brand">பல்லாங்குழி<small>HERITAGE EDITION · V3.8</small></div>
     <button type="button" class="stats-trigger" id="stats-btn" aria-label="Open match statistics and achievements">📊 Stats</button>
     <div class="players-scoreboard">
       <div class="player-pod" id="p2-pod"><span class="player-name" id="p2-label">Azhagi (AI)</span><span class="score-badge" id="p2-score">0</span></div>
@@ -330,10 +402,10 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   <footer class="bottom-strip">
     <div class="status-message" id="status-text" aria-live="polite">Choose a game mode to start.</div>
     <div class="actions">
-      <button type="button" class="action-btn assist-btn" id="hint-btn" aria-pressed="false" disabled title="Highlight a suggested cup">💡 Hint</button>
-      <button type="button" class="action-btn assist-btn" id="undo-btn" disabled title="Undo your last move (and the AI reply, if any)">↶ Undo</button>
+      <button type="button" class="action-btn assist-btn" id="hint-btn" aria-pressed="false" disabled title="Highlight a suggested cup">💡 Hint (2)</button>
+      <button type="button" class="action-btn assist-btn" id="undo-btn" disabled title="Undo your last move">↶ Undo (1)</button>
       <button type="button" class="action-btn" id="speed-btn" aria-pressed="false">🎞 Pace: Natural</button>
-      <button type="button" class="action-btn" id="sound-btn" aria-pressed="true" title="Wooden seed taps and bead-on-wood clacks (procedurally rendered)">🔊 Sound</button>
+      <button type="button" class="action-btn" id="sound-btn" aria-pressed="true" title="Wooden seed taps and bead-on-wood clacks">🔊 Sound</button>
       <button type="button" class="action-btn" id="theme-btn">☀️ Theme</button>
       <button type="button" class="action-btn" id="rules-btn">📖 Rules</button>
       <button type="button" class="action-btn" id="match-btn">⚙️ Match</button>
@@ -342,6 +414,10 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   </footer>
 </main>
 
+<!-- Dynamic Hand Cast Shadow -->
+<div class="hand-cast-shadow" id="hand-cast-shadow" aria-hidden="true" data-facing="bottom"></div>
+
+<!-- Articulated Sowing Hand -->
 <div class="player-hand" id="player-hand" aria-hidden="true" data-facing="bottom">
  <svg viewBox="0 0 116 165" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -369,9 +445,43 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 <div class="hint-explanation" id="hint-explanation" hidden role="status" aria-live="polite"><span id="hint-explanation-text"></span><button type="button" id="hint-dismiss" aria-label="Dismiss hint explanation">✕</button></div>
 <button type="button" class="skip-move" id="skip-btn" hidden disabled aria-label="Finish the current move without waiting for animations">⏭ Finish move</button>
 
+<!-- Step 1: Rewarded Ad Prompt Modal -->
+<div class="overlay hidden" id="reward-ad-modal" role="dialog" aria-modal="true" aria-label="Unlock rewards">
+  <div class="modal-card reward-ad-card">
+    <span class="ad-badge-tag">SPONSOR REWARD</span>
+    <span class="reward-icon" id="reward-modal-icon">💡</span>
+    <h2 id="reward-modal-title">Unlock Master Hints</h2>
+    <p class="difficulty-note" id="reward-modal-desc" style="font-size:13px;margin:8px 0 16px">
+      You used all free hints for this match. Watch a short sponsor message to unlock <b>+3 Hints</b>!
+    </p>
+    <button type="button" class="primary-btn" id="watch-ad-btn" style="margin-top:0">▶ Watch Video (+3 Hints)</button>
+    <button type="button" class="secondary-btn" id="close-reward-ad-btn">✕ No thanks</button>
+  </div>
+</div>
+
+<!-- Step 1: Simulated Sponsor Video Overlay (Testing Mode) -->
+<div id="ad-simulator-overlay" role="dialog" aria-modal="true" aria-label="Simulated Sponsor Video">
+  <div class="sim-ad-container">
+    <div class="sim-ad-top">
+      <span>SPONSOR VIDEO (TEST AD)</span>
+      <span id="sim-countdown-badge">Reward in 5s...</span>
+    </div>
+    <div class="sim-ad-video-mock">
+      <span style="font-size:36px">📺</span>
+      <strong style="color:#ffe0a0;font-size:14px">Heritage Board Games Sponsor</strong>
+      <small style="color:#d1bbae">AdMob / Web Portal Bridge Simulation</small>
+      <div class="sim-progress-bar">
+        <div class="sim-progress-fill" id="sim-progress-fill"></div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:#a38872">Testing mode active. This connects to real Google AdMob or CrazyGames on release.</div>
+    <button type="button" class="sim-ad-cancel" id="sim-cancel-btn">✕ Cancel ad (No reward)</button>
+  </div>
+</div>
+
 <div class="overlay" id="setup-modal" role="dialog" aria-modal="true" aria-label="Set up game">
   <div class="modal-card">
-    <h1>பல்லாங்குழி</h1><p class="sub">TAMIL HERITAGE · JOURNEY EDITION</p>
+    <h1>பல்லாங்குழி</h1><p class="sub">TAMIL HERITAGE · COMMERCIAL EDITION</p>
     <span class="field-label">Game mode</span>
     <div class="button-grid"><button type="button" class="option active" data-mode="ai">👤 vs Computer</button><button type="button" class="option" data-mode="two">👥 2 Players</button></div>
     <div class="difficulty-chooser" id="difficulty-picker">
@@ -392,7 +502,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <div class="input-group"><label for="p2-input">Player 2 · top</label><input id="p2-input" maxlength="18" value="Azhagi (AI)" autocomplete="off"></div>
     <span class="field-label">Sound volume · ஒலி அளவு</span>
     <label class="slider-line" for="volume-input">🔊 <input type="range" id="volume-input" min="0" max="100" value="65" step="5"><output id="volume-display">65%</output></label>
-    <div style="text-align:center"><span class="live-badge">✋ Opposing hands &nbsp; • &nbsp; 🫘 Natural pace &nbsp; • &nbsp; 🔊 Bead clacks</span></div>
+    <div style="text-align:center"><span class="live-badge">✋ Photometric Depth &nbsp; • &nbsp; 💡 Smart Ad Bridge &nbsp; • &nbsp; 📲 WhatsApp Viral</span></div>
     <button type="button" class="secondary-btn tutorial-launch" id="tutorial-setup-btn">🎓 Learn to play · கற்றுக்கொள்வோம்</button>
     <section class="resume-panel" id="resume-panel" hidden aria-label="Continue saved match">
       <div class="resume-heading">💾 Continue your match?</div>
@@ -416,11 +526,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       <p><strong>4. Capture · துடைத்தல்:</strong> If that next cup is empty, your turn ends. Capture all seeds in the cup immediately after the empty one, if any. They go to the current player's store.</p>
       <p><strong>5. Pasu · பசு:</strong> Whenever sowing makes a cup contain exactly 4 seeds, its owner immediately collects those 4 seeds into their store, even during an opponent's move.</p>
       <p><strong>6. Match end:</strong> When a player's seven cups are all empty at the end of a turn, this <em>single-round variant</em> ends. Each player collects the seeds left in their own row. Most seeds wins.</p>
-      <p><strong>7. Smart play:</strong> Choose Easy, Medium, Hard, or Expert when facing the computer. Tap 💡 Hint on your turn for a suggested cup; the suggestion does not play for you. Tap ↶ Undo to restore the previous human decision (including the computer's reply in AI mode). Undo also works during an animation.</p>
-      <p><strong>8. Interactive lessons (v3.6.3):</strong> Open Learn from Match settings or Rules for four bilingual practice lessons. Each lesson uses a separate board; your current match is never changed.</p>
-      <p><strong>9. Save &amp; resume (v3.6.3):</strong> The game automatically saves at completed-turn boundaries. If you close the app while beads are moving, Resume restores the position before that move. Use Continue on the setup screen to recover it.</p>
-      <p><strong>10. Heritage Journey:</strong> Tap 📊 Stats to view results, recent matches and achievements. Statistics count wins from the bottom player’s perspective and are kept only in this browser.</p>
-      <p class="note">Player 1’s hand enters from below and points toward the top plank, while Player 2’s hand mirrors it from above. The hand orientation follows the rotated board on phones. Regional Pallanguzhi rules can vary; this game deliberately follows the six rules above. Completed moves conserve exactly 70 seeds. Nonterminating moves are rejected instead of applying a partial turn. The 🔊 Sound button plays short procedurally rendered wood taps and bead-on-wood clacks (no internet required). Volume is adjustable in Match settings. An animated hand collects and distributes beads; collisions and bounces are visual approximations, not a full physics simulation. Pace cycles between Natural (default), Relaxed and Fast. The “Finish move” control completes the current move instantly without changing its result.</p>
+      <p><strong>7. Monetization & Hints:</strong> Each game provides 2 free Hints and 1 free Undo. Need more strategic guidance? Watch a quick sponsor message to unlock more.</p>
     </div>
     <button type="button" class="secondary-btn tutorial-launch" id="tutorial-rules-btn">🎓 Try the interactive tutorial · பயிற்சி</button>
     <button type="button" class="primary-btn" id="close-rules">Back to game</button>
@@ -435,6 +541,13 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <p class="result-message" id="result-message"></p>
     <div class="final-scores result-score-cards" id="final-scores"></div>
     <div class="score-comparison" aria-label="Share of captured seeds" id="score-comparison"><span id="score-share-1"></span><span id="score-share-2"></span></div>
+    
+    <!-- Step 2: Viral WhatsApp Challenge Button -->
+    <button type="button" class="primary-btn share-whatsapp-btn" id="share-whatsapp-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm0 18.08c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.12 8.12 0 01-1.25-4.31c0-4.5 3.66-8.16 8.16-8.16 2.18 0 4.23.85 5.77 2.39 1.54 1.54 2.39 3.59 2.39 5.77 0 4.5-3.66 8.16-8.16 8.16zm4.47-6.11c-.25-.12-1.45-.72-1.68-.8-.23-.08-.39-.12-.56.12-.17.25-.64.8-.79.97-.14.17-.29.19-.54.07-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.39-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43s-.56-1.34-.76-1.84c-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.05s.88 2.38 1 2.54c.12.17 1.73 2.64 4.2 3.7.59.25 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.45-.59 1.66-1.16.2-.58.2-1.07.14-1.17-.05-.1-.21-.17-.46-.29z"/></svg>
+      <span>Challenge on WhatsApp • சவால் விடுங்கள்</span>
+    </button>
+
     <div class="unlock-list" id="new-unlocks" hidden aria-live="polite"></div>
     <button type="button" class="secondary-btn" id="result-stats-btn">📊 Match history & achievements</button>
     <button type="button" class="secondary-btn" id="undo-end-btn" hidden>↶ Undo last move</button>
@@ -457,7 +570,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <button type="button" class="primary-btn" id="close-stats-btn">Back to game</button>
   </div>
 </div>
-<!-- All four tutorial lessons are isolated from match state; real matches stay untouched. -->
+
 <div class="overlay hidden" id="tutorial-modal" role="dialog" aria-modal="true" aria-label="Interactive Pallanguzhi tutorial">
   <div class="modal-card tutorial-card">
     <div class="tutorial-topline">
@@ -485,6 +598,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <button type="button" class="tutorial-exit" id="tutorial-exit">Close tutorial · பயிற்சியை மூடு</button>
   </div>
 </div>
+
 <script>
 (() => {
   'use strict';
@@ -497,6 +611,16 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   let options = {ai:true, difficulty:'medium', theme:'bright', seedStyle:'natural', fast:false, pace:'natural', sound:true, volume:.65};
   let names = {1:'Player 1',2:'Azhagi (AI)'};
   let state = {pits:Array(N).fill(START_SEEDS), banks:[0,0,0], turn:1, busy:false, over:false, epoch:0, aiTicket:0, started:false, activeMove:null, hintPit:null, history:[], metrics:{moves:0,p1Pasu:0,p1Captured:0,biggestCapture:0}, matchId:null, matchStartedAt:0, recordedStatsBefore:null, resultRecorded:false};
+  
+  /* Step 1: In-Game Assist Quotas & Monetization State */
+  let assistQuota = {
+    freeHints: 2,
+    freeUndos: 1,
+    hintsRemaining: 2,
+    undosRemaining: 1,
+    matchesSinceAd: 0
+  };
+
   const PROGRESS_KEY='pallanguzhi.heritage.v363.progress';
   const STATS_KEY='pallanguzhi.heritage.v363.stats';
   let stats={matches:0,wins:0,losses:0,draws:0,streak:0,bestStreak:0,bestScore:0,pasu:0,captured:0,expertWins:0,history:[]};
@@ -513,9 +637,221 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   let layoutDirty = true;
   const portraitBoard = () => matchMedia('(orientation: portrait) and (max-width:700px)').matches;
 
-  // Browser-only progression. A saved position is ALWAYS at a completed-turn
-  // boundary. If the tab closes during a bead flight, the saved position is
-  // the beginning of that move, never an illegal partially sown board.
+  /* Photometric Dynamic Lighting State */
+  let lightState = { dx: 0.42, dy: 0.72, angle: 125 };
+  let lightRafPending = false;
+
+  function updatePhotometricVars(dx, dy) {
+    lightState.dx = dx;
+    lightState.dy = dy;
+    const angleRad = Math.atan2(dy, dx);
+    lightState.angle = (angleRad * 180 / Math.PI + 360) % 360;
+
+    if (!lightRafPending) {
+      lightRafPending = true;
+      requestAnimationFrame(() => {
+        document.documentElement.style.setProperty('--l-dx', lightState.dx.toFixed(2));
+        document.documentElement.style.setProperty('--l-dy', lightState.dy.toFixed(2));
+        document.documentElement.style.setProperty('--l-angle', `${lightState.angle.toFixed(1)}deg`);
+        lightRafPending = false;
+      });
+    }
+  }
+
+  function initPhotometricListeners() {
+    window.addEventListener('pointermove', e => {
+      const nx = (e.clientX / window.innerWidth) - 0.5;
+      const ny = (e.clientY / window.innerHeight) - 0.5;
+      const targetDx = 0.42 + nx * 0.28;
+      const targetDy = 0.72 + ny * 0.28;
+      updatePhotometricVars(targetDx, targetDy);
+    }, { passive: true });
+
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', e => {
+        if (e.gamma !== null && e.beta !== null) {
+          const gx = Math.max(-30, Math.min(30, e.gamma)) / 30;
+          const gy = Math.max(-30, Math.min(30, e.beta - 40)) / 30;
+          const targetDx = 0.42 + gx * 0.32;
+          const targetDy = 0.72 + gy * 0.32;
+          updatePhotometricVars(targetDx, targetDy);
+        }
+      }, { passive: true });
+    }
+  }
+
+  /* =========================================================================
+     Step 1: Universal AdBridge (Capacitor AdMob, Web Portals, & Test Simulator)
+     ========================================================================= */
+  let pendingRewardCallback = null;
+  let simAdTimer = null;
+
+  const AdBridge = {
+    isCapacitorAdMob: () => window.Capacitor !== undefined && window.Capacitor.isPluginAvailable && window.Capacitor.isPluginAvailable('AdMob'),
+    isCrazyGames: () => window.CrazyGames && window.CrazyGames.SDK && typeof window.CrazyGames.SDK.ad?.requestAd === 'function',
+
+    showRewarded: function(rewardType, onGranted) {
+      // 1. Android Capacitor / AdMob Release Check
+      if (this.isCapacitorAdMob()) {
+        window.Capacitor.Plugins.AdMob.showRewardVideoAd().then(() => {
+          onGranted();
+        }).catch(() => {
+          this.runTestSimulator(rewardType, onGranted);
+        });
+        return;
+      }
+
+      // 2. CrazyGames HTML5 Portal Check
+      if (this.isCrazyGames()) {
+        window.CrazyGames.SDK.ad.requestAd("rewarded", {
+          adStarted: () => { if(audio) audio.pallanguzhiMaster.gain.value = 0; },
+          adFinished: () => { 
+            if(audio) audio.pallanguzhiMaster.gain.value = options.volume;
+            onGranted(); 
+          },
+          adError: () => { 
+            if(audio) audio.pallanguzhiMaster.gain.value = options.volume;
+            this.runTestSimulator(rewardType, onGranted);
+          }
+        });
+        return;
+      }
+
+      // 3. Fallback: Testing Simulator Overlay (Interactive 5-second mock)
+      this.runTestSimulator(rewardType, onGranted);
+    },
+
+    showInterstitial: function() {
+      assistQuota.matchesSinceAd++;
+      if (assistQuota.matchesSinceAd < 2) return; // Cap: every 2 completed matches
+      assistQuota.matchesSinceAd = 0;
+
+      if (this.isCapacitorAdMob()) {
+        window.Capacitor.Plugins.AdMob.showInterstitial();
+      } else if (this.isCrazyGames()) {
+        window.CrazyGames.SDK.ad.requestAd("midgame");
+      }
+    },
+
+    runTestSimulator: function(rewardType, onGranted) {
+      const overlay = $('ad-simulator-overlay');
+      const fill = $('sim-progress-fill');
+      const badge = $('sim-countdown-badge');
+      pendingRewardCallback = onGranted;
+
+      overlay.classList.add('active');
+      fill.style.width = '0%';
+      let elapsed = 0;
+      const total = 5000;
+      const interval = 100;
+
+      clearInterval(simAdTimer);
+      simAdTimer = setInterval(() => {
+        elapsed += interval;
+        const pct = Math.min(100, (elapsed / total) * 100);
+        fill.style.width = pct + '%';
+        const left = Math.max(0, Math.ceil((total - elapsed) / 1000));
+        badge.textContent = left > 0 ? `Reward in ${left}s...` : 'Reward Ready! ✓';
+
+        if (elapsed >= total) {
+          clearInterval(simAdTimer);
+          setTimeout(() => {
+            overlay.classList.remove('active');
+            playVictoryChime();
+            if (pendingRewardCallback) {
+              pendingRewardCallback();
+              pendingRewardCallback = null;
+            }
+          }, 350);
+        }
+      }, interval);
+    },
+
+    cancelSimulator: function() {
+      clearInterval(simAdTimer);
+      $('ad-simulator-overlay').classList.remove('active');
+      pendingRewardCallback = null;
+      toast('Ad cancelled. Reward not granted.', 1400);
+    }
+  };
+
+  function promptRewarded(type) {
+    const modal = $('reward-ad-modal');
+    const title = $('reward-modal-title');
+    const desc = $('reward-modal-desc');
+    const btn = $('watch-ad-btn');
+    const icon = $('reward-modal-icon');
+
+    if (type === 'hint') {
+      icon.textContent = '💡';
+      title.textContent = 'Unlock 3 Master Hints';
+      desc.innerHTML = 'You have used your free hints for this match. Watch a short sponsor message to unlock <b>+3 Hints</b>!';
+      btn.textContent = '▶ Watch Ad (+3 Hints)';
+      btn.onclick = () => {
+        modal.classList.add('hidden');
+        AdBridge.showRewarded('hint', () => {
+          assistQuota.hintsRemaining += 3;
+          updateAssistButtons();
+          toast('🎉 +3 Hints Unlocked!', 1600);
+          showHint();
+        });
+      };
+    } else {
+      icon.textContent = '↶';
+      title.textContent = 'Unlock Move Undo';
+      desc.innerHTML = 'You have used your free undo for this match. Watch a short sponsor message to unlock <b>+1 Undo</b>!';
+      btn.textContent = '▶ Watch Ad (+1 Undo)';
+      btn.onclick = () => {
+        modal.classList.add('hidden');
+        AdBridge.showRewarded('undo', () => {
+          assistQuota.undosRemaining += 1;
+          updateAssistButtons();
+          toast('🎉 +1 Undo Unlocked!', 1600);
+          undoMove();
+        });
+      };
+    }
+    modal.classList.remove('hidden');
+  }
+
+  /* =========================================================================
+     Step 2: Viral WhatsApp Score Challenge
+     ========================================================================= */
+  function shareMatchOnWhatsApp() {
+    const s1 = state.banks[1];
+    const s2 = state.banks[2];
+    const isWinner = s1 > s2;
+    const tied = s1 === s2;
+    const oppName = names[2];
+    const diff = options.ai ? ` [${options.difficulty.toUpperCase()} AI]` : '';
+    
+    let headline = tied
+      ? `🤝 I just tied ${s1}–${s2} in traditional Tamil Pallanguzhi against ${oppName}${diff}!`
+      : isWinner
+        ? `🏆 Victory! I gathered ${s1} seeds and defeated ${oppName}${diff} in Pallanguzhi (பாரம்பரிய பல்லாங்குழி)!`
+        : `🌰 Played a strategic match of Pallanguzhi against ${oppName}${diff} and scored ${s1} seeds!`;
+
+    const challenge = `Think you can beat my score? Play directly here:`;
+    const cleanUrl = window.location.href.split('#')[0];
+    const fullText = `${headline}\n\n${challenge}\n${cleanUrl}`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: 'பல்லாங்குழி • Heritage Challenge',
+        text: fullText
+      }).catch(() => {
+        openWhatsAppDirect(fullText);
+      });
+    } else {
+      openWhatsAppDirect(fullText);
+    }
+  }
+
+  function openWhatsAppDirect(text) {
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  }
+
   function storedGet(key){try{return localStorage.getItem(key);}catch{return null;}}
   function storedSet(key,data){try{localStorage.setItem(key,JSON.stringify(data));return true;}catch{return false;}}
   function storedRemove(key){try{localStorage.removeItem(key);}catch{}}
@@ -621,7 +957,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   }
   function discardSavedMatch(){removeSavedMatch();toast('Saved match discarded. Start a new game.',1600);}
 
-  // Cumulative totals never rely on the limited recent-match list.
   function defaultStats(){return {matches:0,wins:0,losses:0,draws:0,streak:0,bestStreak:0,bestScore:0,pasu:0,captured:0,expertWins:0,history:[]};}
   function loadStats(){
     try{
@@ -722,9 +1057,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     stats=defaultStats();state.recordedStatsBefore=null;saveStats();renderStats();toast('Statistics cleared.',1300);
   }
 
-
-  // Pure engine: all moves are computed before any UI changes.
-  // Illegal moves, broken conservation and repeating sow loops never commit partial state.
   function simulateMove(originalPits, originalBanks, player, selected) {
     if (!Number.isInteger(player) || ![1, 2].includes(player) ||
         !Number.isInteger(selected) || selected < 0 || selected >= N ||
@@ -739,7 +1071,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     const visited = new Set();
 
     while (true) {
-      // An identical state at a pickup boundary can never escape by itself.
       const signature = cursor + '|' + inHand + '|' + pits.join(',') + '|' + banks[1] + '|' + banks[2];
       if (visited.has(signature))
         throw new Error('Repeating sowing loop detected. Select another cup.');
@@ -752,7 +1083,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         pits[cursor]++;
         inHand--;
         events.push({kind:'drop',pit:cursor,left:inHand});
-        // Pasu belongs to the OWNER OF THE CUP, not necessarily to the mover.
         if (pits[cursor] === 4) {
           const credited = owner(cursor);
           pits[cursor] = 0;
@@ -761,7 +1091,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         }
       }
 
-      // Pasu never changes which cup is inspected next.
       const next = (cursor + 1) % N;
       if (pits[next] > 0) {
         inHand = pits[next];
@@ -813,6 +1142,10 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     const el=document.createElement('span');
     const color=options.seedStyle==='natural'?'seed-natural':'seed-colored-'+((index+serial)%5);
     el.className='tamarind-seed '+color;
+    
+    const tier = serial < 3 ? 'low' : serial < 7 ? 'mid' : 'high';
+    el.dataset.tier = tier;
+
     const golden=serial*2.39996323+index*.31;
     const jitter=Math.sin((serial+1)*53.63+index*12.1);
     if(store){
@@ -921,8 +1254,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     clearTimeout(toastTimer); const el=$('toast'); el.textContent=text; el.classList.add('visible');
     toastTimer=setTimeout(()=>el.classList.remove('visible'),ms);
   }
-  // Board geometry is measured once and reused while the hand moves.
-  // A single batched read avoids repeated layout work at every bead drop.
+
   function invalidateLayout(){ layoutDirty=true; }
   function measureBoard(){
     if(!layoutDirty)return;
@@ -947,9 +1279,12 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     const r=el.getBoundingClientRect();
     return{x:r.left+r.width/2,y:r.top+r.height/2};
   }
+
   function hideHand(){
     lastHandPos=null;
     const el=$('player-hand');el.classList.remove('visible','grip','releasing');
+    const shadow=$('hand-cast-shadow');shadow.classList.remove('visible','lowered','lifted');
+    document.querySelectorAll('.pit.hand-occluded').forEach(p=>p.classList.remove('hand-occluded'));
     $('hand-visual-count').textContent='';
     $('hand-counter').style.display='none';
   }
@@ -959,12 +1294,13 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   }
   function handPose(pose='open'){
     const el=$('player-hand');
+    const shadow=$('hand-cast-shadow');
     el.classList.toggle('grip',pose==='grip');
     el.classList.toggle('releasing',pose==='release');
+    shadow.classList.toggle('lowered',pose==='grip'||pose==='release');
+    shadow.classList.toggle('lifted',pose==='open');
   }
-  // Each side plays from OUTSIDE its own plank, with the fingertips pointing
-  // towards the centre seam: bottom player points UP, top player points DOWN.
-  // In mobile portrait the board rotates clockwise 90deg, so bottom is LEFT.
+
   function handPoint(pitPos, player=state.turn){
     const outward = player===1 ? 1 : -1;
     return portraitBoard()
@@ -977,49 +1313,94 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       ? {x:pitPos.x-outward*16,y:pitPos.y}
       : {x:pitPos.x+2,y:pitPos.y+outward*16};
   }
-  // A single compositor animation per hand move, awaited to completion.
-  // Previously a CSS transition was timed using wait(); under load the hand
-  // could still be traveling when the bead dropped, causing visible stutter.
-  async function moveHand(pitPos,player=state.turn,pose='open'){
+
+  function computeShadowPoint(handPt, player, pose) {
+    const isPortrait = portraitBoard();
+    const ldx = lightState.dx;
+    const ldy = lightState.dy;
+    const elevation = pose === 'open' ? 36 : 14;
+    const offsetX = (isPortrait ? -ldy : ldx) * elevation;
+    const offsetY = (isPortrait ? ldx : ldy) * elevation + (player === 1 ? 10 : -8);
+
+    return {
+      x: handPt.x + offsetX,
+      y: handPt.y + offsetY
+    };
+  }
+
+  async function moveHand(pitPos,player=state.turn,pose='open',activePit=null){
     const el=$('player-hand');
+    const shadow=$('hand-cast-shadow');
     const point=handPoint(pitPos,player);
-    // Rotate only the INNER SVG. Parent stays on a compositor-only translation.
-    // This avoids flipping the whole hand while it travels between cups.
+    const shadowPoint=computeShadowPoint(point, player, pose);
+
     el.dataset.facing=player===1?'bottom':'top';
+    shadow.dataset.facing=player===1?'bottom':'top';
     el.classList.toggle('ai',player===2);
+
     const position = p => `translate3d(calc(${p.x}px - 50%),calc(${p.y}px - 50%),0)`;
     const target=position(point);
+    const shadowTarget = `translate3d(calc(${shadowPoint.x}px - 50%),calc(${shadowPoint.y}px - 50%),0) scale(${pose==='open'?1.08:0.92})`;
+
+    document.querySelectorAll('.pit.hand-occluded').forEach(p=>p.classList.remove('hand-occluded'));
+    if(activePit !== null && activePit >= 0 && activePit < N) {
+      const targetCup = $('pit-' + activePit);
+      if(targetCup) targetCup.classList.add('hand-occluded');
+    }
+
     const previous=lastHandPos;
     handPose(pose);
+
     if(!el.classList.contains('visible')){
       el.style.transform=target;
+      shadow.style.transform=shadowTarget;
       lastHandPos=point;
       el.classList.add('visible');
+      shadow.classList.add('visible');
       if(!reducedMotion())await wait(Math.round(35*paceMultiplier()));
       return;
     }
+
     const distance=previous?Math.hypot(point.x-previous.x,point.y-previous.y):0;
-    if(distance<2)return;
+    if(distance<2){
+      shadow.style.transform=shadowTarget;
+      return;
+    }
     lastHandPos=point;
+
     const duration=reducedMotion()?0:Math.round(
       Math.min(318,215+Math.max(0,distance-65)*.16)*paceMultiplier()
     );
-    if(!duration){el.style.transform=target;return;}
-    if(typeof el.animate!=='function'){
+
+    if(!duration){
       el.style.transform=target;
-      await wait(duration);
+      shadow.style.transform=shadowTarget;
       return;
     }
-    const anim=el.animate([{transform:position(previous||point)}, {transform:target}],{
-      duration,easing:'cubic-bezier(.36,.07,.25,.98)',fill:'both'
-    });
-    activeAnims.add(anim);
-    try{
-      await anim.finished.catch(()=>{});
-      if(anim.playState==='finished')el.style.transform=target;
-    }finally{
-      activeAnims.delete(anim);
-      try{anim.cancel();}catch{}
+
+    if(typeof el.animate==='function'){
+      const animHand=el.animate([{transform:position(previous||point)}, {transform:target}],{
+        duration,easing:'cubic-bezier(.36,.07,.25,.98)',fill:'both'
+      });
+      const animShadow=shadow.animate([{transform:shadow.style.transform||shadowTarget}, {transform:shadowTarget}],{
+        duration,easing:'cubic-bezier(.36,.07,.25,.98)',fill:'both'
+      });
+
+      activeAnims.add(animHand);
+      activeAnims.add(animShadow);
+      try{
+        await Promise.all([animHand.finished.catch(()=>{}), animShadow.finished.catch(()=>{})]);
+        if(animHand.playState==='finished') el.style.transform=target;
+        if(animShadow.playState==='finished') shadow.style.transform=shadowTarget;
+      }finally{
+        activeAnims.delete(animHand);
+        activeAnims.delete(animShadow);
+        try{animHand.cancel();animShadow.cancel();}catch{}
+      }
+    }else{
+      el.style.transform=target;
+      shadow.style.transform=shadowTarget;
+      await wait(duration);
     }
   }
 
@@ -1055,7 +1436,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     for(const el of [cup,score,counter]){
       const name=el===cup?'store-celebrate':'score-bloom';
       el.classList.remove(name);
-      // Restart a tiny celebration only once per capture, never per seed.
       void el.offsetWidth;
       el.classList.add(name);
     }
@@ -1074,16 +1454,16 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     for(const timer of pitTimers.values())clearTimeout(timer);
     pitTimers.clear();
     document.querySelectorAll('.flying-seed').forEach(el=>el.remove());
-    document.querySelectorAll('.pit.pulse,.pit.capture-pulse,.pit.drop-impact').forEach(el=>el.classList.remove('pulse','capture-pulse','drop-impact'));
+    document.querySelectorAll('.pit.pulse,.pit.capture-pulse,.pit.drop-impact,.pit.hand-occluded').forEach(el=>el.classList.remove('pulse','capture-pulse','drop-impact','hand-occluded'));
     hideHand();
   }
 
-  // One GPU-friendly animation per visible bead; game state is unaffected by flight.
   function motionTime(kind){
     if(reducedMotion())return 0;
     const base={drop:163,scoop:112,capture:222}[kind]||163;
     return Math.round(base*paceMultiplier());
   }
+
   async function fly(from,to,{kind='drop',index=0,serial=0,delay=0}={}){
     const duration=motionTime(kind);
     if(duration<=0)return;
@@ -1096,15 +1476,36 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     const tx=to.x+(Math.random()-.5)*spread,ty=to.y+(Math.random()-.5)*spread;
     const dx=tx-sx,dy=ty-sy,dist=Math.hypot(dx,dy);
     const spin=(Math.random()>.5?1:-1)*(15+Math.random()*67);
-    const arc=kind==='scoop'?Math.min(21,dist*.20):kind==='capture'?Math.min(27,dist*.14):Math.min(9,dist*.18);
+    const arc=kind==='scoop'?Math.min(21,dist*.20):kind==='capture'?Math.min(27,dist*.14):Math.min(10,dist*.18);
     const horizontalArc=portraitBoard();
+
+    const ldx = lightState.dx;
+    const ldy = lightState.dy;
+
     const frame=(p,yArc,angle,scaleX=1,scaleY=1)=>{
       const offset=-yArc;
       const x=dx*p+(horizontalArc?offset:0);
       const y=dy*p+(horizontalArc?0:offset);
-      return {offset:p,transform:`translate3d(calc(-50% + ${x.toFixed(1)}px),calc(-50% + ${y.toFixed(1)}px),0) rotate(${angle.toFixed(1)}deg) scale(${scaleX},${scaleY})`};
+      const altitude = Math.abs(yArc);
+      const sX = (ldx * (altitude * 0.75 + 1.5)).toFixed(1);
+      const sY = (ldy * (altitude * 1.05 + 2.5)).toFixed(1);
+      const sBlur = (altitude * 0.45 + 2.5).toFixed(1);
+      const sAlpha = (0.9 - Math.min(0.45, altitude * 0.02)).toFixed(2);
+
+      return {
+        offset:p,
+        transform:`translate3d(calc(-50% + ${x.toFixed(1)}px),calc(-50% + ${y.toFixed(1)}px),0) rotate(${angle.toFixed(1)}deg) scale(${scaleX},${scaleY})`,
+        filter:`drop-shadow(${sX}px ${sY}px ${sBlur}px rgba(0,0,0,${sAlpha}))`
+      };
     };
-    const frames=[frame(0,0,0,.95,.95),frame(.44,arc,spin*.47,1.06,1.06),frame(.8,arc*.24,spin*.8,1.1,.84),frame(1,0,spin,1,1)];
+
+    const frames=[
+      frame(0,0,0,.95,.95),
+      frame(.44,arc,spin*.47,1.08,1.08),
+      frame(.8,arc*.24,spin*.8,1.1,.84),
+      frame(1,0,spin,1,1)
+    ];
+
     el.style.left=sx+'px';el.style.top=sy+'px';document.body.append(el);
     let animation;
     try{
@@ -1117,10 +1518,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     }
   }
 
-  // Each sound is a short, one-time pre-rendered percussive sample.
-  // No oscillator/filter graph creation per bead: this dramatically reduces
-  // audio-thread allocations during dense sowing on Android devices.
-  // These are synthesized clacks, not recordings of physical beads.
   function makeImpactBuffer(ctx,glass,variation){
     const sampleRate=ctx.sampleRate;
     const duration=glass?.19:.115;
@@ -1139,7 +1536,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     let noiseHistory=0;
     for(let i=0;i<length;i++){
       const t=i/sampleRate;
-      // Short crack and quickly damped wooden/plastic floor contact.
       const fresh=nextNoise();
       noiseHistory=noiseHistory*.16+fresh*.84;
       const scratch=Math.exp(-t*(glass?132:180))*noiseHistory*.72;
@@ -1149,7 +1545,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         const envelope=Math.exp(-t*(glass?(26+p*13):(61+p*23)));
         resonant+=Math.sin(twoPi*frequency*t+(variation+p)*.47)*envelope*strengths[p];
       }
-      // Each landing contains a much quieter, delayed secondary bounce.
       const bounceAt=glass?.037:.027;
       const dt=t-bounceAt;
       const bounce=dt>=0 ?
@@ -1158,6 +1553,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     }
     return buf;
   }
+
   function ensureAudio(){
     if(!options.sound)return null;
     try{
@@ -1180,6 +1576,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       return audio;
     }catch{return null;}
   }
+
   function beadImpact(kind='drop',strength=1,offset=0){
     const ctx=ensureAudio();if(!ctx||!options.sound||options.volume===0)return;
     try{
@@ -1197,6 +1594,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       source.onended=()=>{try{source.disconnect();gain.disconnect();}catch{}};
     }catch{}
   }
+
   function scoopSound(count){
     const taps=Math.min(3,Math.max(1,Math.ceil(count/4)));
     for(let i=0;i<taps;i++) beadImpact('pickup',.60-i*.12,i*.040);
@@ -1216,7 +1614,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 
   async function animateScoop(pit,count,player=state.turn,live=()=>true){
     const at=center('pit-'+pit);
-    await moveHand(at,player,'open');
+    await moveHand(at,player,'open',pit);
     if(!live())return;
     handPose('grip');
     scoopSound(count);
@@ -1233,7 +1631,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 
   async function animateCapture(pit,player,count,live){
     const at=center('pit-'+pit),to=center('mc-'+player);
-    await moveHand(at,player,'open');if(!live())return;
+    await moveHand(at,player,'open',pit);if(!live())return;
     handPose('grip');scoopSound(count);
     const lift=releasePoint(at,player);
     const n=Math.min(count,options.fast?2:matchMedia('(pointer:coarse)').matches?3:5);
@@ -1254,14 +1652,13 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 
   function validMoves(player,pits=state.pits){return row(player).filter(i=>pits[i]>0);}
 
-  // A bounded minimax adviser shared by AI and hints. Search only validated moves;
-  // the simulation and all AI searches remain independent of UI animations.
   const difficultyDescriptions={
     easy:'Easy chooses randomly among legal cups — ideal for beginners.',
     medium:'Medium compares immediate captures, Pasu, and remaining seeds.',
     hard:'Hard also considers the opponent’s best reply.',
     expert:'Expert considers a further response using a bounded 3-ply search.'
   };
+
   function evaluatePosition(pits,banks,perspective,finished=false) {
     const rival=other(perspective);
     const difference=banks[perspective]-banks[rival];
@@ -1271,17 +1668,19 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     const mobility=validMoves(perspective,pits).length-validMoves(rival,pits).length;
     return difference*11+(ours-theirs)*.27+mobility*.45;
   }
+
   function applyCandidate(pits,banks,player,pit){
     const result=simulateMove(pits,banks,player,pit);
     const ps=result.pits.slice(), bs=result.banks.slice();
     const over=settleIfFinished(ps,bs);
     return {pits:ps,banks:bs,over};
   }
+
   function recommendMove(player,difficulty='hard',pits=state.pits,banks=state.banks){
     const available=[];
     for(const pit of validMoves(player,pits)){
       try{ available.push({pit,next:applyCandidate(pits,banks,player,pit)}); }
-      catch{/* Nonterminating sowing sequences are not legal moves. */}
+      catch{}
     }
     if(!available.length)return null;
     if(difficulty==='easy')return available[Math.floor(Math.random()*available.length)].pit;
@@ -1309,7 +1708,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       }
       return found?best:evaluatePosition(ps,bs,player,over);
     }
-    // An immediate estimate remains the fallback if the search budget expires.
     const ordered=available.map(({pit,next})=>({pit,next,baseline:evaluatePosition(next.pits,next.banks,player,next.over)}))
       .sort((a,b)=>b.baseline-a.baseline || a.pit-b.pit);
     let choice=ordered[0].pit, best=-Infinity;
@@ -1324,22 +1722,53 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   function chooseAI(){return recommendMove(2,options.difficulty);}
 
   function snapshot(){return {pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,metrics:{...state.metrics}};}
+
+  /* Step 1: Update Assist Button UI with Badges and Monetized States */
   function updateAssistButtons(){
-    const canHint=state.started&&!state.over&&!state.busy&&!(options.ai&&state.turn===2)&&validMoves(state.turn).length>0;
-    $('hint-btn').disabled=!canHint;
-    $('hint-btn').setAttribute('aria-pressed',String(canHint&&state.hintPit!==null));
-    $('undo-btn').disabled=!state.started||state.history.length===0;
-    $('undo-end-btn').hidden=state.history.length===0;
+    const canHint = state.started && !state.over && !state.busy && !(options.ai && state.turn===2) && validMoves(state.turn).length > 0;
+    const hintBtn = $('hint-btn');
+    const undoBtn = $('undo-btn');
+
+    hintBtn.disabled = !canHint;
+    hintBtn.setAttribute('aria-pressed', String(canHint && state.hintPit !== null));
+    hintBtn.innerHTML = assistQuota.hintsRemaining > 0 ? `💡 Hint (${assistQuota.hintsRemaining})` : `💡 Hint <b>(📺 Ad)</b>`;
+
+    const canUndo = state.started && state.history.length > 0 && !state.busy;
+    undoBtn.disabled = !canUndo;
+    undoBtn.innerHTML = assistQuota.undosRemaining > 0 ? `↶ Undo (${assistQuota.undosRemaining})` : `↶ Undo <b>(📺 Ad)</b>`;
+
+    $('undo-end-btn').hidden = state.history.length === 0;
   }
+
   function hideHintExplanation(){
     $('hint-explanation').hidden=true;
     $('hint-explanation-text').textContent='';
   }
+
   function showHint(){
     if(!state.started||state.over||state.busy||(options.ai&&state.turn===2))return;
-    if(state.hintPit!==null){state.hintPit=null;hideHintExplanation();render();setStatus('Hint hidden. Choose any highlighted cup.');return;}
+
+    // Check if free hint quota is exhausted
+    if (assistQuota.hintsRemaining <= 0) {
+      promptRewarded('hint');
+      return;
+    }
+
+    if(state.hintPit!==null){
+      state.hintPit=null;
+      hideHintExplanation();
+      render();
+      setStatus('Hint hidden. Choose any highlighted cup.');
+      return;
+    }
+
     const pit=recommendMove(state.turn,'hard');
     if(pit===null){toast('No safe move found.',1500);return;}
+
+    // Deduct from quota
+    assistQuota.hintsRemaining--;
+    updateAssistButtons();
+
     state.hintPit=pit;
     const simulated=simulateMove(state.pits,state.banks,state.turn,pit);
     const ownGain=simulated.banks[state.turn]-state.banks[state.turn];
@@ -1352,15 +1781,26 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     if(captures)effects.push(`captures ${captures}`);
     if(pasu)effects.push(`${pasu} Pasu bonus${pasu>1?'es':''}`);
     if(!effects.length)effects.push('preserves a useful position');
-    $('hint-explanation-text').textContent=`💡 Cup ${localCup} has ${state.pits[pit]} seeds. This move ${effects.join(' and ')}; your store gains ${ownGain} and your opponent gains ${theirGain}. The recommendation also considers the opponent's reply.`;
+    $('hint-explanation-text').textContent=`💡 Cup ${localCup} has ${state.pits[pit]} seeds. This move ${effects.join(' and ')}; your store gains ${ownGain} and your opponent gains ${theirGain}. (${assistQuota.hintsRemaining} hint${assistQuota.hintsRemaining===1?'':'s'} left)`;
     $('hint-explanation').hidden=false;
     render();
   }
+
   function undoMove(){
     if(!state.started||!state.history.length)return;
+
+    // Check if free undo quota is exhausted
+    if (assistQuota.undosRemaining <= 0) {
+      promptRewarded('undo');
+      return;
+    }
+
+    assistQuota.undosRemaining--;
+    updateAssistButtons();
+
     const previous=state.history.pop();
     if(state.over)rollbackFinishedResult();
-    invalidateMatch(); // cancels any AI timer, current animation, or pending bead effects
+    invalidateMatch();
     state.pits=previous.pits.slice();state.banks=previous.banks.slice();
     state.metrics=cleanMetrics(previous.metrics);
     state.turn=previous.turn;state.over=false;state.started=true;
@@ -1373,8 +1813,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     toast('↶ Previous turn restored',1100);
   }
 
-  // AI thinking owns the input lock until it is ready to initiate its move.
-  // V3.2 bug: calling playPit() with busy=true silently rejected every AI turn.
   function scheduleAiTurn(live) {
     if (!live() || !state.started || state.over || state.turn!==2 || !options.ai) return;
     const ticket=++state.aiTicket;
@@ -1392,8 +1830,8 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           setStatus('No safe AI move available. Open Match to restart.');
           return;
         }
-        state.busy=false; // release the thinking lock BEFORE beginning AI playback
-        await playPit(choice,true); // playPit acquires its own animation lock immediately
+        state.busy=false;
+        await playPit(choice,true);
       } catch (err) {
         console.error('AI turn failed:',err);
         if (!live() || state.aiTicket!==ticket) return;
@@ -1411,8 +1849,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     btn.disabled=!active;
   }
 
-  // Skip visuals only: commit the already-validated, complete simulator result.
-  // Epoch invalidates old async continuation before it can mutate the new state.
   function skipCurrentMove(){
     const running=state.activeMove;
     if(!running || running.epoch!==state.epoch)return;
@@ -1427,13 +1863,11 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     if(!state.over)toast('⏭ Move completed',850);
   }
 
-  // Single completion path for regular playback and animation-error recovery.
   function completeMove(mover, live, recovered=false, simulated=null) {
     if (!live()) return;
     state.activeMove=null;
     updateSkipButton();
     hideHand();
-    // Commit match progression ONCE, independent of how visual playback ended.
     if(simulated){
       state.metrics.moves++;
       for(const e of simulated.events){
@@ -1448,6 +1882,16 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       state.over=true;state.busy=false;render();finishMatch();return;
     }
     state.turn=other(mover);
+
+    // Deadlock-free turn skip check
+    if(validMoves(state.turn).length === 0) {
+      if(settleIfFinished(state.pits, state.banks)) {
+        state.over=true;state.busy=false;render();finishMatch();return;
+      }
+      toast(`${names[state.turn]} has no seeds! Turn passes back.`, 1600);
+      state.turn = other(state.turn);
+    }
+
     state.busy=false;
     render();
     saveStableMatch();
@@ -1495,7 +1939,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           if(!reducedMotion()&&!options.fast)await wait(Math.round(12*paceMultiplier()));
         }else if(event.kind==='drop'){
           const dest=center('pit-'+event.pit);
-          await moveHand(dest,current,'grip');
+          await moveHand(dest,current,'grip',event.pit);
           if(!live())return;
           handPose('release');
           await fly(releasePoint(dest,current),dest,{kind:'drop',index:event.pit,serial:state.pits[event.pit]});
@@ -1504,14 +1948,12 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           paintPit(event.pit,true);
           const pitEl=$('pit-'+event.pit);
           pitEl.classList.remove('drop-impact');
-          // The impact ring is decorative; no forced synchronous layout per drop.
           requestAnimationFrame(()=>{if(live())highlightPit(event.pit,'drop-impact',options.fast?85:180);});
           highlightPit(event.pit,'pulse',options.fast?110:230);
           handBadge(dest,hand);
           source=dest;
           layeredLanding(state.pits[event.pit]);
           handPose('grip');
-          // A short human rhythm after the impact prevents a machine-gun feel.
           if(!reducedMotion())await wait(Math.round((options.fast?4:10)*paceMultiplier()));
         }else if(event.kind==='pasu'){
           highlightPit(event.pit,'capture-pulse',500);
@@ -1547,7 +1989,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     } catch(err) {
       console.error('Recovered animation failure:',err);
       if(!live())return;
-      // Simulation was completed before playback; commit its trusted final state.
       closeAnimations();
       state.pits=simulated.pits.slice();
       state.banks=simulated.banks.slice();
@@ -1570,6 +2011,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       });
     }catch{}
   }
+
   function finishMatch(){
     closeAnimations();
     hideHintExplanation();
@@ -1598,14 +2040,23 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     setStatus(`Game over — ${text} (${score1} – ${score2})`);
     $('end-modal').classList.remove('hidden');
     playVictoryChime();
+
+    // Trigger smart interstitial after completed matches
+    AdBridge.showInterstitial();
   }
 
   function invalidateMatch(){hideHintExplanation();state.epoch++;state.aiTicket++;state.busy=false;state.activeMove=null;state.hintPit=null;updateSkipButton();closeAnimations();clearTimeout(toastTimer);$('toast').classList.remove('visible');}
+  
   function startGame(){
     invalidateMatch();
     state.pits=Array(N).fill(START_SEEDS);state.banks=[0,0,0];state.turn=1;state.over=false;state.started=true;state.history=[];
     state.metrics=emptyMetrics();state.matchId=`${Date.now()}-${Math.random().toString(36).slice(2,10)}`;state.matchStartedAt=Date.now();
     state.recordedStatsBefore=null;state.resultRecorded=false;
+
+    // Reset free assist quotas for the new match
+    assistQuota.hintsRemaining = assistQuota.freeHints;
+    assistQuota.undosRemaining = assistQuota.freeUndos;
+
     names[1]=$('p1-input').value.trim()||'Player 1';
     names[2]=$('p2-input').value.trim()||(options.ai?'Azhagi (AI)':'Player 2');
     applyPlayerLabels();
@@ -1614,6 +2065,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     removeSavedMatch();saveStableMatch();
     ensureAudio();
   }
+
   function showSetup(){
     invalidateMatch();state.started=false;state.over=false;state.history=[];render();
     $('end-modal').classList.add('hidden');$('rules-modal').classList.add('hidden');$('setup-modal').classList.remove('hidden');
@@ -1644,9 +2096,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     catch{toast('Fullscreen is unavailable in this browser.');}
   }
 
-  // Guided practice uses a separate 70-seed model and the production simulator.
-  // These four short positions are deliberately constructed so each example
-  // ends quickly, while the real game and its hand animations remain untouched.
   const tutorialLessons=[
     {id:'sowing',selected:0,pits:[5,0,0,0,0,0,0,0,11,11,11,11,11,10],
       en:{title:'1. Sow one at a time',copy:'Tap the glowing bottom cup with 5 seeds. Watch one seed go into each following cup.',ready:'Tap the glowing cup to begin!',done:'Excellent! Five seeds were planted, one in each following cup.'},
@@ -1756,7 +2205,6 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     if(!tutorial.running)tutorialFeedback(tutorialText()[tutorial.complete?'done':'ready']);
   }
   function tutorialOpen(){
-    // Never hide an in-flight real match under a lesson; keep it pristine.
     if(state.busy||state.activeMove){$('rules-modal').classList.add('hidden');toast('Finish the current move before opening the tutorial.',2300);return;}
     $('rules-modal').classList.add('hidden');
     tutorial.open=true;tutorial.step=0;tutorialRebuild();
@@ -1791,17 +2239,28 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     document.querySelectorAll('[data-tut-lang]').forEach(btn=>btn.addEventListener('click',()=>tutorialSetLanguage(btn.dataset.tutLang)));
     tutorialRebuild();
   }
+
   function init(){
     stats=loadStats();
     createBoard();
     tutorialInit();
     refreshResumePanel();
+    initPhotometricListeners();
+
     $('stats-btn').addEventListener('click',openStats);
     $('result-stats-btn').addEventListener('click',()=>{openStats();});
     $('close-stats-btn').addEventListener('click',closeStats);
     $('reset-stats-btn').addEventListener('click',resetStats);
     $('resume-btn').addEventListener('click',resumeMatch);
     $('discard-save-btn').addEventListener('click',discardSavedMatch);
+    
+    // Step 1: Monetization Listeners
+    $('close-reward-ad-btn').addEventListener('click', () => $('reward-ad-modal').classList.add('hidden'));
+    $('sim-cancel-btn').addEventListener('click', () => AdBridge.cancelSimulator());
+
+    // Step 2: Viral WhatsApp Share Listener
+    $('share-whatsapp-btn').addEventListener('click', shareMatchOnWhatsApp);
+
     document.querySelectorAll('[data-mode],[data-difficulty],[data-theme],[data-seeds]').forEach(btn=>{
       const group=btn.dataset.mode!==undefined?'mode':btn.dataset.difficulty!==undefined?'difficulty':btn.dataset.theme!==undefined?'theme':'seeds';
       btn.addEventListener('click',()=>selectOption(group,btn.dataset[group]));
@@ -1846,6 +2305,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       if(event.key==='Escape'&&!$('stats-modal').classList.contains('hidden'))closeStats();
       else if(event.key==='Escape'&&!$('tutorial-modal').classList.contains('hidden'))tutorialClose();
       else if(event.key==='Escape'&&!$('rules-modal').classList.contains('hidden'))$('rules-modal').classList.add('hidden');
+      else if(event.key==='Escape'&&!$('reward-ad-modal').classList.contains('hidden'))$('reward-ad-modal').classList.add('hidden');
     });
     window.addEventListener('pointerdown', () => ensureAudio(), { once: true });
     window.addEventListener('resize', invalidateLayout, {passive:true});
