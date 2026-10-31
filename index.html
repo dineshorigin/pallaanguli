@@ -18,6 +18,25 @@
     --card-bg: rgba(18, 14, 11, 0.94);
   }
 
+  /* Bright Warm Teak Theme (High Contrast & Well-lit) */
+  body.theme-bright {
+    background: radial-gradient(circle at center, #2e1a0e 0%, #160a04 100%);
+    --wood-base: #7b411d;
+    --wood-light: #ab6533;
+    --wood-dark: #51250b;
+    --wood-deep: #2a1104;
+    --brass-bright: #ffd479;
+  }
+
+  body.theme-bright .pit {
+    background: radial-gradient(circle at 68% 70%, #1a0802 0%, #301407 40%, #52270e 80%, #753a15 100%);
+    border-color: #3b1907;
+  }
+
+  body.theme-bright .mother-cavity {
+    background: radial-gradient(circle at 65% 75%, #1f0b03 0%, #3a1909 50%, #5d2b10 100%);
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;
@@ -40,59 +59,21 @@
     align-items: center;
   }
 
-  /* Cloud / Mist Transition Canvas */
-  #mist-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 2200;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.8s ease;
-    background: radial-gradient(circle at 50% 50%, rgba(212, 175, 105, 0.28) 0%, rgba(14, 8, 4, 0.88) 70%, rgba(5, 2, 1, 0.98) 100%);
-    backdrop-filter: blur(14px);
-  }
-
-  #mist-overlay.active {
-    opacity: 1;
-  }
-
-  .cloud-puff {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(35px);
-    opacity: 0;
-    pointer-events: none;
-    background: radial-gradient(circle, rgba(235, 206, 158, 0.45) 0%, rgba(160, 114, 70, 0.2) 65%, transparent 80%);
-    transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease;
-  }
-
-  .cloud-puff.puff-1 { width: 440px; height: 320px; top: 15%; left: 5%; }
-  .cloud-puff.puff-2 { width: 500px; height: 380px; bottom: 10%; right: 5%; }
-  .cloud-puff.puff-3 { width: 400px; height: 280px; top: 35%; right: 25%; }
-
-  #mist-overlay.active .cloud-puff {
-    opacity: 0.85;
-    transform: scale(1.3) translateY(-20px);
-  }
-
-  /* Minimalist Setup Screen */
+  /* Setup Screen */
   #setup-modal {
     position: fixed;
     inset: 0;
-    background: rgba(8, 4, 2, 0.94);
+    background: rgba(8, 4, 2, 0.88);
     z-index: 2000;
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(14px);
-    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(10px);
     padding: 16px;
   }
 
   #setup-modal.hidden {
-    opacity: 0;
-    transform: scale(0.94);
-    pointer-events: none;
+    display: none !important;
   }
 
   .setup-card {
@@ -903,9 +884,13 @@
       <button class="mode-btn mode-2p" id="btn-mode-2p" onclick="selectMode(false)">👥 2 Players</button>
     </div>
 
-    <div class="seed-picker">
-      <button class="seed-opt-btn active" id="btn-seed-natural" onclick="setSeedStyle('natural')">🌰 Tamarind (புளி)</button>
-      <button class="seed-opt-btn" id="btn-seed-colored" onclick="setSeedStyle('colored')">🎨 Beads (மணிகள்)</button>
+    <!-- Theme & Seed Selector Bar -->
+    <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+      <button class="seed-opt-btn active" id="btn-theme-bright" onclick="toggleTheme('bright')">☀️ Warm Teak</button>
+      <button class="seed-opt-btn" id="btn-theme-dark" onclick="toggleTheme('dark')">🌙 Rosewood</button>
+      <span style="color: #6d5440; align-self: center;">|</span>
+      <button class="seed-opt-btn active" id="btn-seed-natural" onclick="setSeedStyle('natural')">🌰 Tamarind</button>
+      <button class="seed-opt-btn" id="btn-seed-colored" onclick="setSeedStyle('colored')">🎨 Beads</button>
     </div>
 
     <div class="names-entry">
@@ -919,7 +904,7 @@
       </div>
     </div>
 
-    <button class="start-btn" onclick="launchGameCinematic()">START GAME • ஆடுவோம்</button>
+    <button class="start-btn" onclick="launchGameDirect()">PLAY GAME • ஆடுவோம்</button>
   </div>
 </div>
 
@@ -950,32 +935,16 @@
       </div>
     </div>
 
-    <!-- Center Foldable Wooden Casket -->
+    <!-- Wooden Board Area -->
     <div class="casket-wrapper">
-      <div class="folding-board board-folded" id="main-gold-board">
-        <!-- Top Plank: Physical 3D Dual-Sided Lid (Pits 13 down to 7 inside, Handcrafted wood lid outside) -->
-        <div id="plank-top">
-          <!-- Inside Face (Revealed on Unfold) -->
-          <div class="plank-face-inside">
-            <div class="plank-owner-bar">
-              <span class="owner-name" id="plank-owner-2">PLAYER 2 (TOP)</span>
-              <span class="owner-indicator" id="plank-ind-2"></span>
-            </div>
-            <div class="pits-row" id="row-top"></div>
+      <div class="folding-board" id="main-gold-board">
+        <!-- Top Plank: Player 2 (Pits 13 down to 7) -->
+        <div class="folding-plank" id="plank-top">
+          <div class="plank-owner-bar">
+            <span class="owner-name" id="plank-owner-2">PLAYER 2 (TOP)</span>
+            <span class="owner-indicator" id="plank-ind-2"></span>
           </div>
-
-          <!-- Outside Face (Visible when Folded Closed) -->
-          <div class="plank-face-outside">
-            <div class="brass-corner corner-tl"></div>
-            <div class="brass-corner corner-tr"></div>
-            <div class="brass-corner corner-bl"></div>
-            <div class="brass-corner corner-br"></div>
-            <div class="casket-lid-carving">
-              <div class="casket-title">பல்லாங்குழி</div>
-              <div class="casket-sub">Heritage Rosewood Board</div>
-            </div>
-            <div class="brass-lock-clasp"></div>
-          </div>
+          <div class="pits-row" id="row-top"></div>
         </div>
 
         <!-- Center Brass Hinges -->
@@ -1009,6 +978,7 @@
   <div class="bottom-strip">
     <div class="status-message" id="status-text">Ready.</div>
     <div class="actions">
+      <button class="action-btn" onclick="toggleTheme()" id="btn-theme-quick">☀️ Theme</button>
       <button class="action-btn" onclick="openHelp()">📖 Rules</button>
       <button class="action-btn" onclick="showSetupScreen()">⚙️ Match</button>
       <button class="action-btn" onclick="toggleFullScreen()">⛶ Fit</button>
@@ -1056,7 +1026,28 @@
   let isAiMode = true;
   let isBusy = false;
   let seedStyle = 'natural';
+  let activeTheme = 'bright';
   let playerNames = { 1: "Player 1", 2: "Azhagi (AI)" };
+
+  // Set default bright theme on load
+  document.body.classList.add('theme-bright');
+
+  function toggleTheme(target) {
+    if (target) {
+      activeTheme = target;
+    } else {
+      activeTheme = activeTheme === 'bright' ? 'dark' : 'bright';
+    }
+    const isBright = (activeTheme === 'bright');
+    document.body.classList.toggle('theme-bright', isBright);
+
+    const bBtn = document.getElementById('btn-theme-bright');
+    const dBtn = document.getElementById('btn-theme-dark');
+    if (bBtn && dBtn) {
+      bBtn.classList.toggle('active', isBright);
+      dBtn.classList.toggle('active', !isBright);
+    }
+  }
 
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   let audioContext = null;
@@ -1180,27 +1171,9 @@
 
   function showSetupScreen() {
     document.getElementById('setup-modal').classList.remove('hidden');
-    document.getElementById('main-gold-board').classList.add('board-folded');
   }
 
-  function enterFullScreen() {
-    const docEl = document.documentElement;
-    if (docEl.requestFullscreen) {
-      docEl.requestFullscreen().catch(() => {});
-    } else if (docEl.webkitRequestFullscreen) {
-      docEl.webkitRequestFullscreen();
-    }
-  }
-
-  window.addEventListener('load', () => enterFullScreen());
-  ['touchstart', 'mousedown', 'keydown'].forEach(evt => {
-    window.addEventListener(evt, function autoFsOnTouch() {
-      if (!document.fullscreenElement) enterFullScreen();
-      window.removeEventListener(evt, autoFsOnTouch);
-    }, { once: true, passive: true });
-  });
-
-  function launchGameCinematic() {
+  function launchGameDirect() {
     ensureAudio();
     enterFullScreen();
 
@@ -1216,24 +1189,8 @@
     document.getElementById('mc-label-1').innerText = `${playerNames[1].slice(0, 4).toUpperCase()}\nSTORE`;
     document.getElementById('mc-label-2').innerText = `${playerNames[2].slice(0, 4).toUpperCase()}\nSTORE`;
 
-    // 1. Trigger Cloud / Temple Mist Transition
-    const mist = document.getElementById('mist-overlay');
-    mist.classList.add('active');
-
-    // 2. Hide setup modal beneath mist
-    setTimeout(() => {
-      document.getElementById('setup-modal').classList.add('hidden');
-    }, 300);
-
-    // 3. Clear mist to reveal the closed wooden casket, then unhinge
-    setTimeout(() => {
-      mist.classList.remove('active');
-      playHingeSound();
-
-      const goldBoard = document.getElementById('main-gold-board');
-      goldBoard.classList.remove('board-folded');
-      startNewGame();
-    }, 900);
+    document.getElementById('setup-modal').classList.add('hidden');
+    startNewGame();
   }
 
   function startNewGame() {
