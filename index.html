@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b0d06">
-<title>பல்லாங்குழி • Living Board Edition (v3)</title>
+<title>பல்லாங்குழி • Living Board Edition (v3.1)</title>
 <style>
 :root {
   --brass:#efc875; --gold-dim:#a77b36; --ink:#180b05; --text:#f6ebd9;
@@ -313,6 +313,8 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         inHand -= 1;
         drops += 1;
         events.push({kind:'drop',pit:cursor,left:inHand});
+        // Pasu affects only the pit just landed in; it does not change
+        // cursor. When the hand empties, we must inspect (cursor + 1) % N.
         if (pits[cursor] === 4) {
           const credited = owner(cursor);
           pits[cursor] = 0;
@@ -326,6 +328,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         events.push({kind:'safety'});
         break;
       }
+      // Inspect strictly the NEXT pit, even when Pasu cleared cursor.
       const next = (cursor + 1) % N;
       if (pits[next] > 0) {
         inHand = pits[next];
@@ -669,9 +672,12 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     if(count>3&&Math.random()>.58)beadImpact('drop',.2,.036);
   }
 
-  async function animateScoop(pit,count,player=state.turn){
+  async function animateScoop(pit,count,player=state.turn,live=()=>true){
     const at=center('pit-'+pit);
     await moveHand(at,player,'open');
+    // Restart/settings can invalidate the match during the awaited hand travel.
+    // Never spawn flying pieces or update the hand after that happens.
+    if(!live())return;
     handPose('grip');
     scoopSound(count);
     const hand=releasePoint(at);
@@ -681,6 +687,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       {x:hand.x+(i-(n-1)/2)*1.5,y:hand.y},
       {kind:'scoop',index:pit,serial:i,delay:i*(options.fast?8:21)}
     )));
+    if(!live())return;
     handBadge(at,count);
   }
   async function animateCapture(pit,player,count,live){
@@ -756,7 +763,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           source=center('pit-'+event.pit);
           highlightPit(event.pit,'pulse',options.fast?130:340);
           setStatus(`${names[current]} scoops ${hand} ${options.seedStyle==='natural'?'seeds':'beads'}…`);
-          await animateScoop(event.pit,hand,current);
+          await animateScoop(event.pit,hand,current,live);
           if(!live())return;
           state.pits[event.pit]=0;
           paintPit(event.pit);
@@ -842,7 +849,26 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         state.pits=simulated.pits.slice();state.banks=simulated.banks.slice();
         hideHand();
         if(settleIfFinished(state.pits,state.banks)){state.over=true;render();finishMatch();}
-        else{state.turn=other(current);render();setStatus('Animation interrupted; completed this move safely.');}
+        else{
+          state.turn=other(current);
+          state.busy=false;
+          render();
+          setStatus('Animation interrupted; move completed safely.');
+          // If the human's playback failed, the AI must still receive its turn.
+          // Otherwise a valid 70-seed game can become stuck on an unclickable AI row.
+          if(options.ai && state.turn===2 && state.started && !state.over){
+            queueMicrotask(()=>{
+              if(!live() || !state.started || state.over || state.busy || state.turn!==2)return;
+              try{
+                const choice=chooseAI();
+                if(choice!==null)void playPit(choice,true);
+              }catch(aiError){
+                console.error('AI recovery failed:',aiError);
+                setStatus('AI could not continue. Open Match to restart.');
+              }
+            });
+          }
+        }
       }
     }
   }
@@ -938,3 +964,4 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 </script>
 </body>
 </html>
+
