@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b0d06">
-<title>பல்லாங்குழி • Heritage Edition (v3.3 • Reviewed)</title>
+<title>பல்லாங்குழி • Heritage Edition (v3.4 • Ultra Smooth)</title>
 <style>
 :root {
   --brass:#efc875; --gold-dim:#a77b36; --ink:#180b05; --text:#f6ebd9;
@@ -75,7 +75,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 .action-btn{font-size:12px;font-weight:750;background:#25140d;color:#f0d3b2;border:1px solid #6e452d;border-radius:9px;padding:8px 10px;touch-action:manipulation}
 .action-btn:hover{background:#4c2917}.action-btn[aria-pressed="true"]{color:#a4f5d0;border-color:#43bb8b}
 .hand-counter{position:fixed;z-index:70;pointer-events:none;display:none;background:linear-gradient(#ffdb91,#d59c3b);color:#211006;border:1px solid #fff3c5;padding:5px 10px;font-size:13px;font-weight:900;border-radius:18px;transform:translate(-50%,-150%);box-shadow:0 6px 11px #000a,0 0 15px #e5af5a4a;transition:left 165ms cubic-bezier(.22,.72,.25,1),top 165ms cubic-bezier(.22,.72,.25,1);font-variant-numeric:tabular-nums}
-.flying-seed{z-index:69;position:fixed;pointer-events:none;left:0;top:0;width:clamp(10px,1.55vw,15px);height:clamp(9px,1.3vw,13px);will-change:transform,filter;filter:drop-shadow(0 4px 5px #0009)}
+.flying-seed{z-index:69;position:fixed;pointer-events:none;left:0;top:0;width:clamp(10px,1.55vw,15px);height:clamp(9px,1.3vw,13px);will-change:transform;filter:drop-shadow(0 4px 5px #0009)}
 .flying-seed.scoop-seed{z-index:71}
 .pit.drop-impact::before{content:"";position:absolute;inset:24%;border:1px solid #ffe9ad8a;border-radius:50%;pointer-events:none;animation:impact-ring 220ms ease-out forwards;z-index:1}
 @keyframes impact-ring{from{opacity:.9;transform:scale(.5)}to{opacity:0;transform:scale(1.65)}}
@@ -124,7 +124,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
-.player-hand{position:fixed;left:0;top:0;width:clamp(72px,9vw,114px);aspect-ratio:116/165;z-index:73;pointer-events:none;opacity:0;visibility:hidden;transform:translate(-50%,-50%);transition:left 190ms cubic-bezier(.25,.72,.25,1),top 190ms cubic-bezier(.25,.72,.25,1),opacity 170ms ease,visibility 170ms;filter:drop-shadow(7px 14px 8px #000b);will-change:left,top;}
+.player-hand{position:fixed;left:0;top:0;width:clamp(72px,9vw,114px);aspect-ratio:116/165;z-index:73;pointer-events:none;opacity:0;visibility:hidden;transform:translate3d(-150px,-150px,0);transition:transform 108ms cubic-bezier(.28,.76,.3,1),opacity 115ms ease,visibility 115ms;filter:drop-shadow(7px 14px 8px #000b);will-change:transform;}
 .player-hand.visible{opacity:.95;visibility:visible}
 .player-hand svg{width:100%;height:100%;overflow:visible}
 .player-hand .hand-finger{transform-box:fill-box;transform-origin:50% 84%;transition:transform 190ms cubic-bezier(.25,.75,.25,1)}
@@ -144,7 +144,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 .player-hand.vanishing{transition:opacity 190ms ease,visibility 190ms}
 .player-hand.turned svg{transform:rotate(-90deg)}
 .player-hand.turned .hand-seed-count{transform:translateX(-50%) rotate(-90deg)}
-.pit .tamarind-seed{will-change:transform}
+.pit .tamarind-seed.seed-landed{will-change:transform}
 .pit .tamarind-seed.seed-landed{animation:realistic-landing 330ms cubic-bezier(.2,.67,.2,1) both}
 @keyframes realistic-landing{
   0%{transform:translate(-50%,-220%) scale(1.07) rotate(calc(var(--rot) - 24deg));filter:brightness(1.25)}
@@ -161,13 +161,18 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 @media (orientation:portrait) and (max-width:700px){.player-hand{width:75px;filter:drop-shadow(5px 7px 7px #0009)}}
 @media(max-height:460px){.player-hand{width:70px}}
 @media(prefers-reduced-motion:reduce){.player-hand{transition:none!important}.pit .tamarind-seed.seed-landed{animation:none!important}}
+/* V3.4: short, accessible escape for long continuous-sowing turns. */
+.skip-move{position:fixed;right:16px;bottom:calc(75px + env(safe-area-inset-bottom));z-index:85;border:1px solid #e6c57e;background:linear-gradient(160deg,#45301b,#211208);color:#ffe8bc;border-radius:999px;padding:10px 15px;font-weight:850;font-size:12px;box-shadow:0 8px 22px #000b;cursor:pointer}
+.skip-move[hidden]{display:none!important}.skip-move:focus-visible{outline:3px solid #9fdafc;outline-offset:2px}
+@media(max-width:700px){.skip-move{right:10px;bottom:calc(79px + env(safe-area-inset-bottom));padding:9px 12px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.flying-seed{display:none}.player-hand{transition:none!important}}
 </style>
 </head>
 <body>
 
 <main id="game-frame" aria-label="Pallanguzhi game">
   <header class="top-strip">
-    <div class="brand">பல்லாங்குழி<small>PALLANGUZHI</small></div>
+    <div class="brand">பல்லாங்குழி<small>LIVING BOARD · V3.4</small></div>
     <div class="players-scoreboard">
       <div class="player-pod" id="p2-pod"><span class="player-name" id="p2-label">Azhagi (AI)</span><span class="score-badge" id="p2-score">0</span></div>
       <div class="player-pod active" id="p1-pod"><span class="player-name" id="p1-label">Player 1</span><span class="score-badge" id="p1-score">0</span></div>
@@ -231,10 +236,11 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 </div>
 <div class="hand-counter" id="hand-counter" aria-hidden="true"></div>
 <div class="toast" id="toast" role="status"></div>
+<button type="button" class="skip-move" id="skip-btn" hidden disabled aria-label="Finish the current move without waiting for animations">⏭ Finish move</button>
 
 <div class="overlay" id="setup-modal" role="dialog" aria-modal="true" aria-label="Set up game">
   <div class="modal-card">
-    <h1>பல்லாங்குழி</h1><p class="sub">TRADITIONAL TAMIL BOARD GAME</p>
+    <h1>பல்லாங்குழி</h1><p class="sub">TAMIL HERITAGE · ULTRA-SMOOTH EDITION</p>
     <span class="field-label">Game mode</span>
     <div class="button-grid"><button type="button" class="option active" data-mode="ai">👤 vs Computer</button><button type="button" class="option" data-mode="two">👥 2 Players</button></div>
     <span class="field-label">Wood theme</span>
@@ -245,7 +251,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     <div class="input-group"><label for="p2-input">Player 2 · top</label><input id="p2-input" maxlength="18" value="Azhagi (AI)" autocomplete="off"></div>
     <span class="field-label">Sound volume · ஒலி அளவு</span>
     <label class="slider-line" for="volume-input">🔊 <input type="range" id="volume-input" min="0" max="100" value="65" step="5"><output id="volume-display">65%</output></label>
-    <div style="text-align:center"><span class="live-badge">✋ Hand motions &nbsp; • &nbsp; 🫘 Bead bounce &nbsp; • &nbsp; 🔊 Natural sound</span></div>
+    <div style="text-align:center"><span class="live-badge">✋ Flowing hand &nbsp; • &nbsp; 🫘 Bouncing beads &nbsp; • &nbsp; 🔊 Natural sounds</span></div>
     <button type="button" class="primary-btn" id="start-btn">PLAY GAME · ஆடுவோம்</button>
   </div>
 </div>
@@ -260,7 +266,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       <p><strong>4. Capture · துடைத்தல்:</strong> If that next cup is empty, your turn ends. Capture all seeds in the cup immediately after the empty one, if any. They go to the current player's store.</p>
       <p><strong>5. Pasu · பசு:</strong> Whenever sowing makes a cup contain exactly 4 seeds, its owner immediately collects those 4 seeds into their store, even during an opponent's move.</p>
       <p><strong>6. Match end:</strong> When a player's seven cups are all empty at the end of a turn, this <em>single-round variant</em> ends. Each player collects the seeds left in their own row. Most seeds wins.</p>
-      <p class="note">Regional Pallanguzhi rules can vary; this game deliberately follows the six rules above. Completed moves conserve exactly 70 seeds. Nonterminating moves are rejected instead of applying a partial turn. The 🔊 Sound button enables synthesized material-specific taps and bead clinks (no internet required). Volume is adjustable in Match settings. An animated hand collects and distributes beads; collisions and bounces are visual approximations, not a full physics simulation. Fast mode speeds up the animations.</p>
+      <p class="note">Regional Pallanguzhi rules can vary; this game deliberately follows the six rules above. Completed moves conserve exactly 70 seeds. Nonterminating moves are rejected instead of applying a partial turn. The 🔊 Sound button enables synthesized material-specific taps and bead clinks (no internet required). Volume is adjustable in Match settings. An animated hand collects and distributes beads; collisions and bounces are visual approximations, not a full physics simulation. Fast mode speeds up animations. The “Finish move” control completes the current move instantly without changing its result.</p>
     </div>
     <button type="button" class="primary-btn" id="close-rules">Back to game</button>
   </div>
@@ -287,9 +293,13 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   const row = p => p === 1 ? [0,1,2,3,4,5,6] : [7,8,9,10,11,12,13];
   let options = {ai:true, theme:'bright', seedStyle:'natural', fast:false, sound:true, volume:.65};
   let names = {1:'Player 1',2:'Azhagi (AI)'};
-  let state = {pits:Array(N).fill(START_SEEDS), banks:[0,0,0], turn:1, busy:false, over:false, epoch:0, aiTicket:0, started:false};
+  let state = {pits:Array(N).fill(START_SEEDS), banks:[0,0,0], turn:1, busy:false, over:false, epoch:0, aiTicket:0, started:false, activeMove:null};
   let audio = null, toastTimer = null;
   const activeAnims = new Set();
+  const pitTimers = new Map();
+  const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let lastHandPos = null;
+  let lastDropSoundAt = 0;
   const portraitBoard = () => matchMedia('(orientation: portrait) and (max-width:700px)').matches;
 
   // Pure engine: all moves are computed before any UI changes.
@@ -401,9 +411,9 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   }
 
   function nudgeNearbyBeads(pitIndex){
-    if(options.fast||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    if(options.fast||reducedMotion())return;
     const beads=Array.from($('pit-'+pitIndex).querySelectorAll('.seed-pit-cluster .tamarind-seed'));
-    for(const bead of beads.slice(-5,-1)){
+    for(const bead of beads.slice(-3,-1)){
       const angle=Number(bead.dataset.serial||1)*2.4;
       const tx=(Math.cos(angle)*2.3).toFixed(1),ty=(Math.sin(angle)*1.7).toFixed(1);
       const rest=bead.style.transform;
@@ -442,7 +452,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         }
       }
     });
-    if(landed&&target>0)nudgeNearbyBeads(index);
+    if(landed&&target>old)nudgeNearbyBeads(index);
     countNode.textContent=count;
     const playable=state.started&&!state.busy&&!state.over&&count>0&&owner(index)===state.turn&&!(options.ai&&state.turn===2);
     el.disabled=!playable;el.classList.toggle('playable',playable);
@@ -494,6 +504,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     const r=el.getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+r.height/2};
   }
   function hideHand(){
+    lastHandPos=null;
     const el=$('player-hand');el.classList.remove('visible','grip','releasing');
     $('hand-visual-count').textContent='';
     $('hand-counter').style.display='none';
@@ -514,31 +525,48 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     return portraitBoard()?{x:pitPos.x+Math.min(28,Math.max(18,$('arena').clientHeight*.025)),y:pitPos.y-1}
       :{x:pitPos.x+2,y:pitPos.y-Math.min(30,Math.max(21,($('pit-0')?.clientWidth||55)*.45))};
   }
+  // Transform-only travel: compositor animates the hand without relayout on every cup.
   async function moveHand(pitPos,player=state.turn,pose='open'){
     const el=$('player-hand');
     const point=handPoint(pitPos);
     el.classList.toggle('turned',portraitBoard());
     el.classList.toggle('ai',player===2);
-    if(!el.classList.contains('visible')){
+    const duration = reducedMotion()?0:options.fast?47:104;
+    const wasVisible=el.classList.contains('visible');
+    if(!wasVisible){
+      // Spawn directly at the first cup instead of forcing layout for an offscreen glide.
       el.style.transition='none';
-      const entry=portraitBoard()?{x:point.x+53,y:point.y}:{x:point.x,y:point.y+64};
-      el.style.left=entry.x+'px';el.style.top=entry.y+'px';
-      void el.offsetWidth;
-      el.style.transition='';
+      el.style.transform=`translate3d(calc(${point.x}px - 50%),calc(${point.y}px - 50%),0)`;
       el.classList.add('visible');
+      lastHandPos=point;
+      handPose(pose);
+      requestAnimationFrame(()=>{if(el.classList.contains('visible'))el.style.transition='';});
+      if(!reducedMotion())await wait(options.fast?36:65);
+      return;
     }
+    const distance=lastHandPos?Math.hypot(lastHandPos.x-point.x,lastHandPos.y-point.y):100;
     handPose(pose);
-    el.style.left=point.x+'px';el.style.top=point.y+'px';
-    const ms=matchMedia('(prefers-reduced-motion: reduce)').matches?0:options.fast?65:140;
-    if(ms)await wait(ms);
+    if(distance>2){
+      el.style.transform=`translate3d(calc(${point.x}px - 50%),calc(${point.y}px - 50%),0)`;
+      lastHandPos=point;
+      if(duration)await wait(duration);
+    }
   }
 
   function highlightPit(index,kind='pulse',ms=200) {
     const p=$('pit-'+index);
+    const old=pitTimers.get(index+'|'+kind);
+    if(old)clearTimeout(old);
     p.classList.add(kind);
-    setTimeout(()=>p.classList.remove(kind),ms);
+    pitTimers.set(index+'|'+kind,setTimeout(()=>{
+      p.classList.remove(kind);
+      pitTimers.delete(index+'|'+kind);
+    },ms));
   }
+
   function closeAnimations() {
+    for(const timer of pitTimers.values())clearTimeout(timer);
+    pitTimers.clear();
     document.querySelectorAll('.flying-seed').forEach(el=>el.remove());
     document.querySelectorAll('.pit.pulse,.pit.capture-pulse,.pit.drop-impact').forEach(el=>el.classList.remove('pulse','capture-pulse','drop-impact'));
     hideHand();
@@ -546,10 +574,11 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     activeAnims.clear();
   }
 
+  // One GPU-friendly animation per visible bead; game state is unaffected by flight.
   function motionTime(kind){
-    if(matchMedia('(prefers-reduced-motion: reduce)').matches)return 0;
-    if(options.fast)return{drop:80,scoop:85,capture:135}[kind]||80;
-    return{drop:210,scoop:180,capture:320}[kind]||210;
+    if(reducedMotion())return 0;
+    if(options.fast)return{drop:62,scoop:75,capture:155}[kind]||65;
+    return{drop:140,scoop:115,capture:255}[kind]||145;
   }
   async function fly(from,to,{kind='drop',index=0,serial=0,delay=0}={}){
     const duration=motionTime(kind);
@@ -557,32 +586,25 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     const el=document.createElement('span');
     const color=options.seedStyle==='natural'?'seed-natural':'seed-colored-'+((index+serial)%5);
     el.className='flying-seed tamarind-seed '+color+(kind==='scoop'?' scoop-seed':'');
-    const fromJitter=kind==='scoop'?7:3;
-    const sx=from.x+(Math.random()-.5)*fromJitter,sy=from.y+(Math.random()-.5)*fromJitter;
-    const spread=kind==='capture'?16:kind==='drop'?Math.max(3,Math.min(13,($('pit-'+index)?.clientWidth||52)*.19)):7;
+    const variance=kind==='scoop'?5:3;
+    const sx=from.x+(Math.random()-.5)*variance, sy=from.y+(Math.random()-.5)*variance;
+    const spread=kind==='capture'?15:kind==='drop'?6:5;
     const tx=to.x+(Math.random()-.5)*spread,ty=to.y+(Math.random()-.5)*spread;
     const dx=tx-sx,dy=ty-sy,dist=Math.hypot(dx,dy);
-    const spin=(Math.random()>.5?1:-1)*(36+Math.random()*160);
-    const radial=portraitBoard()&&(kind==='drop'||kind==='capture');
-    const frame=(progress,lift=0,angle=0,sX=1,sY=1)=>({
-      transform:`translate(calc(-50% + ${(dx*progress+(radial?lift:0)).toFixed(1)}px), calc(-50% + ${(dy*progress+(radial?0:lift)).toFixed(1)}px)) rotate(${angle.toFixed(1)}deg) scale(${sX},${sY})`,
-      filter:`drop-shadow(0 ${Math.max(1,8-Math.abs(lift)*.08).toFixed(0)}px 4px rgba(0,0,0,.68))`,
-      offset:progress
-    });
-    const frames=kind==='scoop' ? [
-      frame(0,0,0,.9,.9),frame(.48,-Math.min(21,dist*.28),spin*.44,1.1,1.1),frame(1,0,spin,1,1)
-    ] : [
-      frame(0,0,0,.96,.96),
-      frame(.33,-Math.min(8,dist*.14),spin*.28,1.08,1.05),
-      frame(.69,1,spin*.75,1.19,.76),
-      frame(.81,-Math.min(11,Math.max(4,dist*.13)),spin*.83,.94,1.07),
-      frame(.92,-Math.min(4,Math.max(2,dist*.04)),spin*.94,1.05,.92),
-      frame(1,0,spin,1,1)
-    ];
+    const spin=(Math.random()>.5?1:-1)*(25+Math.random()*105);
+    const arc=kind==='scoop'?Math.min(21,dist*.20):kind==='capture'?Math.min(27,dist*.14):Math.min(9,dist*.18);
+    const horizontalArc=portraitBoard();
+    const frame=(p,yArc,angle,scaleX=1,scaleY=1)=>{
+      const offset=-yArc;
+      const x=dx*p+(horizontalArc?offset:0);
+      const y=dy*p+(horizontalArc?0:offset);
+      return {offset:p,transform:`translate3d(calc(-50% + ${x.toFixed(1)}px),calc(-50% + ${y.toFixed(1)}px),0) rotate(${angle.toFixed(1)}deg) scale(${scaleX},${scaleY})`};
+    };
+    const frames=[frame(0,0,0,.95,.95),frame(.44,arc,spin*.47,1.06,1.06),frame(.8,arc*.24,spin*.8,1.1,.84),frame(1,0,spin,1,1)];
     el.style.left=sx+'px';el.style.top=sy+'px';document.body.append(el);
     let animation;
     try{
-      animation=el.animate(frames,{duration,delay,easing:'linear',fill:'both'});
+      animation=el.animate(frames,{duration,delay,easing:'ease-in-out',fill:'both'});
       activeAnims.add(animation);
       await animation.finished.catch(()=>{});
     }finally{
@@ -661,6 +683,9 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     if(navigator.vibrate)navigator.vibrate(25);
   }
   function layeredLanding(count){
+    const now=performance.now();
+    if(options.fast&&now-lastDropSoundAt<38)return;
+    lastDropSoundAt=now;
     beadImpact('drop',.8+Math.random()*.18);
     if(count>3&&Math.random()>.58)beadImpact('drop',.2,.036);
   }
@@ -672,11 +697,11 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     handPose('grip');
     scoopSound(count);
     const hand=releasePoint(at);
-    const n=Math.min(count,options.fast?3:6);
+    const n=Math.min(count,options.fast?3:5);
     await Promise.all(Array.from({length:n},(_,i)=>fly(
       {x:at.x+(i-(n-1)/2)*3.6,y:at.y+((i%2)*4)},
       {x:hand.x+(i-(n-1)/2)*1.5,y:hand.y},
-      {kind:'scoop',index:pit,serial:i,delay:i*(options.fast?8:21)}
+      {kind:'scoop',index:pit,serial:i,delay:i*(options.fast?7:13)}
     )));
     if(!live())return;
     handBadge(at,count);
@@ -687,9 +712,9 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     await moveHand(at,player,'open');if(!live())return;
     handPose('grip');scoopSound(count);
     const lift=releasePoint(at);
-    const n=Math.min(count,options.fast?5:11);
+    const n=Math.min(count,options.fast?4:7);
     await Promise.all(Array.from({length:Math.min(n,6)},(_,i)=>
-      fly({x:at.x+(i%3-1)*4,y:at.y+(Math.floor(i/3)*3)},lift,{kind:'scoop',index:pit,serial:i,delay:i*16})
+      fly({x:at.x+(i%3-1)*4,y:at.y+(Math.floor(i/3)*3)},lift,{kind:'scoop',index:pit,serial:i,delay:i*(options.fast?6:10)})
     ));
     if(!live())return;
     handBadge(at,count);
@@ -698,7 +723,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     const seedStart=releasePoint(to);
     await Promise.all(Array.from({length:n},(_,i)=>fly(
       {x:seedStart.x+(i%3-1)*2,y:seedStart.y},to,
-      {kind:'capture',index:pit,serial:i,delay:i*(options.fast?12:27)}
+      {kind:'capture',index:pit,serial:i,delay:i*(options.fast?9:20)}
     ).then(()=>{if(live()&&i%3===0)beadImpact('bank',.32);})));
     if(live())captureSound();
   }
@@ -770,9 +795,34 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     })();
   }
 
+  function updateSkipButton(){
+    const btn=$('skip-btn');
+    const active=Boolean(state.activeMove);
+    btn.hidden=!active;
+    btn.disabled=!active;
+  }
+
+  // Skip visuals only: commit the already-validated, complete simulator result.
+  // Epoch invalidates old async continuation before it can mutate the new state.
+  function skipCurrentMove(){
+    const running=state.activeMove;
+    if(!running || running.epoch!==state.epoch)return;
+    state.epoch++;
+    state.aiTicket++;
+    closeAnimations();
+    state.pits=running.simulated.pits.slice();
+    state.banks=running.simulated.banks.slice();
+    state.activeMove=null;
+    updateSkipButton();
+    completeMove(running.mover,()=>true,false);
+    if(!state.over)toast('⏭ Move completed',850);
+  }
+
   // Single completion path for regular playback and animation-error recovery.
   function completeMove(mover, live, recovered=false) {
     if (!live()) return;
+    state.activeMove=null;
+    updateSkipButton();
     hideHand();
     if (settleIfFinished(state.pits,state.banks)) {
       state.over=true;state.busy=false;render();finishMatch();return;
@@ -797,7 +847,10 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     let simulated;
     try {simulated=simulateMove(state.pits,state.banks,current,index);}
     catch(err) {setStatus(err.message);toast(err.message,2300);return;}
-    state.busy=true;render();
+    state.busy=true;
+    state.activeMove={simulated,mover:current,epoch};
+    updateSkipButton();
+    render();
     let source=center('pit-'+index),hand=0;
     const live=()=>epoch===state.epoch;
     try {
@@ -812,7 +865,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           if(!live())return;
           state.pits[event.pit]=0;
           paintPit(event.pit);
-          if(!options.fast)await wait(30);
+          if(!options.fast)await wait(12);
         }else if(event.kind==='drop'){
           const dest=center('pit-'+event.pit);
           await moveHand(dest,current,'grip');
@@ -824,15 +877,14 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           paintPit(event.pit,true);
           const pitEl=$('pit-'+event.pit);
           pitEl.classList.remove('drop-impact');
-          void pitEl.offsetWidth;
-          pitEl.classList.add('drop-impact');
-          setTimeout(()=>pitEl.classList.remove('drop-impact'),options.fast?100:235);
+          // The impact ring is decorative; no forced synchronous layout per drop.
+          requestAnimationFrame(()=>{if(live())highlightPit(event.pit,'drop-impact',options.fast?85:180);});
           highlightPit(event.pit,'pulse',options.fast?110:230);
           handBadge(dest,hand);
           source=dest;
           layeredLanding(state.pits[event.pit]);
           handPose('grip');
-          if(!options.fast)await wait(16);
+          // Flight and settle animations overlap; avoid another idle pause.
         }else if(event.kind==='pasu'){
           highlightPit(event.pit,'capture-pulse',500);
           toast(`பசு! ${names[event.player]} +4 ${options.seedStyle==='natural'?'seeds':'beads'}`,options.fast?750:1600);
@@ -842,7 +894,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           state.pits[event.pit]=0;state.banks[event.player]+=4;
           paintPit(event.pit);paintBank(event.player,4);
           handBadge(source,hand);
-          if(!options.fast)await wait(70);
+          if(!options.fast)await wait(40);
         }else if(event.kind==='capture'){
           highlightPit(event.pit,'capture-pulse',520);
           toast(`${names[event.player]} captured ${event.count} ${options.seedStyle==='natural'?'seeds':'beads'}!`,options.fast?900:1800);
@@ -851,7 +903,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           if(!live())return;
           state.pits[event.pit]=0;state.banks[event.player]+=event.count;
           paintPit(event.pit);paintBank(event.player,event.count);
-          if(!options.fast)await wait(100);
+          if(!options.fast)await wait(55);
         }else if(event.kind==='no-capture'){
           setStatus('Empty cup followed by another empty cup. No capture.');
           if(!options.fast)await wait(100);
@@ -886,7 +938,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     $('end-modal').classList.remove('hidden');
   }
 
-  function invalidateMatch(){state.epoch++;state.aiTicket++;state.busy=false;closeAnimations();clearTimeout(toastTimer);$('toast').classList.remove('visible');}
+  function invalidateMatch(){state.epoch++;state.aiTicket++;state.busy=false;state.activeMove=null;updateSkipButton();closeAnimations();clearTimeout(toastTimer);$('toast').classList.remove('visible');}
   function startGame(){
     invalidateMatch();
     state.pits=Array(N).fill(START_SEEDS);state.banks=[0,0,0];state.turn=1;state.over=false;state.started=true;
@@ -936,6 +988,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       if(audio)audio.pallanguzhiMaster.gain.setTargetAtTime(options.sound?options.volume:0,audio.currentTime,.02);
       if(options.sound&&options.volume>0)beadImpact('drop',.33);
     });
+    $('skip-btn').addEventListener('click',skipCurrentMove);
     $('start-btn').addEventListener('click',startGame);
     $('again-btn').addEventListener('click',startGame);
     $('match-btn').addEventListener('click',showSetup);
@@ -957,7 +1010,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       if(event.key==='Escape'&&!$('rules-modal').classList.contains('hidden'))$('rules-modal').classList.add('hidden');
     });
     window.addEventListener('pointerdown', () => ensureAudio(), { once: true });
-    window.PallanguzhiTest={version:'3.3',simulateMove,settleIfFinished,validMoves,owner,getSnapshot:()=>({pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,over:state.over,busy:state.busy,epoch:state.epoch,handVisible:$('player-hand').classList.contains('visible')}),startGame,chooseAI};
+    window.PallanguzhiTest={simulateMove,settleIfFinished,validMoves,owner,skipCurrentMove,getSnapshot:()=>({pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,over:state.over,busy:state.busy,epoch:state.epoch,handVisible:$('player-hand').classList.contains('visible'),activeMove:Boolean(state.activeMove)}),startGame,chooseAI};
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
