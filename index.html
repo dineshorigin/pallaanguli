@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ta">
 <head>
@@ -866,13 +867,6 @@
 </head>
 <body>
 
-<!-- Cloud / Temple Mist Transition Layer -->
-<div id="mist-overlay">
-  <div class="cloud-puff puff-1"></div>
-  <div class="cloud-puff puff-2"></div>
-  <div class="cloud-puff puff-3"></div>
-</div>
-
 <!-- Setup & Customization Modal -->
 <div id="setup-modal">
   <div class="setup-card">
@@ -1169,6 +1163,21 @@
     renderBoard();
   }
 
+  function enterFullScreen() {
+    try {
+      const el = document.documentElement;
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => {});
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      } else if (el.msRequestFullscreen) {
+        el.msRequestFullscreen();
+      }
+    } catch (e) {
+      // Graceful fallback for browsers that restrict programmatic fullscreen
+    }
+  }
+
   function showSetupScreen() {
     document.getElementById('setup-modal').classList.remove('hidden');
   }
@@ -1223,12 +1232,29 @@
     const pit = document.createElement('div');
     pit.className = 'pit';
     pit.id = `pit-${index}`;
-    pit.onclick = () => onPitClick(index);
+    
+    // Use a single debounced touch/click handler to prevent multiple triggers
+    let touchHandled = false;
+    pit.addEventListener('touchstart', (e) => {
+      touchHandled = true;
+      e.preventDefault();
+      onPitClick(index);
+    }, { passive: false });
+
+    pit.addEventListener('click', (e) => {
+      if (touchHandled) {
+        touchHandled = false;
+        return;
+      }
+      onPitClick(index);
+    });
+
     slot.appendChild(pit);
     return slot;
   }
 
   function getElementCenter(el) {
+    if (!el) return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const rect = el.getBoundingClientRect();
     return {
       x: rect.left + rect.width / 2,
@@ -1236,7 +1262,7 @@
     };
   }
 
-  function animateSeedFly(startX, startY, targetX, targetY, duration = 300) {
+  function animateSeedFly(startX, startY, targetX, targetY, duration = 260) {
     return new Promise(resolve => {
       const seedEl = document.createElement('div');
       seedEl.className = 'flying-projectile ' + (seedStyle === 'natural' ? 'seed-natural' : `seed-colored-${Math.floor(Math.random()*5)}`);
@@ -1244,12 +1270,14 @@
       seedEl.style.top = `${startY}px`;
       document.body.appendChild(seedEl);
 
-      void seedEl.offsetWidth;
-
       const midX = (startX + targetX) / 2;
       const midY = Math.min(startY, targetY) - 40;
-
       const startTime = performance.now();
+
+      const safetyTimer = setTimeout(() => {
+        if (seedEl.parentNode) seedEl.remove();
+        resolve();
+      }, duration + 100);
 
       function step(now) {
         const elapsed = now - startTime;
@@ -1265,7 +1293,8 @@
         if (progress < 1) {
           requestAnimationFrame(step);
         } else {
-          seedEl.remove();
+          clearTimeout(safetyTimer);
+          if (seedEl.parentNode) seedEl.remove();
           resolve();
         }
       }
@@ -1276,6 +1305,7 @@
 
   function updateHandBadge(x, y, count) {
     const badge = document.getElementById('hand-counter');
+    if (!badge) return;
     if (count > 0) {
       badge.style.display = 'block';
       badge.style.left = `${x}px`;
@@ -1373,9 +1403,17 @@
     if (isBusy) return;
     if (currentTurn === 1 && (index < 0 || index > 6)) return;
     if (currentTurn === 2 && (index < 7 || index > 13)) return;
-    if (pits[index] === 0) return;
+    if (pits[index] <= 0) return;
 
-    await executeSowing(index);
+    try {
+      await executeSowing(index);
+    } catch (err) {
+      console.error("Sowing error:", err);
+    } finally {
+      isBusy = false;
+      updateHandBadge(0, 0, 0);
+      renderBoard();
+    }
   }
 
   async function executeSowing(startPit) {
@@ -1384,23 +1422,27 @@
     pits[startPit] = 0;
 
     const startPitEl = document.getElementById(`pit-${startPit}`);
-    startPitEl.classList.add('pickup-pulse');
-    setTimeout(() => startPitEl.classList.remove('pickup-pulse'), 300);
+    if (startPitEl) {
+      startPitEl.classList.add('pickup-pulse');
+      setTimeout(() => startPitEl.classList.remove('pickup-pulse'), 250);
+    }
 
     let fromPos = getElementCenter(startPitEl);
     updateHandBadge(fromPos.x, fromPos.y, hand);
     renderBoard();
     playNaturalSeedDrop();
+    await sleep(260);
 
     let curr = startPit;
 
     while (true) {
+      // Step 1: Sow seeds one by one
       while (hand > 0) {
         const nextIdx = (curr + 1) % TOTAL_PITS;
         const targetPitEl = document.getElementById(`pit-${nextIdx}`);
         const toPos = getElementCenter(targetPitEl);
 
-        await animateSeedFly(fromPos.x, fromPos.y, toPos.x, toPos.y, 270);
+        await animateSeedFly(fromPos.x, fromPos.y, toPos.x, toPos.y, 250);
 
         curr = nextIdx;
         pits[curr]++;
@@ -1411,8 +1453,9 @@
         playNaturalSeedDrop();
         highlightPit(curr);
         renderBoard();
-        await sleep(190);
+        await sleep(200);
 
+        // Pasu Rule (4 seeds accumulated during sowing)
         if (pits[curr] === 4) {
           const owner = curr <= 6 ? 1 : 2;
           const ownerMotherEl = document.getElementById(`mc-${owner}`);
@@ -1421,25 +1464,32 @@
 
           pits[curr] = 0;
           renderBoard();
+
           for (let s = 0; s < 4; s++) {
-            animateSeedFly(pitPos.x, pitPos.y, motherPos.x, motherPos.y, 340);
-            await sleep(50);
+            animateSeedFly(pitPos.x, pitPos.y, motherPos.x, motherPos.y, 280);
+            await sleep(35);
           }
+
           motherBank[owner] += 4;
           playCaptureSound();
           document.getElementById('status-text').innerText = `Pasu! 4 seeds captured by ${playerNames[owner]}!`;
           renderBoard();
-          await sleep(380);
+          await sleep(300);
         }
       }
 
+      // Step 2: Hand is empty. Inspect next pit
       const nextPit = (curr + 1) % TOTAL_PITS;
+
       if (pits[nextPit] > 0) {
+        // Continuous scoop from next pit
         const nextEl = document.getElementById(`pit-${nextPit}`);
         fromPos = getElementCenter(nextEl);
 
-        nextEl.classList.add('pickup-pulse');
-        setTimeout(() => nextEl.classList.remove('pickup-pulse'), 300);
+        if (nextEl) {
+          nextEl.classList.add('pickup-pulse');
+          setTimeout(() => nextEl.classList.remove('pickup-pulse'), 250);
+        }
 
         hand = pits[nextPit];
         pits[nextPit] = 0;
@@ -1449,10 +1499,12 @@
         playNaturalSeedDrop();
         renderBoard();
         document.getElementById('status-text').innerText = `Scooping next cup (${hand} seeds)...`;
-        await sleep(440);
+        await sleep(400);
       } else {
+        // Next pit is empty -> Check subsequent pit for capture
         updateHandBadge(0, 0, 0);
         const capturePit = (nextPit + 1) % TOTAL_PITS;
+
         if (pits[capturePit] > 0) {
           const won = pits[capturePit];
           const capEl = document.getElementById(`pit-${capturePit}`);
@@ -1465,18 +1517,19 @@
 
           const flyCount = Math.min(won, 6);
           for (let f = 0; f < flyCount; f++) {
-            animateSeedFly(capPos.x, capPos.y, motherPos.x, motherPos.y, 380);
-            await sleep(45);
+            animateSeedFly(capPos.x, capPos.y, motherPos.x, motherPos.y, 300);
+            await sleep(40);
           }
 
           motherBank[currentTurn] += won;
           playCaptureSound();
           document.getElementById('status-text').innerText = `${playerNames[currentTurn]} captured ${won} seeds!`;
         } else {
-          document.getElementById('status-text').innerText = `Empty cup. Turn ended.`;
+          document.getElementById('status-text').innerText = `Empty cup reached. Turn complete.`;
         }
+
         renderBoard();
-        await sleep(450);
+        await sleep(400);
         break;
       }
     }
@@ -1490,7 +1543,7 @@
 
     if (currentTurn === 2 && isAiMode) {
       document.getElementById('status-text').innerText = `${playerNames[2]} is thinking...`;
-      await sleep(800);
+      await sleep(700);
       runAi();
     } else {
       document.getElementById('status-text').innerText = `${playerNames[currentTurn]}'s turn.`;
@@ -1498,11 +1551,15 @@
   }
 
   function runAi() {
+    if (isBusy) return;
     const valid = [];
     for (let i = 7; i <= 13; i++) {
       if (pits[i] > 0) valid.push(i);
     }
-    if (!valid.length) return;
+    if (!valid.length) {
+      checkEndGame();
+      return;
+    }
     valid.sort((a, b) => pits[b] - pits[a]);
     executeSowing(valid[0]);
   }
@@ -1546,7 +1603,9 @@
   function closeHelp() { document.getElementById('help-modal').classList.remove('open'); }
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-  initBoardDOM();
+  window.addEventListener('DOMContentLoaded', () => {
+    initBoardDOM();
+  });
 </script>
 </body>
 </html>
