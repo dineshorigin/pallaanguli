@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b0d06">
-<title>பல்லாங்குழி • Living Board Edition (v3.2)</title>
+<title>பல்லாங்குழி • Heritage Edition (v3.3 • Reviewed)</title>
 <style>
 :root {
   --brass:#efc875; --gold-dim:#a77b36; --ink:#180b05; --text:#f6ebd9;
@@ -260,7 +260,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       <p><strong>4. Capture · துடைத்தல்:</strong> If that next cup is empty, your turn ends. Capture all seeds in the cup immediately after the empty one, if any. They go to the current player's store.</p>
       <p><strong>5. Pasu · பசு:</strong> Whenever sowing makes a cup contain exactly 4 seeds, its owner immediately collects those 4 seeds into their store, even during an opponent's move.</p>
       <p><strong>6. Match end:</strong> When a player's seven cups are all empty at the end of a turn, this <em>single-round variant</em> ends. Each player collects the seeds left in their own row. Most seeds wins.</p>
-      <p class="note">Regional Pallanguzhi rules can vary; this game deliberately follows the six rules above. Each move keeps the total at exactly 70 seeds. The 🔊 Sound button enables synthesized material-specific taps and bead clinks (no internet required). Volume is adjustable in Match settings. An animated hand collects and distributes beads; collisions and bounces are visual approximations, not a full physics simulation. Fast mode speeds up the animations.</p>
+      <p class="note">Regional Pallanguzhi rules can vary; this game deliberately follows the six rules above. Completed moves conserve exactly 70 seeds. Nonterminating moves are rejected instead of applying a partial turn. The 🔊 Sound button enables synthesized material-specific taps and bead clinks (no internet required). Volume is adjustable in Match settings. An animated hand collects and distributes beads; collisions and bounces are visual approximations, not a full physics simulation. Fast mode speeds up the animations.</p>
     </div>
     <button type="button" class="primary-btn" id="close-rules">Back to game</button>
   </div>
@@ -287,50 +287,56 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
   const row = p => p === 1 ? [0,1,2,3,4,5,6] : [7,8,9,10,11,12,13];
   let options = {ai:true, theme:'bright', seedStyle:'natural', fast:false, sound:true, volume:.65};
   let names = {1:'Player 1',2:'Azhagi (AI)'};
-  let state = {pits:Array(N).fill(START_SEEDS), banks:[0,0,0], turn:1, busy:false, over:false, epoch:0, started:false};
+  let state = {pits:Array(N).fill(START_SEEDS), banks:[0,0,0], turn:1, busy:false, over:false, epoch:0, aiTicket:0, started:false};
   let audio = null, toastTimer = null;
   const activeAnims = new Set();
   const portraitBoard = () => matchMedia('(orientation: portrait) and (max-width:700px)').matches;
 
+  // Pure engine: all moves are computed before any UI changes.
+  // Illegal moves, broken conservation and repeating sow loops never commit partial state.
   function simulateMove(originalPits, originalBanks, player, selected) {
-    if (!Number.isInteger(selected) || selected < 0 || selected >= N || owner(selected) !== player || originalPits[selected] <= 0)
-      throw new Error('Illegal move: select a nonempty pit on your side.');
+    if (!Number.isInteger(player) || ![1, 2].includes(player) ||
+        !Number.isInteger(selected) || selected < 0 || selected >= N ||
+        owner(selected) !== player || originalPits[selected] <= 0)
+      throw new Error('Illegal move: select a nonempty cup on your side.');
     const pits = originalPits.slice();
     const banks = originalBanks.slice();
     const events = [];
-    let inHand = pits[selected], cursor = selected, drops = 0, safetyStop = false;
+    let inHand = pits[selected], cursor = selected, drops = 0;
     pits[selected] = 0;
     events.push({kind:'pickup',pit:selected,count:inHand});
     const visited = new Set();
 
     while (true) {
+      // An identical state at a pickup boundary can never escape by itself.
+      const signature = cursor + '|' + inHand + '|' + pits.join(',') + '|' + banks[1] + '|' + banks[2];
+      if (visited.has(signature))
+        throw new Error('Repeating sowing loop detected. Select another cup.');
+      visited.add(signature);
+
       while (inHand > 0) {
+        if (++drops > MAX_DROPS)
+          throw new Error('Move exceeded the sowing safety limit. Select another cup.');
         cursor = (cursor + 1) % N;
-        pits[cursor] += 1;
-        inHand -= 1;
-        drops += 1;
+        pits[cursor]++;
+        inHand--;
         events.push({kind:'drop',pit:cursor,left:inHand});
+        // Pasu belongs to the OWNER OF THE CUP, not necessarily to the mover.
         if (pits[cursor] === 4) {
           const credited = owner(cursor);
           pits[cursor] = 0;
           banks[credited] += 4;
           events.push({kind:'pasu',pit:cursor,player:credited,count:4});
         }
-        if (drops >= MAX_DROPS) safetyStop = true;
       }
-      if (safetyStop) {
-        events.push({kind:'safety'});
-        break;
-      }
+
+      // Pasu never changes which cup is inspected next.
       const next = (cursor + 1) % N;
       if (pits[next] > 0) {
         inHand = pits[next];
         pits[next] = 0;
         cursor = next;
         events.push({kind:'pickup',pit:next,count:inHand});
-        const signature = cursor + '|' + inHand + '|' + pits.join(',') + '|' + banks[1] + '|' + banks[2];
-        if (visited.has(signature)) safetyStop = true;
-        visited.add(signature);
       } else {
         const target = (next + 1) % N;
         if (pits[target] > 0) {
@@ -346,7 +352,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     }
     const count = pits.reduce((a,b)=>a+b,0) + banks[1] + banks[2];
     if (count !== TOTAL_SEEDS) throw new Error('Seed conservation error: ' + count);
-    return {pits,banks,events,safetyStop};
+    return {pits,banks,events,safetyStop:false};
   }
 
   function settleIfFinished(pits, banks) {
@@ -436,7 +442,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
         }
       }
     });
-    if(landed&&target>old)nudgeNearbyBeads(index);
+    if(landed&&target>0)nudgeNearbyBeads(index);
     countNode.textContent=count;
     const playable=state.started&&!state.busy&&!state.over&&count>0&&owner(index)===state.turn&&!(options.ai&&state.turn===2);
     el.disabled=!playable;el.classList.toggle('playable',playable);
@@ -523,7 +529,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     }
     handPose(pose);
     el.style.left=point.x+'px';el.style.top=point.y+'px';
-    const ms=matchMedia('(prefers-reduced-motion: reduce)').matches?0:options.fast?75:190;
+    const ms=matchMedia('(prefers-reduced-motion: reduce)').matches?0:options.fast?65:140;
     if(ms)await wait(ms);
   }
 
@@ -542,8 +548,8 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 
   function motionTime(kind){
     if(matchMedia('(prefers-reduced-motion: reduce)').matches)return 0;
-    if(options.fast)return{drop:95,scoop:100,capture:155}[kind]||95;
-    return{drop:285,scoop:225,capture:390}[kind]||280;
+    if(options.fast)return{drop:80,scoop:85,capture:135}[kind]||80;
+    return{drop:210,scoop:180,capture:320}[kind]||210;
   }
   async function fly(from,to,{kind='drop',index=0,serial=0,delay=0}={}){
     const duration=motionTime(kind);
@@ -699,42 +705,99 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
 
   function validMoves(player,pits=state.pits){return row(player).filter(i=>pits[i]>0);}
 
+  // 1-ply lookahead with opponent-reply risk; ignores any nonterminating candidate.
   function chooseAI() {
-    const choices=validMoves(2);
-    if(!choices.length)return null;
-    let selected=choices[0],best=-Infinity;
-    for(const choice of choices){
-      const res=simulateMove(state.pits,state.banks,2,choice);
-      const endPits=res.pits.slice(),endBanks=res.banks.slice();
-      if(settleIfFinished(endPits,endBanks)) {
-        const val=(endBanks[2]-endBanks[1])*10;
-        if(val>best){best=val;selected=choice;}
+    const choices = validMoves(2);
+    let selected = null, best = -Infinity;
+    for (const choice of choices) {
+      let res;
+      try { res = simulateMove(state.pits,state.banks,2,choice); }
+      catch (err) { console.warn('Skipped invalid AI move',choice,err.message); continue; }
+      const endPits = res.pits.slice(), endBanks = res.banks.slice();
+      if (settleIfFinished(endPits,endBanks)) {
+        const val = (endBanks[2]-endBanks[1])*10;
+        if (val>best) {best=val;selected=choice;}
         continue;
       }
       let replyPenalty=0;
-      for(const reply of validMoves(1,res.pits)){
-        const next=simulateMove(res.pits,res.banks,1,reply);
-        const oppGain=(next.banks[1]-res.banks[1])-(next.banks[2]-res.banks[2]);
-        replyPenalty=Math.max(replyPenalty,oppGain);
+      for (const reply of validMoves(1,res.pits)) {
+        try {
+          const next=simulateMove(res.pits,res.banks,1,reply);
+          // Final settlement matters for a reply that ends the round.
+          const replyPits=next.pits.slice(), replyBanks=next.banks.slice();
+          settleIfFinished(replyPits,replyBanks);
+          const oppGain=(replyBanks[1]-res.banks[1])-(replyBanks[2]-res.banks[2]);
+          replyPenalty=Math.max(replyPenalty,oppGain);
+        } catch (err) { /* Unsafe/nonterminating reply is not considered legal. */ }
       }
       const ownGain=res.banks[2]-state.banks[2];
       const theirGain=res.banks[1]-state.banks[1];
       const territory=row(2).reduce((n,i)=>n+res.pits[i],0);
       const val=ownGain*10-theirGain*10-replyPenalty*5+territory*.08-choice*.00001;
-      if(val>best){best=val;selected=choice;}
+      if (val>best) {best=val;selected=choice;}
     }
     return selected;
   }
 
+  // AI thinking owns the input lock until it is ready to initiate its move.
+  // V3.2 bug: calling playPit() with busy=true silently rejected every AI turn.
+  function scheduleAiTurn(live) {
+    if (!live() || !state.started || state.over || state.turn!==2 || !options.ai) return;
+    const ticket=++state.aiTicket;
+    state.busy=true;
+    render();
+    setStatus(`${names[2]} is thinking…`);
+    void (async () => {
+      try {
+        await wait(options.fast?165:480);
+        if (!live() || state.aiTicket!==ticket || !state.started || state.over || state.turn!==2) return;
+        const choice=chooseAI();
+        if (choice===null) {
+          state.busy=false;
+          render();
+          setStatus('No safe AI move available. Open Match to restart.');
+          return;
+        }
+        state.busy=false; // release the thinking lock BEFORE beginning AI playback
+        await playPit(choice,true); // playPit acquires its own animation lock immediately
+      } catch (err) {
+        console.error('AI turn failed:',err);
+        if (!live() || state.aiTicket!==ticket) return;
+        state.busy=false;
+        render();
+        setStatus('AI could not continue. Open Match to restart.');
+      }
+    })();
+  }
+
+  // Single completion path for regular playback and animation-error recovery.
+  function completeMove(mover, live, recovered=false) {
+    if (!live()) return;
+    hideHand();
+    if (settleIfFinished(state.pits,state.banks)) {
+      state.over=true;state.busy=false;render();finishMatch();return;
+    }
+    state.turn=other(mover);
+    state.busy=false;
+    render();
+    if (options.ai && state.turn===2) {
+      scheduleAiTurn(live);
+    } else {
+      setStatus(recovered
+        ? `Animation interrupted; move completed. ${names[state.turn]}'s turn.`
+        : `${names[state.turn]}'s turn. Choose a cup on your side.`);
+    }
+  }
+
   async function playPit(index,fromAI=false) {
-    if(!state.started||state.busy||state.over||owner(index)!==state.turn||state.pits[index]<=0)return;
-    if(options.ai&&state.turn===2&&!fromAI)return;
+    if(!state.started || state.busy || state.over || owner(index)!==state.turn || state.pits[index]<=0)return;
+    if(options.ai && state.turn===2 && !fromAI)return;
     const current=state.turn;
     const epoch=state.epoch;
     let simulated;
-    try {simulated=simulateMove(state.pits,state.banks,current,index);}catch(err){setStatus(err.message);return;}
+    try {simulated=simulateMove(state.pits,state.banks,current,index);}
+    catch(err) {setStatus(err.message);toast(err.message,2300);return;}
     state.busy=true;render();
-    $('player-hand').classList.remove('ai');
     let source=center('pit-'+index),hand=0;
     const live=()=>epoch===state.epoch;
     try {
@@ -749,7 +812,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           if(!live())return;
           state.pits[event.pit]=0;
           paintPit(event.pit);
-          if(!options.fast)await wait(75);
+          if(!options.fast)await wait(30);
         }else if(event.kind==='drop'){
           const dest=center('pit-'+event.pit);
           await moveHand(dest,current,'grip');
@@ -769,7 +832,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           source=dest;
           layeredLanding(state.pits[event.pit]);
           handPose('grip');
-          if(!options.fast)await wait(35);
+          if(!options.fast)await wait(16);
         }else if(event.kind==='pasu'){
           highlightPit(event.pit,'capture-pulse',500);
           toast(`பசு! ${names[event.player]} +4 ${options.seedStyle==='natural'?'seeds':'beads'}`,options.fast?750:1600);
@@ -779,7 +842,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           state.pits[event.pit]=0;state.banks[event.player]+=4;
           paintPit(event.pit);paintBank(event.player,4);
           handBadge(source,hand);
-          if(!options.fast)await wait(130);
+          if(!options.fast)await wait(70);
         }else if(event.kind==='capture'){
           highlightPit(event.pit,'capture-pulse',520);
           toast(`${names[event.player]} captured ${event.count} ${options.seedStyle==='natural'?'seeds':'beads'}!`,options.fast?900:1800);
@@ -788,82 +851,25 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
           if(!live())return;
           state.pits[event.pit]=0;state.banks[event.player]+=event.count;
           paintPit(event.pit);paintBank(event.player,event.count);
-          if(!options.fast)await wait(180);
+          if(!options.fast)await wait(100);
         }else if(event.kind==='no-capture'){
           setStatus('Empty cup followed by another empty cup. No capture.');
-          if(!options.fast)await wait(180);
-        }else if(event.kind==='safety'){
-          toast('A repeating sowing loop was stopped safely.',2200);
+          if(!options.fast)await wait(100);
         }
       }
       if(!live())return;
-      if(state.pits.some((v,i)=>v!==simulated.pits[i]) || state.banks[1]!==simulated.banks[1] || state.banks[2]!==simulated.banks[2]) {
+      if(state.pits.some((v,i)=>v!==simulated.pits[i]) ||
+          state.banks[1]!==simulated.banks[1] || state.banks[2]!==simulated.banks[2])
         throw new Error('Game engine/playback mismatch.');
-      }
-      hideHand();
-      if(settleIfFinished(state.pits,state.banks)) {
-        state.over=true;state.busy=false;render();finishMatch();return;
-      }
-
-      // Switch turn
-      state.turn=other(current);
-
-      // Turn-pass check if incoming player has 0 seeds
-      if(validMoves(state.turn).length === 0) {
-        if(settleIfFinished(state.pits, state.banks)) {
-          state.over=true;state.busy=false;render();finishMatch();return;
-        }
-        toast(`${names[state.turn]} has no seeds! Turn passes back.`, 1600);
-        state.turn = other(state.turn);
-      }
-
-      render();
-
-      if(options.ai&&state.turn===2){
-        setStatus(`${names[2]} is thinking…`);
-        await wait(options.fast?180:630);
-        if(!live())return;
-        const choice=chooseAI();
-        if(choice===null){
-          if(settleIfFinished(state.pits,state.banks)){state.over=true;state.busy=false;render();finishMatch();}
-          else {state.turn=1;state.busy=false;render();setStatus(`${names[1]}'s turn.`);}
-          return;
-        }
-        await playPit(choice,true);
-      }else{
-        state.busy=false;render();
-        setStatus(`${names[state.turn]}'s turn. Choose a cup on your side.`);
-      }
-    }catch(err){
-      console.error(err);
-      if(live()){
-        state.busy=false;
-        state.pits=simulated.pits.slice();state.banks=simulated.banks.slice();
-        hideHand();
-        if(settleIfFinished(state.pits,state.banks)){state.over=true;render();finishMatch();}
-        else{
-          state.turn=other(current);
-          if(validMoves(state.turn).length === 0){
-            if(settleIfFinished(state.pits,state.banks)){state.over=true;render();finishMatch();return;}
-            state.turn=other(state.turn);
-          }
-          state.busy=false;
-          render();
-          setStatus('Animation interrupted; move completed safely.');
-          if(options.ai && state.turn===2 && state.started && !state.over){
-            queueMicrotask(()=>{
-              if(!live() || !state.started || state.over || state.busy || state.turn!==2)return;
-              try{
-                const choice=chooseAI();
-                if(choice!==null)void playPit(choice,true);
-              }catch(aiError){
-                console.error('AI recovery failed:',aiError);
-                setStatus('AI could not continue. Open Match to restart.');
-              }
-            });
-          }
-        }
-      }
+      completeMove(current,live);
+    } catch(err) {
+      console.error('Recovered animation failure:',err);
+      if(!live())return;
+      // Simulation was completed before playback; commit its trusted final state.
+      closeAnimations();
+      state.pits=simulated.pits.slice();
+      state.banks=simulated.banks.slice();
+      completeMove(current,live,true);
     }
   }
 
@@ -880,7 +886,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
     $('end-modal').classList.remove('hidden');
   }
 
-  function invalidateMatch(){state.epoch++;state.busy=false;closeAnimations();clearTimeout(toastTimer);$('toast').classList.remove('visible');}
+  function invalidateMatch(){state.epoch++;state.aiTicket++;state.busy=false;closeAnimations();clearTimeout(toastTimer);$('toast').classList.remove('visible');}
   function startGame(){
     invalidateMatch();
     state.pits=Array(N).fill(START_SEEDS);state.banks=[0,0,0];state.turn=1;state.over=false;state.started=true;
@@ -951,7 +957,7 @@ button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus
       if(event.key==='Escape'&&!$('rules-modal').classList.contains('hidden'))$('rules-modal').classList.add('hidden');
     });
     window.addEventListener('pointerdown', () => ensureAudio(), { once: true });
-    window.PallanguzhiTest={simulateMove,settleIfFinished,validMoves,owner,getSnapshot:()=>({pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,over:state.over,busy:state.busy,epoch:state.epoch,handVisible:$('player-hand').classList.contains('visible')}),startGame,chooseAI};
+    window.PallanguzhiTest={version:'3.3',simulateMove,settleIfFinished,validMoves,owner,getSnapshot:()=>({pits:state.pits.slice(),banks:state.banks.slice(),turn:state.turn,over:state.over,busy:state.busy,epoch:state.epoch,handVisible:$('player-hand').classList.contains('visible')}),startGame,chooseAI};
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
